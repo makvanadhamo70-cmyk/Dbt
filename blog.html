@@ -12,7 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap');
         
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -28,13 +28,9 @@
         .feed-card {
             animation: cardPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-
-        /* Hide Scrollbar tracks cleanly */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-[#f8fafc] min-h-screen pb-24">
+<body class="bg-[#f8fafc] min-h-screen pb-10">
 
     <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-5 py-4 flex items-center justify-between sticky top-0 z-50 shadow-sm">
         <a href="javascript:history.back(-1)" class="text-slate-600 hover:text-slate-900 transition-colors flex items-center justify-center w-9 h-9 rounded-xl bg-slate-50 border border-slate-200">
@@ -48,12 +44,12 @@
 
     <main class="p-4 max-w-md mx-auto space-y-4" id="global-blog-feed">
         <div id="loading-placeholder" class="text-center py-12 text-slate-400 font-medium text-xs space-y-2">
-            <i class="fas fa-circle-notch class-spin text-amber-500 text-2xl animate-spin"></i>
+            <i class="fas fa-circle-notch text-amber-500 text-2xl animate-spin"></i>
             <p class="tracking-wider">Streaming premium feedback records...</p>
         </div>
     </main>
 
-    <div class="fixed right-4 bottom-24 flex flex-col gap-3 z-40">
+    <div class="fixed right-4 bottom-6 flex flex-col gap-3 z-40">
         <button onclick="triggerRulesPopup()" class="w-12 h-12 bg-white border border-slate-200 rounded-full flex flex-col items-center justify-center shadow-xl hover:scale-105 active:scale-95 transition-all text-slate-600">
             <i class="fas fa-scroll text-sm text-amber-500"></i>
             <span class="text-[9px] font-bold mt-0.5">Rules</span>
@@ -64,31 +60,7 @@
         </button>
     </div>
 
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-2 flex justify-around items-center z-50 shadow-2xl">
-        <a href="dashboard.html" class="flex flex-col items-center gap-1 py-1 text-slate-400 hover:text-slate-600 transition-colors">
-            <i class="fas fa-th-large text-lg"></i>
-            <span class="text-[10px] font-bold">Home</span>
-        </a>
-        <a href="#invest" class="flex flex-col items-center gap-1 py-1 text-slate-400 hover:text-slate-600 transition-colors">
-            <i class="fas fa-chart-line text-lg"></i>
-            <span class="text-[10px] font-bold">Invest</span>
-        </a>
-        <a href="#blog" class="flex flex-col items-center gap-1 py-1 text-amber-500 transition-colors">
-            <i class="fas fa-bullhorn text-lg"></i>
-            <span class="text-[10px] font-bold">Blog</span>
-        </a>
-        <a href="#team" class="flex flex-col items-center gap-1 py-1 text-slate-400 hover:text-slate-600 transition-colors">
-            <i class="fas fa-users text-lg"></i>
-            <span class="text-[10px] font-bold">Team</span>
-        </a>
-        <a href="#my" class="flex flex-col items-center gap-1 py-1 text-slate-400 hover:text-slate-600 transition-colors">
-            <i class="fas fa-user text-lg"></i>
-            <span class="text-[10px] font-bold">My</span>
-        </a>
-    </nav>
-
     <script>
-        // Database credentials infrastructure configurations
         const firebaseConfig = {
             apiKey: "AIzaSyC7apT-d-R9bpcb4LcpFk4P0cpw9sKxi-0",
             authDomain: "dbt-online-earning.firebaseapp.com",
@@ -102,17 +74,16 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Custom Beautiful SweatAlert Popup for Rules Modal Trigger
         function triggerRulesPopup() {
             Swal.fire({
                 title: '<span class="text-slate-800 font-extrabold text-lg uppercase tracking-wide">Share & Earn Reward</span>',
                 html: `
                     <div class="text-center p-2 space-y-4">
                         <div class="w-20 h-20 bg-amber-50 border border-amber-200 text-amber-500 rounded-2xl flex items-center justify-center text-4xl mx-auto shadow-inner">
-                            <i class="fas fa-wallet animate-pulse"></i>
+                            <i class="fas fa-wallet"></i>
                         </div>
                         <p class="text-xs text-slate-500 font-medium leading-relaxed">
-                            Send a crisp screenshot of your latest successful withdrawal transaction inside the official support group. Once verified, you will instantly receive a cash voucher gift ranging between <span class="text-emerald-600 font-bold">₹15.00 to ₹555.00</span> straight into your balance wallet!
+                            Send a screenshot of your latest successful withdrawal transaction inside the official support group. Once received, you will instantly receive a gift of <span class="text-emerald-600 font-bold">₹15.00 to ₹555.00</span> straight into your wallet!
                         </p>
                     </div>
                 `,
@@ -133,7 +104,7 @@
             });
         }
 
-        // Real-time Database Synchronization Engine for Public Streams
+        // Real-time Database Synchronization
         db.ref('site_blogs').on('value', function(snap) {
             const container = document.getElementById('global-blog-feed');
             const data = snap.val();
@@ -147,19 +118,17 @@
                 return;
             }
 
-            // Remove loading placeholder cleanly
             container.innerHTML = "";
             
-            // Loop data chronologically reversed (Latest post at top layout position)
             Object.keys(data).reverse().forEach(function(postKey, index) {
                 const post = data[postKey];
-                const cardDelay = index * 0.05; // Cascading cascading latency dynamic render
+                const cardDelay = index * 0.05;
                 
                 const cardHtml = `
                     <div class="feed-card bg-white border border-slate-200/60 p-5 rounded-3xl shadow-sm space-y-3.5 relative" style="animation-delay: ${cardDelay}s">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-3">
-                                <img src="${post.avatar || 'https://i.imgur.com/6VBx3io.png'}" class="w-10 h-10 rounded-full border border-slate-200 object-cover" alt="User image">
+                                <img src="${post.avatar || 'https://i.imgur.com/6VBx3io.png'}" class="w-10 h-10 rounded-full border border-slate-200 object-cover">
                                 <div>
                                     <h4 class="text-sm font-black text-slate-800 tracking-tight">${post.nickname || 'Investor'}</h4>
                                     <p class="text-[11px] font-mono text-slate-400 mt-0.5"><i class="fas fa-phone-alt text-[9px] mr-0.5"></i> +91 ******${post.lastFour || 'XXXX'}</p>
@@ -176,7 +145,7 @@
 
                         ${post.image ? `
                         <div class="rounded-2xl overflow-hidden border border-slate-100 max-h-52 bg-slate-50 cursor-zoom-in" onclick="previewImageSource('${post.image}')">
-                            <img src="${post.image}" class="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-300" alt="Payment voucher proof">
+                            <img src="${post.image}" class="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-300">
                         </div>
                         ` : ''}
 
@@ -190,11 +159,9 @@
             });
         });
 
-        // Smart image inspection layout modal view engine
         function previewImageSource(srcUrl) {
             Swal.fire({
                 imageUrl: srcUrl,
-                imageAlt: 'Voucher Inspection Display',
                 showConfirmButton: false,
                 background: 'transparent',
                 customClass: { popup: 'shadow-none border-0 bg-transparent' },
