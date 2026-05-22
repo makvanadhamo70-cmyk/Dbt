@@ -113,7 +113,7 @@
         // Standardized Safe Date String Node (Syncing with 9:00 AM Cycle)
         function getDrawDateString() {
             const now = new Date();
-            // Agar aaj subah ke 9 baje nahi baje hain, toh pichle din ka draw cycle chal raha hai
+            // Agar subah 9 nahi baje hain toh pichle din ka cycle active maana jayega
             if (now.getHours() < 9) {
                 const prevDay = new Date();
                 prevDay.setDate(now.getDate() - 1);
@@ -129,6 +129,23 @@
             return yyyy + '-' + mm + '-' + dd;
         }
 
+        // CRITICAL FIX: Page load hote hi instant check logic call hoga
+        function checkParticipationStatus() {
+            const currentCycleStr = getDrawDateString();
+            db.ref('lucky_draw/participants/' + currentCycleStr + '/' + myPhone).once('value', function(snap) {
+                if(snap.exists()) {
+                    document.getElementById('action-wrapper').style.display = 'none';
+                    document.getElementById('status-message').classList.remove('hidden');
+                } else {
+                    document.getElementById('action-wrapper').style.display = 'block';
+                    document.getElementById('status-message').classList.add('hidden');
+                }
+            });
+        }
+        
+        // Execute status check instantly on script load
+        checkParticipationStatus();
+
         // Live track balance
         db.ref('users/' + myPhone).on('value', function(snap) {
             const userData = snap.val();
@@ -138,7 +155,7 @@
             }
         });
 
-        // Strict Enforcement Listener for Block-Check
+        // Continuous real-time listener back-support
         db.ref('lucky_draw/participants/' + getDrawDateString() + '/' + myPhone).on('value', function(snap) {
             if(snap.exists()) {
                 document.getElementById('action-wrapper').style.display = 'none';
@@ -156,14 +173,11 @@
                 let target = new Date();
                 
                 target.setHours(9, 0, 0, 0);
-                
-                // Agar 9 AM cross ho chuka hai, toh agle din subah ka target hoga
                 if (now.getHours() >= 9) {
                     target.setDate(target.getDate() + 1);
                 }
 
                 const diff = target - now;
-                
                 const hours = Math.floor(diff / (1000 * 60 * 60));
                 const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((diff % (1000 * 60)) / 1000);
@@ -196,9 +210,9 @@
                     const activeCycleStr = getDrawDateString();
                     const newBalance = myCurrentBalance - 100;
 
-                    // Instantly lock button on click to prevent double request processing
+                    // Instantly lock button UI on click to prevent spam double hits
                     document.getElementById('join-draw-btn').disabled = true;
-                    document.getElementById('join-draw-btn').innerText = "Processing Asset Verification...";
+                    document.getElementById('join-draw-btn').innerText = "Processing...";
 
                     db.ref('users/' + myPhone).update({ balance: newBalance }).then(function() {
                         db.ref('lucky_draw/participants/' + activeCycleStr + '/' + myPhone).set({
@@ -212,6 +226,7 @@
                                 prize: 0
                             }).then(function() {
                                 Swal.fire('Success', 'Successfully Enrolled inside Lucky Draw!', 'success');
+                                checkParticipationStatus(); // Recheck to confirm UI locks instantly
                             });
                         });
                     });
