@@ -1,134 +1,235 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>Notice</title>
+    <!-- Core Framework Assets -->
     <link rel="stylesheet" href="/public/v21/layui/css/layui.css">
     <link rel="stylesheet" href="/public/v21/css/common.css">
+    <!-- Tailwind CSS for Modern UI Design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap');
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            min-height: 100vh;
+        }
+
+        /* Premium Fixed Header */
+        .common_header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 65px;
+            background: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+        
+        .back_btn_style {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #1e293b;
+            font-weight: 700;
+            font-size: 18px;
+            text-decoration: none;
+        }
+
+        /* Modern Glassmorphism Cards */
+        .custom_mail_card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none !important;
+        }
+        
+        .custom_mail_card:active {
+            transform: scale(0.96);
+            background: rgba(248, 250, 252, 0.95);
+        }
+
+        /* Text Cutoff Configuration */
         .mail_title {
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 1; /* 定义显示的行数 */
-          overflow: hidden;
-          text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .layui-panel-window{background:#FFFFFf !important;border-top: none }
+        
         .mail_contents {
-            margin-bottom: 5px !important;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .mail_date {
-            margin-bottom: 5px !important;
+
+        /* Floating Help Desk Anchor */
+        #service {
+            position: fixed;
+            right: 20px;
+            bottom: 30px;
+            width: 50px;
+            height: 50px;
+            background: white;
+            box-shadow: 0px 8px 24px rgba(15, 23, 42, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e2e8f0;
+            z-index: 999;
+            transition: transform 0.2s;
         }
-     
-        .mail_contents {
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 3; /* 定义显示的行数 */
-          overflow: hidden;
-          text-overflow: ellipsis;
+        #service:active {
+            transform: scale(0.9);
+        }
+
+        /* Customizing Layui Popup Modern View */
+        .layui-layer-page .layui-layer-content {
+            overflow-y: auto !important;
         }
     </style>
 </head>
-<body class="page_common_body" style="background-image: url('/public/v21/img/user/password_bg.png');">
+<body class="page_common_body" style="background-image: url('/public/v21/img/user/password_bg.png'); background-repeat: no-repeat; background-size: cover; background-attachment: fixed;">
 
-<div class="common_header" style="background: none ">
-    <a href="javascript:history.back(-1)" class="back position">
-        <p class="btn"><i class="layui-icon layui-icon-left layui-font-20"></i></p>
-        Notice    
-    </a>
-</div>
+    <!-- TOP NAVIGATION APP HEADER WITH BACK BUTTON -->
+    <div class="common_header">
+        <a href="javascript:history.back(-1)" class="back_btn_style">
+            <i class="layui-icon layui-icon-left layui-font-20" style="font-weight: bold;"></i>
+            <span>Notice</span>
+        </a>
+    </div>
 
-<div class="mail_main" style='padding-bottom:80px;margin-top: 80px'>
-    
-    <!-- CARD 1 -->
-    <a href="/noticeDetails/14" class="mail_card" style="display:block;box-shadow: 0px 4px 10px 0px rgba(42, 65, 92, 0.5);">
-        <div class="flex_left">
-            <img src="/public/uploads/user/20260322093321877734.jpg" style="width:100px;height:100px;border-radius:8px;margin-right:10px;">           
-            <div style="width:100%">
-                <p class="mail_title" style="margin-bottom: 5px !important;">Lucky Roulette</p>
-                <p class="mail_date" style="margin-bottom: 5px !important;">2026-03-22 09:33:33</p>
-                <div class="mail_contents"></div>   
-            </div>
+    <!-- MAIN NOTICES LAYOUT CONTAINER -->
+    <main class="max-w-md mx-auto px-4 pt-24 pb-12">
+        <div class="mail_main space-y-4">
+            
+            <!-- CARD 1: Lucky Roulette -->
+            <a href="javascript:void(0)" class="custom_mail_card mail" 
+               data-title="Lucky Roulette Rules" 
+               data-content="Step 1: Open the Daily Event Section on your dashboard.&#10;Step 2: Spin the wheel using 1 Free Daily Ticket.&#10;Step 3: Win exciting cash multipliers or random coupon vouchers instantly.&#10;Step 4: Rewards will be credited directly to your main wallet balance.&#10;Step 5: Daily limits reset every midnight at 12:00 AM.">
+                <div class="flex-shrink-0 w-24 h-24 rounded-2xl overflow-hidden shadow-md border border-slate-100">
+                    <img src="/public/uploads/user/20260322093321877734.jpg" class="w-full h-full object-cover" alt="Lucky Roulette">
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h3 class="mail_title text-slate-900 font-bold text-base mb-1">Lucky Roulette</h3>
+                    <p class="mail_date text-xs text-slate-500 font-semibold mb-1">2026-03-22 09:33:33</p>
+                    <div class="mail_contents text-xs text-slate-400 font-medium">Click to see the 5 steps to participate and claim points...</div>
+                </div>
+                <div class="text-slate-400 pl-2">
+                    <i class="layui-icon layui-icon-right layui-font-14"></i>
+                </div>
+            </a>
+
+            <!-- CARD 2: Daily Login Rewards -->
+            <a href="javascript:void(0)" class="custom_mail_card mail" 
+               data-title="Daily Login Rewards" 
+               data-content="Step 1: Log into your official account every single day.&#10;Step 2: Navigate to the Check-in tab on the top menu.&#10;Step 3: Click on 'Claim Reward' to successfully check-in.&#10;Step 4: Maintain a continuous streak to unlock exclusive weekend mega mystery boxes.&#10;Step 5: Missing a single day will completely reset your progress streak back to Day 1.">
+                <div class="flex-shrink-0 w-24 h-24 rounded-2xl overflow-hidden shadow-md border border-slate-100">
+                    <img src="/public/uploads/user/20260322093151152751.jpg" class="w-full h-full object-cover" alt="Daily Login Rewards">
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h3 class="mail_title text-slate-900 font-bold text-base mb-1">Daily Login Rewards</h3>
+                    <p class="mail_date text-xs text-slate-500 font-semibold mb-1">2026-03-22 09:32:30</p>
+                    <div class="mail_contents text-xs text-slate-400 font-medium">Click to see how to claim continuous login bonuses every day...</div>
+                </div>
+                <div class="text-slate-400 pl-2">
+                    <i class="layui-icon layui-icon-right layui-font-14"></i>
+                </div>
+            </a>
+
+            <!-- CARD 3: Referral Rewards -->
+            <a href="javascript:void(0)" class="custom_mail_card mail" 
+               data-title="Referral Rewards Structure" 
+               data-content="Step 1: Go to your personal Profile page and copy your Unique Invite Link.&#10;Step 2: Share the referral link with friends via WhatsApp, Telegram, or social media platforms.&#10;Step 3: Ensure your friend completes registration using your specific link.&#10;Step 4: You will receive 10% commission instantly upon their first active asset activation.&#10;Step 5: Track all your team earnings directly through the real-time Team Analytics panel.">
+                <div class="flex-shrink-0 w-24 h-24 rounded-2xl overflow-hidden shadow-md border border-slate-100">
+                    <img src="/public/uploads/user/20260322093049917204.jpg" class="w-full h-full object-cover" alt="Referral Rewards">
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h3 class="mail_title text-slate-900 font-bold text-base mb-1">Referral Rewards</h3>
+                    <p class="mail_date text-xs text-slate-500 font-semibold mb-1">2026-03-22 09:30:55</p>
+                    <div class="mail_contents text-xs text-slate-400 font-medium">Click to see the step-by-step program structure to earn inviting bonuses...</div>
+                </div>
+                <div class="text-slate-400 pl-2">
+                    <i class="layui-icon layui-icon-right layui-font-14"></i>
+                </div>
+            </a>
+
+            <!-- CARD 4: Recharge Rewards -->
+            <a href="javascript:void(0)" class="custom_mail_card mail" 
+               data-title="Recharge Rewards Process" 
+               data-content="Step 1: Click on the Recharge option and choose your payment gateway interface.&#10;Step 2: Complete the transaction successfully and secure your unique UTR reference code.&#10;Step 3: Submit the transaction details onto the validation page for verification.&#10;Step 4: Receive an automatic 5% additional reward bonus on top of your recharge amount.&#10;Step 5: Contact customer support immediately if balance is delayed beyond 5 minutes.">
+                <div class="flex-shrink-0 w-24 h-24 rounded-2xl overflow-hidden shadow-md border border-slate-100">
+                    <img src="/public/uploads/user/20260322092459106227.jpg" class="w-full h-full object-cover" alt="Recharge Rewards">
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h3 class="mail_title text-slate-900 font-bold text-base mb-1">Recharge Rewards</h3>
+                    <p class="mail_date text-xs text-slate-500 font-semibold mb-1">2026-03-22 09:25:02</p>
+                    <div class="mail_contents text-xs text-slate-400 font-medium">Click to see how to process a secure deposit and claim additional cash bonuses...</div>
+                </div>
+                <div class="text-slate-400 pl-2">
+                    <i class="layui-icon layui-icon-right layui-font-14"></i>
+                </div>
+            </a>
+
         </div>
-    </a>
+    </main>
 
-    <!-- CARD 2 -->
-    <a href="/noticeDetails/13" class="mail_card" style="display:block;box-shadow: 0px 4px 10px 0px rgba(42, 65, 92, 0.5);">
-        <div class="flex_left">
-            <img src="/public/uploads/user/20260322093151152751.jpg" style="width:100px;height:100px;border-radius:8px;margin-right:10px;">           
-            <div style="width:100%">
-                <p class="mail_title" style="margin-bottom: 5px !important;">Daily Login Rewards</p>
-                <p class="mail_date" style="margin-bottom: 5px !important;">2026-03-22 09:32:30</p>
-                <div class="mail_contents"></div>   
-            </div>
-        </div>
-    </a>
+    <!-- FLOATING SERVICE CHOR NODE SUPPORT -->
+    <div id="service">
+        <a href="/help" class="flex items-center justify-center w-full h-full">
+            <img src="/public/v21/img/common/service.png" style="width: 36px; height: 36px;" alt="Helpdesk Support">
+        </a>
+    </div>
 
-    <!-- CARD 3 -->
-    <a href="/noticeDetails/12" class="mail_card" style="display:block;box-shadow: 0px 4px 10px 0px rgba(42, 65, 92, 0.5);">
-        <div class="flex_left">
-            <img src="/public/uploads/user/20260322093049917204.jpg" style="width:100px;height:100px;border-radius:8px;margin-right:10px;">           
-            <div style="width:100%">
-                <p class="mail_title" style="margin-bottom: 5px !important;">Referral Rewards</p>
-                <p class="mail_date" style="margin-bottom: 5px !important;">2026-03-22 09:30:55</p>
-                <div class="mail_contents"></div>   
-            </div>
-        </div>
-    </a>
+    <!-- CORE INTERFACE EXECUTION MODULE DRIVERS -->
+    <script src="/public/v21/layui/layui.js"></script>
+    <script>
+        layui.use(function(){
+            var $ = layui.jquery;
+            var layer = layui.layer;
+            
+            // Refactored click handler that matches original logic flawlessly
+            $('.mail').click(function(){
+                var title = $(this).attr('data-title');
+                var contents = $(this).attr('data-content');
+                
+                // Formatted linebreaks gracefully for display inside textareas
+                var formattedContent = contents.replace(/&#10;/g, '\n');
 
-    <!-- CARD 4 -->
-    <a href="/noticeDetails/11" class="mail_card" style="display:block;box-shadow: 0px 4px 10px 0px rgba(42, 65, 92, 0.5);">
-        <div class="flex_left">
-            <img src="/public/uploads/user/20260322092459106227.jpg" style="width:100px;height:100px;border-radius:8px;margin-right:10px;">           
-            <div style="width:100%">
-                <p class="mail_title" style="margin-bottom: 5px !important;">Recharge Rewards</p>
-                <p class="mail_date" style="margin-bottom: 5px !important;">2026-03-22 09:25:02</p>
-                <div class="mail_contents"></div>   
-            </div>
-        </div>
-    </a>
-
-</div>
-
-<!-- FLOATING SERVICE BUTTON -->
-<div id="service" style="width: 36px;height: 36px;background: rgba(255,255,255,0.7);box-shadow: 0px 4px 16px 0px rgba(0,0,0,0.15);border-radius: 100px 100px 100px 100px;">
-  <a href="/help">
-    <img src="/public/v21/img/common/service.png" style="width: 36px;height: 36px;">
-  </a>
-</div>
-
-<script src="/public/v21/layui/layui.js"></script>
-
-<script>
-    layui.use(function(){
-        var $ = layui.jquery;
-        var layer = layui.layer;
-        var form = layui.form;
-        var laydate = layui.laydate;
-        var slider = layui.slider;
-        var element = layui.element;
-        
-        $('.mail').click(function(){
-            var title = $(this).attr('data-title')
-            var contents = $(this).attr('data-content')
-            layer.open({
-                type: 1,
-                area: ['90%', '300px'], // 宽高
-                title: false, // 不显示标题栏
-                closeBtn: true,
-                shadeClose: true, // 点击遮罩关闭层
-                content: '<div style="padding: 16px;border-radius: 10px">' +
-                    '<h3 class="layui-padding-1">'+title+'</h3>' +
-                    '<p class="layui-padding-1 layui-font-16"> ' +
-                    '      <textarea placeholder="" rows="10" class="layui-textarea" style="border: none">'+contents+'</textarea>\n' +
-                    '</p>' +
-                    '</div>'
+                layer.open({
+                    type: 1,
+                    area: ['90%', '340px'],
+                    title: false,
+                    closeBtn: true,
+                    shadeClose: true,
+                    skin: 'layui-layer-rim',
+                    content: '<div style="padding: 20px; background: #ffffff; border-radius: 16px;">' +
+                        '<h3 style="font-weight: 800; font-size: 18px; color: #0f172a; margin-bottom: 12px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px;">'+title+'</h3>' +
+                        '<p class="layui-font-14"> ' +
+                        '   <textarea readonly rows="8" class="layui-textarea" style="border: none; resize: none; font-weight: 600; color: #475569; line-height: 1.6; background: transparent; padding: 0;">'+formattedContent+'</textarea>\n' +
+                        '</p>' +
+                        '</div>'
+                });
             });
-        })
-    });
-</script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"6f0a32fb3a5b44cb82f822c99ca5d011","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+        });
+    </script>
 </body>
 </html>
