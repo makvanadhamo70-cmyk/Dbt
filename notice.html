@@ -18,14 +18,14 @@
             min-height: 100vh;
         }
 
-        /* Premium Fixed Header */
+        /* Fixed Header */
         .common_header {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             height: 65px;
-            background: rgba(255, 255, 255, 0.8) !important;
+            background: rgba(255, 255, 255, 0.85) !important;
             backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(226, 232, 240, 0.8);
             display: flex;
@@ -44,9 +44,9 @@
             text-decoration: none;
         }
 
-        /* Modern Glassmorphism Cards */
+        /* Modern Glassmorphic Design Cards */
         .custom_mail_card {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(8px);
             border-radius: 20px;
             padding: 16px;
@@ -54,6 +54,7 @@
             align-items: center;
             gap: 16px;
             border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0px 4px 12px 0px rgba(42, 65, 92, 0.15);
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             text-decoration: none !important;
         }
@@ -95,15 +96,6 @@
             justify-content: center;
             border: 1px solid #e2e8f0;
             z-index: 999;
-            transition: transform 0.2s;
-        }
-        #service:active {
-            transform: scale(0.9);
-        }
-
-        /* Customizing Layui Popup Modern View */
-        .layui-layer-page .layui-layer-content {
-            overflow-y: auto !important;
         }
     </style>
 </head>
@@ -125,8 +117,8 @@
             <a href="javascript:void(0)" class="custom_mail_card mail" 
                data-title="Lucky Roulette Rules" 
                data-content="Step 1: Open the Daily Event Section on your dashboard.&#10;Step 2: Spin the wheel using 1 Free Daily Ticket.&#10;Step 3: Win exciting cash multipliers or random coupon vouchers instantly.&#10;Step 4: Rewards will be credited directly to your main wallet balance.&#10;Step 5: Daily limits reset every midnight at 12:00 AM.">
-                <div class="flex-shrink-0 w-24 h-24 rounded-2xl overflow-hidden shadow-md border border-slate-100">
-                    <img src="/public/uploads/user/20260322093321877734.jpg" class="w-full h-full object-cover" alt="Lucky Roulette">
+                <div class="flex-shrink-0 w-20 h-20 rounded-2xl overflow-hidden shadow-inner border border-slate-100 bg-white flex items-center justify-center p-1">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS99ULCzPDTR2uEVW9s2VPqaqFVPodak_teOw&s" class="w-full h-full object-contain" alt="Lucky Roulette">
                 </div>
                 <div class="flex-1 min-w-0">
                     <h3 class="mail_title text-slate-900 font-bold text-base mb-1">Lucky Roulette</h3>
@@ -142,8 +134,8 @@
             <a href="javascript:void(0)" class="custom_mail_card mail" 
                data-title="Daily Login Rewards" 
                data-content="Step 1: Log into your official account every single day.&#10;Step 2: Navigate to the Check-in tab on the top menu.&#10;Step 3: Click on 'Claim Reward' to successfully check-in.&#10;Step 4: Maintain a continuous streak to unlock exclusive weekend mega mystery boxes.&#10;Step 5: Missing a single day will completely reset your progress streak back to Day 1.">
-                <div class="flex-shrink-0 w-24 h-24 rounded-2xl overflow-hidden shadow-md border border-slate-100">
-                    <img src="/public/uploads/user/20260322093151152751.jpg" class="w-full h-full object-cover" alt="Daily Login Rewards">
+                <div class="flex-shrink-0 w-20 h-20 rounded-2xl overflow-hidden shadow-inner border border-slate-100 bg-white flex items-center justify-center p-1">
+                    <img src="https://uxwing.com/wp-content/themes/uxwing/download/time-and-date/checkmark-date-calendar-color-icon.png" class="w-full h-full object-contain" alt="Daily Login Rewards">
                 </div>
                 <div class="flex-1 min-w-0">
                     <h3 class="mail_title text-slate-900 font-bold text-base mb-1">Daily Login Rewards</h3>
@@ -159,8 +151,8 @@
             <a href="javascript:void(0)" class="custom_mail_card mail" 
                data-title="Referral Rewards Structure" 
                data-content="Step 1: Go to your personal Profile page and copy your Unique Invite Link.&#10;Step 2: Share the referral link with friends via WhatsApp, Telegram, or social media platforms.&#10;Step 3: Ensure your friend completes registration using your specific link.&#10;Step 4: You will receive 10% commission instantly upon their first active asset activation.&#10;Step 5: Track all your team earnings directly through the real-time Team Analytics panel.">
-                <div class="flex-shrink-0 w-24 h-24 rounded-2xl overflow-hidden shadow-md border border-slate-100">
-                    <img src="/public/uploads/user/20260322093049917204.jpg" class="w-full h-full object-cover" alt="Referral Rewards">
+                <div class="flex-shrink-0 w-20 h-20 rounded-2xl overflow-hidden shadow-inner border border-slate-100 bg-white flex items-center justify-center p-1">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvrT6HNwkxmVLXi3mDhY1gp-MgJL6UIThX0w&s" class="w-full h-full object-contain" alt="Referral Rewards">
                 </div>
                 <div class="flex-1 min-w-0">
                     <h3 class="mail_title text-slate-900 font-bold text-base mb-1">Referral Rewards</h3>
@@ -176,8 +168,8 @@
             <a href="javascript:void(0)" class="custom_mail_card mail" 
                data-title="Recharge Rewards Process" 
                data-content="Step 1: Click on the Recharge option and choose your payment gateway interface.&#10;Step 2: Complete the transaction successfully and secure your unique UTR reference code.&#10;Step 3: Submit the transaction details onto the validation page for verification.&#10;Step 4: Receive an automatic 5% additional reward bonus on top of your recharge amount.&#10;Step 5: Contact customer support immediately if balance is delayed beyond 5 minutes.">
-                <div class="flex-shrink-0 w-24 h-24 rounded-2xl overflow-hidden shadow-md border border-slate-100">
-                    <img src="/public/uploads/user/20260322092459106227.jpg" class="w-full h-full object-cover" alt="Recharge Rewards">
+                <div class="flex-shrink-0 w-20 h-20 rounded-2xl overflow-hidden shadow-inner border border-slate-100 bg-white flex items-center justify-center p-1">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3390/3390993.png" class="w-full h-full object-contain" alt="Recharge Rewards">
                 </div>
                 <div class="flex-1 min-w-0">
                     <h3 class="mail_title text-slate-900 font-bold text-base mb-1">Recharge Rewards</h3>
@@ -206,12 +198,9 @@
             var $ = layui.jquery;
             var layer = layui.layer;
             
-            // Refactored click handler that matches original logic flawlessly
             $('.mail').click(function(){
                 var title = $(this).attr('data-title');
                 var contents = $(this).attr('data-content');
-                
-                // Formatted linebreaks gracefully for display inside textareas
                 var formattedContent = contents.replace(/&#10;/g, '\n');
 
                 layer.open({
