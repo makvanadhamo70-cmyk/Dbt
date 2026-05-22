@@ -12,7 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap');
         
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -24,6 +24,9 @@
         }
         .vip-gold-progress {
             background: #FFCF8B;
+        }
+        .credit-card-gradient {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         }
     </style>
 </head>
@@ -84,12 +87,12 @@
                     </div>
                     <p class="tracking-tight text-[11px]">Orders</p>
                 </a>
-                <a href="bankCardInfo.html" class="flex flex-col items-center gap-2 p-2 hover:bg-slate-50 rounded-2xl transition-all">
-                    <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center text-lg shadow-sm">
+                <button onclick="openCardWalletModal()" class="flex flex-col items-center gap-2 p-2 hover:bg-slate-50 rounded-2xl transition-all text-center focus:outline-none">
+                    <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center text-lg shadow-sm mx-auto">
                         <i class="fas fa-credit-card"></i>
                     </div>
                     <p class="tracking-tight text-[11px]">Card Wallet</p>
-                </a>
+                </button>
             </div>
         </div>
     </div>
@@ -165,6 +168,83 @@
         </div>
     </div>
 
+    <div id="card-wallet-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-white w-full max-w-md rounded-t-[30px] sm:rounded-3xl p-6 shadow-2xl border border-slate-100 transform translate-y-full sm:translate-y-0 sm:scale-95 transition-transform duration-300 space-y-4 max-h-[85vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-wallet text-amber-500"></i>
+                    <h3 class="text-sm font-black text-slate-800 uppercase tracking-wide">Card Wallet Manager</h3>
+                </div>
+                <button onclick="closeCardWalletModal()" class="text-slate-400 hover:text-slate-600 text-lg w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div id="modal-saved-card-view" class="hidden space-y-4">
+                <div class="credit-card-gradient text-white rounded-2xl p-5 shadow-lg border border-slate-800 relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-white/5 rounded-full blur-xl"></div>
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <p class="text-[9px] uppercase tracking-widest text-slate-400 font-bold">Linked Bank Card</p>
+                            <h4 id="lbl-bank-name" class="text-base font-black mt-0.5 tracking-tight">Loading...</h4>
+                        </div>
+                        <i class="fas fa-shield-alt text-xl text-slate-500"></i>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <p class="text-[9px] uppercase tracking-wider text-slate-500 font-bold">Account Number</p>
+                            <p id="lbl-acc-num" class="text-lg font-mono font-bold tracking-widest mt-0.5">•••• •••• ••••</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 border-t border-slate-800/80 pt-2.5 text-[11px]">
+                            <div>
+                                <p class="text-[9px] uppercase tracking-wider text-slate-500 font-bold">Holder</p>
+                                <p id="lbl-holder-name" class="font-bold text-slate-200 mt-0.5">---</p>
+                            </div>
+                            <div>
+                                <p class="text-[9px] uppercase tracking-wider text-slate-500 font-bold">IFSC</p>
+                                <p id="lbl-ifsc" class="font-mono font-bold text-slate-200 mt-0.5">---</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="executeUnlinkBankCard()" class="w-full bg-rose-50/80 hover:bg-rose-600 text-rose-600 hover:text-white border border-rose-100 rounded-xl py-3.5 text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2">
+                    <i class="fas fa-link-slash"></i> Unlink Bank Card
+                </button>
+            </div>
+
+            <div id="modal-add-card-form" class="hidden space-y-3.5 text-xs">
+                <p class="text-[11px] text-slate-400 font-semibold mb-1">No account linked yet. Please bind your withdrawal bank parameters below:</p>
+                <div>
+                    <label class="block font-bold text-slate-500 mb-1">Bank Name</label>
+                    <input type="text" id="f-bank-name" placeholder="e.g. State Bank of India" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 font-medium">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-500 mb-1">Account Holder Name</label>
+                    <input type="text" id="f-holder-name" placeholder="Name as per passbook" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 font-medium">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-500 mb-1">Bank Account Number</label>
+                    <input type="text" id="f-acc-num" placeholder="Enter full account number" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 font-mono font-medium">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-500 mb-1">IFSC Code</label>
+                    <input type="text" id="f-ifsc" placeholder="11 digit IFSC code" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 font-mono font-medium uppercase">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-500 mb-1">Phone Number</label>
+                    <input type="text" id="f-phone" placeholder="Registered mobile number" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 font-medium">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-500 mb-1">State / City</label>
+                    <input type="text" id="f-state" placeholder="e.g. Gujarat / Ahmedabad" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 font-medium">
+                </div>
+                <button onclick="saveBankCardDetails()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:opacity-95 text-white font-black text-xs py-3.5 rounded-xl uppercase tracking-wider shadow-md transition-transform active:scale-[0.99] mt-2">
+                    <i class="fas fa-check-circle mr-1"></i> Save & Bind Bank Card
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // System Firebase Endpoint Connectivity Module Nodes
         const firebaseConfig = {
@@ -205,6 +285,89 @@
                     if(userDataObj.avatar) {
                         document.getElementById('user-avatar-display').src = userDataObj.avatar;
                     }
+                }
+            });
+        }
+
+        // Realtime Data sync helper to structure view templates inside modal dynamically
+        db.ref('users/' + activeUserPhone + '/bank_details').on('value', function(snapshot) {
+            const data = snapshot.val();
+            const viewCard = document.getElementById('modal-saved-card-view');
+            const viewForm = document.getElementById('modal-add-card-form');
+
+            if(data && data.accountNumber) {
+                viewForm.classList.add('hidden');
+                viewCard.classList.remove('hidden');
+
+                document.getElementById('lbl-bank-name').innerText = data.bankName || 'Linked Bank';
+                document.getElementById('lbl-holder-name').innerText = data.holderName || 'N/A';
+                document.getElementById('lbl-ifsc').innerText = (data.ifsc || 'N/A').toUpperCase();
+                
+                const actNum = data.accountNumber;
+                document.getElementById('lbl-acc-num').innerText = actNum.length > 4 ? "•••• •••• " + actNum.substring(actNum.length - 4) : actNum;
+            } else {
+                viewCard.classList.add('hidden');
+                viewForm.classList.remove('hidden');
+            }
+        });
+
+        // Modal triggers
+        function openCardWalletModal() {
+            const modal = document.getElementById('card-wallet-modal');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.firstElementChild.classList.remove('translate-y-full');
+        }
+
+        function closeCardWalletModal() {
+            const modal = document.getElementById('card-wallet-modal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.firstElementChild.classList.add('translate-y-full');
+        }
+
+        // Action helper to bind fields to database
+        function saveBankCardDetails() {
+            const bName = document.getElementById('f-bank-name').value.trim();
+            const hName = document.getElementById('f-holder-name').value.trim();
+            const aNum = document.getElementById('f-acc-num').value.trim();
+            const ifsc = document.getElementById('f-ifsc').value.trim();
+            const phone = document.getElementById('f-phone').value.trim();
+            const state = document.getElementById('f-state').value.trim();
+
+            if(!bName || !hName || !aNum || !ifsc || !phone || !state) {
+                Swal.fire('Empty Fields', 'Please fill the complete withdraw form!', 'warning');
+                return;
+            }
+
+            db.ref('users/' + activeUserPhone + '/bank_details').set({
+                bankName: bName, holderName: hName, accountNumber: aNum, ifsc: ifsc, phone: phone, state: state
+            }).then(() => {
+                Swal.fire('Linked!', 'Bank Card setup successfully mapped.', 'success');
+                document.getElementById('f-bank-name').value = '';
+                document.getElementById('f-holder-name').value = '';
+                document.getElementById('f-acc-num').value = '';
+                document.getElementById('f-ifsc').value = '';
+                document.getElementById('f-phone').value = '';
+                document.getElementById('f-state').value = '';
+            });
+        }
+
+        // CONFIRM UNLINK SYSTEM IMPLEMENTATION
+        function executeUnlinkBankCard() {
+            Swal.fire({
+                title: 'Confirm Unlink?',
+                text: 'Are you sure you want to remove and unlink this bank card from your withdrawal profile?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#475569',
+                confirmButtonText: 'Yes, Unlink',
+                background: '#0b0f19',
+                customClass: { popup: 'rounded-3xl border border-slate-800 text-white', title: 'text-white' }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    db.ref('users/' + activeUserPhone + '/bank_details').remove().then(() => {
+                        Swal.fire('Card Unlinked', 'Your bank account has been safely unlinked.', 'success');
+                    });
                 }
             });
         }
