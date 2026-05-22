@@ -67,9 +67,11 @@
                 </div>
             </div>
 
-            <button id="join-draw-btn" onclick="participateInDraw()" class="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-black text-sm py-4 rounded-2xl transition-all shadow-lg shadow-amber-500/20 uppercase tracking-wider">
-                Buy Entry Ticket (₹100)
-            </button>
+            <div id="action-wrapper">
+                <button id="join-draw-btn" onclick="participateInDraw()" class="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-black text-sm py-4 rounded-2xl transition-all shadow-lg shadow-amber-500/20 uppercase tracking-wider">
+                    Buy Entry Ticket (₹100)
+                </button>
+            </div>
             
             <p id="status-message" class="text-center text-xs text-emerald-600 font-bold hidden bg-emerald-50 border border-emerald-100 py-3 rounded-xl">
                 <i class="fas fa-check-circle text-emerald-500 mr-1"></i> You have already participated for today!
@@ -108,12 +110,22 @@
             });
         }
 
-        // Standard Fixed Date Stream (No local formatting issue)
-        function getTodayDateString() {
-            const today = new Date();
-            const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const dd = String(today.getDate()).padStart(2, '0');
+        // Standardized Safe Date String Node (Syncing with 9:00 AM Cycle)
+        function getDrawDateString() {
+            const now = new Date();
+            // Agar aaj subah ke 9 baje nahi baje hain, toh pichle din ka draw cycle chal raha hai
+            if (now.getHours() < 9) {
+                const prevDay = new Date();
+                prevDay.setDate(now.getDate() - 1);
+                return formatDate(prevDay);
+            }
+            return formatDate(now);
+        }
+
+        function formatDate(dateObj) {
+            const yyyy = dateObj.getFullYear();
+            const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const dd = String(dateObj.getDate()).padStart(2, '0');
             return yyyy + '-' + mm + '-' + dd;
         }
 
@@ -126,24 +138,32 @@
             }
         });
 
-        // Track Daily Participation status
-        db.ref('lucky_draw/participants/' + getTodayDateString() + '/' + myPhone).on('value', function(snap) {
+        // Strict Enforcement Listener for Block-Check
+        db.ref('lucky_draw/participants/' + getDrawDateString() + '/' + myPhone).on('value', function(snap) {
             if(snap.exists()) {
-                document.getElementById('join-draw-btn').style.display = 'none';
+                document.getElementById('action-wrapper').style.display = 'none';
                 document.getElementById('status-message').classList.remove('hidden');
+            } else {
+                document.getElementById('action-wrapper').style.display = 'block';
+                document.getElementById('status-message').classList.add('hidden');
             }
         });
 
-        // 24 Hour Countdown Machine Target System
+        // Accurate Live 9:00 AM Countdown Timer Engine
         function startLive9AMTimer() {
             setInterval(function() {
                 const now = new Date();
                 let target = new Date();
+                
                 target.setHours(9, 0, 0, 0);
+                
+                // Agar 9 AM cross ho chuka hai, toh agle din subah ka target hoga
                 if (now.getHours() >= 9) {
                     target.setDate(target.getDate() + 1);
                 }
+
                 const diff = target - now;
+                
                 const hours = Math.floor(diff / (1000 * 60 * 60));
                 const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((diff % (1000 * 60)) / 1000);
@@ -173,17 +193,20 @@
                 confirmButtonText: 'Yes, Buy Ticket'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const todayStr = getTodayDateString();
+                    const activeCycleStr = getDrawDateString();
                     const newBalance = myCurrentBalance - 100;
 
+                    // Instantly lock button on click to prevent double request processing
+                    document.getElementById('join-draw-btn').disabled = true;
+                    document.getElementById('join-draw-btn').innerText = "Processing Asset Verification...";
+
                     db.ref('users/' + myPhone).update({ balance: newBalance }).then(function() {
-                        db.ref('lucky_draw/participants/' + todayStr + '/' + myPhone).set({
+                        db.ref('lucky_draw/participants/' + activeCycleStr + '/' + myPhone).set({
                             phone: myPhone,
                             timestamp: Date.now()
                         }).then(function() {
-                            // Save inside user personal history tree node
-                            db.ref('lucky_draw/user_history/' + myPhone + '/' + todayStr).set({
-                                date: todayStr,
+                            db.ref('lucky_draw/user_history/' + myPhone + '/' + activeCycleStr).set({
+                                date: activeCycleStr,
                                 fee: 100,
                                 status: 'pending',
                                 prize: 0
@@ -197,10 +220,11 @@
         }
 
         // Live Real-Time Result Listening Popups Engine
-        db.ref('lucky_draw/results/' + getTodayDateString()).on('value', function(snap) {
+        db.ref('lucky_draw/results/' + getDrawDateString()).on('value', function(snap) {
             const res = snap.val();
             if(res && res.announced === true) {
-                if(localStorage.getItem('last_viewed_draw') === getTodayDateString()) return;
+                const currentCycle = getDrawDateString();
+                if(localStorage.getItem('last_viewed_draw') === currentCycle) return;
 
                 if(res.winner === myPhone) {
                     Swal.fire({
@@ -217,7 +241,7 @@
                         confirmButtonText: 'Ok'
                     });
                 }
-                localStorage.setItem('last_viewed_draw', getTodayDateString());
+                localStorage.setItem('last_viewed_draw', currentCycle);
             }
         });
 
