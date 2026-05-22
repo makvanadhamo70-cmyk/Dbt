@@ -13,21 +13,9 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap');
-        
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f8fafc;
-            color: #0f172a;
-        }
-
-        /* Post Card Load-In Waves Animation */
-        @keyframes cardPop {
-            from { opacity: 0; transform: translateY(16px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .feed-card {
-            animation: cardPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #0f172a; }
+        @keyframes cardPop { from { opacity: 0; transform: translateY(16px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .feed-card { animation: cardPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     </style>
 </head>
 <body class="bg-[#f8fafc] min-h-screen pb-10">
@@ -70,60 +58,33 @@
             messagingSenderId: "319083357519",
             appId: "1:319083357519:web:62ccf6d8ce0dca3152513a"
         };
-
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
         function triggerRulesPopup() {
             Swal.fire({
                 title: '<span class="text-slate-800 font-extrabold text-lg uppercase tracking-wide">Share & Earn Reward</span>',
-                html: `
-                    <div class="text-center p-2 space-y-4">
-                        <div class="w-20 h-20 bg-amber-50 border border-amber-200 text-amber-500 rounded-2xl flex items-center justify-center text-4xl mx-auto shadow-inner">
-                            <i class="fas fa-wallet"></i>
-                        </div>
-                        <p class="text-xs text-slate-500 font-medium leading-relaxed">
-                            Send a screenshot of your latest successful withdrawal transaction inside the official support group. Once received, you will instantly receive a gift of <span class="text-emerald-600 font-bold">₹15.00 to ₹555.00</span> straight into your wallet!
-                        </p>
-                    </div>
-                `,
+                html: `<div class="text-center p-2 space-y-4"><div class="w-20 h-20 bg-amber-50 border border-amber-200 text-amber-500 rounded-2xl flex items-center justify-center text-4xl mx-auto shadow-inner"><i class="fas fa-wallet"></i></div><p class="text-xs text-slate-500 font-medium leading-relaxed">Send a screenshot of your latest successful withdrawal transaction inside the official support group. Once received, you will instantly receive a gift of <span class="text-emerald-600 font-bold">₹15.00 to ₹555.00</span> straight into your wallet!</p></div>`,
                 showCancelButton: true,
                 confirmButtonText: '<i class="fab fa-telegram-plane mr-1.5"></i> Open Channel',
                 cancelButtonText: 'I Understand',
                 confirmButtonColor: '#d97706',
                 cancelButtonColor: '#64748b',
-                customClass: {
-                    popup: 'rounded-3xl border border-slate-100 shadow-2xl',
-                    confirmButton: 'rounded-xl font-bold text-xs uppercase tracking-wide px-4 py-2.5',
-                    cancelButton: 'rounded-xl font-bold text-xs uppercase tracking-wide px-4 py-2.5'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = "https://t.me/Reliance11223";
-                }
-            });
+                customClass: { popup: 'rounded-3xl border border-slate-100 shadow-2xl', confirmButton: 'rounded-xl font-bold text-xs uppercase tracking-wide px-4 py-2.5', cancelButton: 'rounded-xl font-bold text-xs uppercase tracking-wide px-4 py-2.5' }
+            }).then((result) => { if (result.isConfirmed) { window.location.href = "https://t.me/Reliance11223"; } });
         }
 
-        // Real-time Database Synchronization
         db.ref('site_blogs').on('value', function(snap) {
             const container = document.getElementById('global-blog-feed');
             const data = snap.val();
-            
             if(!data) {
-                container.innerHTML = `
-                    <div class="text-center py-20 text-slate-400">
-                        <i class="fas fa-folder-open text-4xl text-slate-300 mb-3 block"></i>
-                        <p class="text-xs font-semibold">No community stories published today yet.</p>
-                    </div>`;
+                container.innerHTML = `<div class="text-center py-20 text-slate-400"><i class="fas fa-folder-open text-4xl text-slate-300 mb-3 block"></i><p class="text-xs font-semibold">No community stories published today yet.</p></div>`;
                 return;
             }
-
             container.innerHTML = "";
-            
             Object.keys(data).reverse().forEach(function(postKey, index) {
                 const post = data[postKey];
                 const cardDelay = index * 0.05;
-                
                 const cardHtml = `
                     <div class="feed-card bg-white border border-slate-200/60 p-5 rounded-3xl shadow-sm space-y-3.5 relative" style="animation-delay: ${cardDelay}s">
                         <div class="flex items-center justify-between">
@@ -138,36 +99,19 @@
                                 <i class="fas fa-check-circle text-[10px]"></i> Guaranteed
                             </div>
                         </div>
-
-                        <div class="text-slate-600 text-xs font-medium leading-relaxed bg-slate-50/60 border border-slate-100 p-3 rounded-2xl">
-                            ${post.contents}
-                        </div>
-
-                        ${post.image ? `
-                        <div class="rounded-2xl overflow-hidden border border-slate-100 max-h-52 bg-slate-50 cursor-zoom-in" onclick="previewImageSource('${post.image}')">
-                            <img src="${post.image}" class="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-300">
-                        </div>
-                        ` : ''}
-
+                        <div class="text-slate-600 text-xs font-medium leading-relaxed bg-slate-50/60 border border-slate-100 p-3 rounded-2xl">${post.contents}</div>
+                        ${post.image ? `<div class="rounded-2xl overflow-hidden border border-slate-100 max-h-52 bg-slate-50 cursor-zoom-in" onclick="previewImageSource('${post.image}')"><img src="${post.image}" class="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-300"></div>` : ''}
                         <div class="flex items-center justify-between border-t border-slate-100 pt-3 text-[11px] text-slate-400 font-semibold">
                             <span class="flex items-center gap-1"><i class="far fa-clock"></i> ${post.create_time || 'Just now'}</span>
                             <span class="text-amber-500 flex items-center gap-0.5 bg-amber-50 px-2 py-0.5 rounded-md text-[10px] font-bold border border-amber-100"><i class="fas fa-gift text-[9px]"></i> Bonus Distributed</span>
                         </div>
-                    </div>
-                `;
+                    </div>`;
                 container.innerHTML += cardHtml;
             });
         });
 
         function previewImageSource(srcUrl) {
-            Swal.fire({
-                imageUrl: srcUrl,
-                showConfirmButton: false,
-                background: 'transparent',
-                customClass: { popup: 'shadow-none border-0 bg-transparent' },
-                showCloseButton: true,
-                closeButtonHtml: '<i class="fas fa-times text-white bg-slate-900/40 p-2 rounded-full"></i>'
-            });
+            Swal.fire({ imageUrl: srcUrl, showConfirmButton: false, background: 'transparent', customClass: { popup: 'shadow-none border-0 bg-transparent' }, showCloseButton: true, closeButtonHtml: '<i class="fas fa-times text-white bg-slate-900/40 p-2 rounded-full"></i>' });
         }
     </script>
 </body>
