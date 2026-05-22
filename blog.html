@@ -1,316 +1,207 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Blog</title>
-    <link rel="stylesheet" href="/public/v21/layui/css/layui.css">
-    <link rel="stylesheet" href="/public/v21/css/common.css">
+    <title>Community Feed - Official Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
     <style>
-        .blog_header{
-            background: linear-gradient( 133deg, #063D9E 0%, #0062E1 99%);
-            border-radius: 0px 0px 0px 0px;
-            height: 120px;
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
         }
-        .blog_contents{
-            position: relative;
-            background: none;
-            margin: 15px;
-            margin-bottom: 200px;
-        }
-        .bold_card{
-            background: #FFFFFF;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 16px;
-        }
-        .bold_card .card_header{
-            display: flex;
-            justify-content: space-between;
 
+        /* Post Card Load-In Waves Animation */
+        @keyframes cardPop {
+            from { opacity: 0; transform: translateY(16px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        .bold_card .card_header .title{
-            display: flex;
-            justify-content: left;
+        .feed-card {
+            animation: cardPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
 
-        }
-        .bold_card .card_header .title .info{
-            padding-left: 10px;
-        }
-        .bold_card .card_header .title .nickname{
-            font-family: Arial, Arial;
-            font-weight: 700;
-            font-size: 16px;
-            color: #333333;
-            line-height: 18px;
-        }
-        .bold_card .card_header .title .account{
-            font-family: Arial, Arial;
-            font-weight: 400;
-            font-size: 14px;
-            color: #818393;
-            line-height: 16px;
-        }
-        .bold_card .card_header .gold_bg{
-            width: 40px;
-            height: 40px;
-            background-image:url("/public/v21/img/blog/gold_bg.png") ;
-            background-size: 40px 40px;
-            background-repeat: no-repeat;
-            line-height: 40px;
-            font-family: Arial, Arial;
-            font-weight: 700;
-            font-size: 12px;
-            color: #FCAA00;
-            text-align: center;
-        }
-        .bold_card .contents {
-            margin-left: 40px;
-        }
-        .bold_card .contents .text{
-            font-family: Arial, Arial;
-            font-weight: 400;
-            font-size: 16px;
-            color: #666666;
-            line-height: 20px;
-            margin: 10px 0;
-        }
-        .blog_img{
-            width: 100%;
-            min-height: 84px;
-        }
-        .avatar{
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 1px solid #EEEEEE;
-        }
-        .footer{
-            margin-left: 40px ;
-            display: flex;
-            justify-content: space-between;
-        }
-        .footer   img{
-            width: 16px;
-            height: 16px;
-        }
-        .date{
-            font-family: PingFang SC, PingFang SC;
-            font-weight: 400;
-            font-size: 14px;
-            color: #888888;
-            line-height: 14px;
-        }
-        .icon{font-family: PingFang SC, PingFang SC;
-            font-weight: 400;
-            font-size: 16px;
-            color: #FCAA00;}
-        .layui-layer-msg{min-width:180px;border:1px solid #d3d4d3;box-shadow:none}
-        .layui-carousel{
-            background: none;
-            border-radius: 44px 12px 44px 12px;
-        }
-        .layui-carousel>[carousel-item] {
-            border-radius: 44px 12px 44px 12px;
-            background: none;
-        }
+        /* Hide Scrollbar tracks cleanly */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="common_body">
-<div class="common_header" style="background:none;background-image: url('/public/v21/img/blog/bg.png');background-size:100% 197px;height: 197px">
-    <!--    <div class="club_header_title">Câu lạc bộ</div>-->
-    <a href="javascript:history.back(-1)" class="back position" style="color: #ffffff">
-        <p class="btn" style="color: #ffffff"><i class="layui-icon layui-icon-left layui-font-20"></i></p>
-        Blog    </a>
-</div>
+<body class="bg-[#f8fafc] min-h-screen pb-24">
 
-<div class="blog_contents" id="blog_contents" style="overflow: hidden; position: relative;top: -100px">
+    <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-5 py-4 flex items-center justify-between sticky top-0 z-50 shadow-sm">
+        <a href="javascript:history.back(-1)" class="text-slate-600 hover:text-slate-900 transition-colors flex items-center justify-center w-9 h-9 rounded-xl bg-slate-50 border border-slate-200">
+            <i class="fas fa-chevron-left text-sm"></i>
+        </a>
+        <h1 class="text-base font-extrabold tracking-wide text-slate-800 uppercase">Withdrawal Blog</h1>
+        <div class="w-9 h-9 flex items-center justify-center rounded-xl bg-amber-50 border border-amber-200" onclick="triggerRulesPopup()">
+            <i class="fas fa-gift text-amber-600 text-sm animate-bounce"></i>
+        </div>
+    </header>
 
-</div>
-<div id="club_dialog" class="position" style="width: 100%;height: 400px;background: #FFFFFF;display: none;">
-    <div style="padding:20px;">
-        <div style="text-align: center">
-            <img src="/public/v21/img/blog/rule_icon.png" style="width: 160px;height:160px ">
+    <main class="p-4 max-w-md mx-auto space-y-4" id="global-blog-feed">
+        <div id="loading-placeholder" class="text-center py-12 text-slate-400 font-medium text-xs space-y-2">
+            <i class="fas fa-circle-notch class-spin text-amber-500 text-2xl animate-spin"></i>
+            <p class="tracking-wider">Streaming premium feedback records...</p>
         </div>
-        <div class="club_title">
-            Share a withdrawal screenshot to receive a cash gift
-        </div>
-        <div class="club_text" style="font-family: Arial, Arial;font-weight: 400;font-size: 14px;color: #474747;line-height: 16px;margin-top: 10px;">
-            Send a screenshot of your latest successful withdrawal transaction in the comments section, and once received, you will immediately receive a gift of 15-555        </div>
-        <div style="margin: auto;text-align: center;width: 100%">
-            <a href='https://t.me/Reliance11223' class="layui-btn know_btn">
-                I understand
-            </a>
-        </div>
+    </main>
+
+    <div class="fixed right-4 bottom-24 flex flex-col gap-3 z-40">
+        <button onclick="triggerRulesPopup()" class="w-12 h-12 bg-white border border-slate-200 rounded-full flex flex-col items-center justify-center shadow-xl hover:scale-105 active:scale-95 transition-all text-slate-600">
+            <i class="fas fa-scroll text-sm text-amber-500"></i>
+            <span class="text-[9px] font-bold mt-0.5">Rules</span>
+        </button>
+        <button onclick="window.location.href='https://t.me/Reliance11223'" class="w-12 h-12 bg-gradient-to-tr from-amber-500 to-yellow-400 text-white rounded-full flex flex-col items-center justify-center shadow-xl shadow-amber-500/20 hover:scale-105 active:scale-95 transition-all">
+            <i class="fas fa-paper-plane text-sm"></i>
+            <span class="text-[9px] font-black uppercase mt-0.5 tracking-tight">Post</span>
+        </button>
     </div>
-</div>
-<div id="blog_post" style="position:fixed;right:0px;bottom:200px;background: #ffffff;box-shadow: 0px 4px 16px 0px rgba(0,0,0,0.15);border-radius: 100px 100px 100px 100px;width: 50px;height:120px;padding: 10px 0">
-    <a href="javascript:" class="rules" style="text-align: center;" >
-        <img src="/public/v21/img/blog/rules.png" style="width: 36px;height:36px;display: inline-block;text-align: center;padding-left: 8px">
-        <p class="rules_tip" style="color: #666666">Rule</p>
-    </a>
-    <a href="/postBlog" style="">
-        <img src="/public/v21/img/blog/publish.png" style="width: 36px;height: 36px;padding-left: 8px;margin-top: 10px">
-        <p class="rules_tip" style="color: #666666;text-align: center">Publish</p>
-    </a>
-</div>
-<div class="footer_menu">
 
-    <div class="content">
-        <a  href="/" class="item ">
-            <img src="/public/v21/img/footer/home.png"/>
-            <p>Home</p>
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-2 flex justify-around items-center z-50 shadow-2xl">
+        <a href="dashboard.html" class="flex flex-col items-center gap-1 py-1 text-slate-400 hover:text-slate-600 transition-colors">
+            <i class="fas fa-th-large text-lg"></i>
+            <span class="text-[10px] font-bold">Home</span>
         </a>
-        <a  href="/product" class="item ">
-            <img src="/public/v21/img/footer/invest.png"/>
-            <p>Invest</p>
+        <a href="#invest" class="flex flex-col items-center gap-1 py-1 text-slate-400 hover:text-slate-600 transition-colors">
+            <i class="fas fa-chart-line text-lg"></i>
+            <span class="text-[10px] font-bold">Invest</span>
         </a>
-        <a  href="/notice" class="item ">
-            <img src="/public/v21/img/footer/notice.png"/>
-            <p>Notice</p>
+        <a href="#blog" class="flex flex-col items-center gap-1 py-1 text-amber-500 transition-colors">
+            <i class="fas fa-bullhorn text-lg"></i>
+            <span class="text-[10px] font-bold">Blog</span>
         </a>
-        <a  href="/team" class="item " >
-            <img src="/public/v21/img/footer/team.png"/>
-            <p>Team</p>
+        <a href="#team" class="flex flex-col items-center gap-1 py-1 text-slate-400 hover:text-slate-600 transition-colors">
+            <i class="fas fa-users text-lg"></i>
+            <span class="text-[10px] font-bold">Team</span>
         </a>
+        <a href="#my" class="flex flex-col items-center gap-1 py-1 text-slate-400 hover:text-slate-600 transition-colors">
+            <i class="fas fa-user text-lg"></i>
+            <span class="text-[10px] font-bold">My</span>
+        </a>
+    </nav>
 
-        <a href="/my" class="item ">
-            <img src="/public/v21/img/footer/my.png"/>
-            <p>My</p>
-        </a>
-    </div>
-</div>
+    <script>
+        // Database credentials infrastructure configurations
+        const firebaseConfig = {
+            apiKey: "AIzaSyC7apT-d-R9bpcb4LcpFk4P0cpw9sKxi-0",
+            authDomain: "dbt-online-earning.firebaseapp.com",
+            databaseURL: "https://dbt-online-earning-default-rtdb.firebaseio.com",
+            projectId: "dbt-online-earning",
+            storageBucket: "dbt-online-earning.firebasestorage.app",
+            messagingSenderId: "319083357519",
+            appId: "1:319083357519:web:62ccf6d8ce0dca3152513a"
+        };
 
-<!-- body 末尾处引入 layui -->
-<script src="/public/v21/layui/layui.js"></script>
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-<script>
-    layui.use(function(){
-        var $ = layui.jquery;
-        var layer = layui.layer;
-        var flow = layui.flow;
-        var carousel = layui.carousel;
-
-        // Render - set time interval, animation type, width height and other attributes
-        carousel.render({
-            elem: '.publish_image_1',
-            interval: 3000,
-            autoplay:true,
-            anim: 'fade',
-            width: '124px',
-            height: '170px',
-        });
-        $(document).on('click','.blog_img',function () {
-            var image = $(this).attr('src')
-            layer.photos({
-                photos: {
-                    "title": "blog image",
-                    "start": 0,
-                    "data": [
-                        {
-                            "alt": "",
-                            "pid": 1,
-                            "src": image,
-                        }
-                    ]
-                },
-                footer: false // Whether to show the bottom bar --- 2.8.16+
+        // Custom Beautiful SweatAlert Popup for Rules Modal Trigger
+        function triggerRulesPopup() {
+            Swal.fire({
+                title: '<span class="text-slate-800 font-extrabold text-lg uppercase tracking-wide">Share & Earn Reward</span>',
+                html: `
+                    <div class="text-center p-2 space-y-4">
+                        <div class="w-20 h-20 bg-amber-50 border border-amber-200 text-amber-500 rounded-2xl flex items-center justify-center text-4xl mx-auto shadow-inner">
+                            <i class="fas fa-wallet animate-pulse"></i>
+                        </div>
+                        <p class="text-xs text-slate-500 font-medium leading-relaxed">
+                            Send a crisp screenshot of your latest successful withdrawal transaction inside the official support group. Once verified, you will instantly receive a cash voucher gift ranging between <span class="text-emerald-600 font-bold">₹15.00 to ₹555.00</span> straight into your balance wallet!
+                        </p>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: '<i class="fab fa-telegram-plane mr-1.5"></i> Open Channel',
+                cancelButtonText: 'I Understand',
+                confirmButtonColor: '#d97706',
+                cancelButtonColor: '#64748b',
+                customClass: {
+                    popup: 'rounded-3xl border border-slate-100 shadow-2xl',
+                    confirmButton: 'rounded-xl font-bold text-xs uppercase tracking-wide px-4 py-2.5',
+                    cancelButton: 'rounded-xl font-bold text-xs uppercase tracking-wide px-4 py-2.5'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "https://t.me/Reliance11223";
+                }
             });
-        });
-        $('.rules').click(function(){
-            layer.open({
-                type: 1,
-                title: false,
-                offset: 'b',
-                anim: 'slideUp', // From bottom to top
-                area: ['100%', '400px'],
-                shade: 0.5,
-                shadeClose: true,
-                closeBtn: false,
-                id: 'ID-demo-layer-direction-b',
-                content: $('#club_dialog')
-            });
-        });
+        }
 
-        $(document).on('click','#close', function () {
-            layer.closeAll()
-        });
-
-        // Flow loading instance
-        flow.load({
-            elem: '#blog_contents', // Flow loading container
-            done: function(page, next){ // Callback for executing the next page
-                console.log(page)
-                var lis = [];
-
-                $.get('/getBlog?page='+page,function (res) {
-                    layui.each(res.result.list,function (index,item) {
-                    //     var html = '<div class="club_card flex_left">' +
-                    //         '    <div class="publish_left">' +
-                    //         '       <div class="layui-carousel publish_image_1" id="publish_image_'+item.id+'" >' +
-                    //         ' <div carousel-item>';
-
-                        // if(item.image){
-                        //     layui.each(item.image,function (key,image) {
-                        //         console.log(key,image)
-                        //         html += ' <div><img src="'+image+'"></div>'
-                        //     })
-                        // }
-                        // var html += '        </div></div>' +
-                        //     '    </div>' +
-                         var html =    '<div class="club_card flex_left">    <div class="publish_right">' +
-                            '       <div class="club_user flex_space">' +
-                            '           <div class="flex_left">' +
-                            '               <img class="club_avatar" src="'+item.avatar+'">' +
-                            '               <div class="club_info">' +
-                            '                   <div class="club_name">'+item.nickname+'</div>' +
-                            '                   <div class="club_account">'+item.username+'</div>' +
-                            '               </div>' +
-                            '           </div>' +
-                            '' +
-                            '           <div class="club_reward">' +
-                            '               <img class="club_reward_icon" src="/public/v21/img/blog/reward_icon.png" alt="">' +
-                            '₹' + item.reward_amount +
-                            '           </div>' +
-                            '' +
-                            '       </div>' +
-                            '       <div class="club_content">' + item.contents +
-                            '       </div>' 
-                        if(item.image){
-                            html += '<div class="image">' +
-                                '<div class="layui-row layui-col-space10">\n' ;
-                            layui.each(item.image,function (key,image) {
-                                html += '       <div class="layui-col-md'+item.col+' layui-col-xs'+item.col+' ">\n' +
-                                    '                 <img  class="blog_img" src="'+image+' " >\n' +
-                                    '            </div>\n'
-
-                            })
-                            html+= '</div>\n</div>';
-                        }
-                          html+=    '       <div class="date">'+ item.create_time + '</div>' +
-                            '    </div>' +
-                            '</div>';
-                        lis.push(html);
-                    })
-
-                    next(lis.join(''), page < res.result.page); // This assumes the total number of pages is 10
-                    carousel.render({
-                        elem: '.publish_image_1',
-                        interval: 1800,
-                        autoplay:true,
-                        anim: 'fade',
-                        width: '124px',
-                        height: '170px',
-                    });
-                })
-
-                // Execute the next page rendering, the second parameter is: the condition for satisfying "load more", that is, there are still pages afterwards, only when the current page is less than the total number of pages, "load more" will continue to appear
-                // pages is the total number of pages returned by Ajax, only when the current page is less than the total number of pages, "load more" will continue to appear
+        // Real-time Database Synchronization Engine for Public Streams
+        db.ref('site_blogs').on('value', function(snap) {
+            const container = document.getElementById('global-blog-feed');
+            const data = snap.val();
+            
+            if(!data) {
+                container.innerHTML = `
+                    <div class="text-center py-20 text-slate-400">
+                        <i class="fas fa-folder-open text-4xl text-slate-300 mb-3 block"></i>
+                        <p class="text-xs font-semibold">No community stories published today yet.</p>
+                    </div>`;
+                return;
             }
-        });
-    });
-</script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"6f0a32fb3a5b44cb82f822c99ca5d011","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-</body>
 
+            // Remove loading placeholder cleanly
+            container.innerHTML = "";
+            
+            // Loop data chronologically reversed (Latest post at top layout position)
+            Object.keys(data).reverse().forEach(function(postKey, index) {
+                const post = data[postKey];
+                const cardDelay = index * 0.05; // Cascading cascading latency dynamic render
+                
+                const cardHtml = `
+                    <div class="feed-card bg-white border border-slate-200/60 p-5 rounded-3xl shadow-sm space-y-3.5 relative" style="animation-delay: ${cardDelay}s">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <img src="${post.avatar || 'https://i.imgur.com/6VBx3io.png'}" class="w-10 h-10 rounded-full border border-slate-200 object-cover" alt="User image">
+                                <div>
+                                    <h4 class="text-sm font-black text-slate-800 tracking-tight">${post.nickname || 'Investor'}</h4>
+                                    <p class="text-[11px] font-mono text-slate-400 mt-0.5"><i class="fas fa-phone-alt text-[9px] mr-0.5"></i> +91 ******${post.lastFour || 'XXXX'}</p>
+                                </div>
+                            </div>
+                            <div class="bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-xl px-2.5 py-1 flex items-center gap-1 text-[11px] font-extrabold shadow-sm">
+                                <i class="fas fa-check-circle text-[10px]"></i> Guaranteed
+                            </div>
+                        </div>
+
+                        <div class="text-slate-600 text-xs font-medium leading-relaxed bg-slate-50/60 border border-slate-100 p-3 rounded-2xl">
+                            ${post.contents}
+                        </div>
+
+                        ${post.image ? `
+                        <div class="rounded-2xl overflow-hidden border border-slate-100 max-h-52 bg-slate-50 cursor-zoom-in" onclick="previewImageSource('${post.image}')">
+                            <img src="${post.image}" class="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-300" alt="Payment voucher proof">
+                        </div>
+                        ` : ''}
+
+                        <div class="flex items-center justify-between border-t border-slate-100 pt-3 text-[11px] text-slate-400 font-semibold">
+                            <span class="flex items-center gap-1"><i class="far fa-clock"></i> ${post.create_time || 'Just now'}</span>
+                            <span class="text-amber-500 flex items-center gap-0.5 bg-amber-50 px-2 py-0.5 rounded-md text-[10px] font-bold border border-amber-100"><i class="fas fa-gift text-[9px]"></i> Bonus Distributed</span>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHtml;
+            });
+        });
+
+        // Smart image inspection layout modal view engine
+        function previewImageSource(srcUrl) {
+            Swal.fire({
+                imageUrl: srcUrl,
+                imageAlt: 'Voucher Inspection Display',
+                showConfirmButton: false,
+                background: 'transparent',
+                customClass: { popup: 'shadow-none border-0 bg-transparent' },
+                showCloseButton: true,
+                closeButtonHtml: '<i class="fas fa-times text-white bg-slate-900/40 p-2 rounded-full"></i>'
+            });
+        }
+    </script>
+</body>
 </html>
