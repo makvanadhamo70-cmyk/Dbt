@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Blog</title>
+    <link rel="stylesheet" href="/public/v21/layui/css/layui.css">
+    <link rel="stylesheet" href="/public/v21/css/common.css">
+    <style>
+        .blog_header{
+            background: linear-gradient( 133deg, #063D9E 0%, #0062E1 99%);
+            border-radius: 0px 0px 0px 0px;
+            height: 120px;
+        }
+        .blog_contents{
+            position: relative;
+            background: none;
+            margin: 15px;
+            margin-bottom: 200px;
+        }
+        .bold_card{
+            background: #FFFFFF;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 16px;
+        }
+        .bold_card .card_header{
+            display: flex;
+            justify-content: space-between;
+
+        }
+        .bold_card .card_header .title{
+            display: flex;
+            justify-content: left;
+
+        }
+        .bold_card .card_header .title .info{
+            padding-left: 10px;
+        }
+        .bold_card .card_header .title .nickname{
+            font-family: Arial, Arial;
+            font-weight: 700;
+            font-size: 16px;
+            color: #333333;
+            line-height: 18px;
+        }
+        .bold_card .card_header .title .account{
+            font-family: Arial, Arial;
+            font-weight: 400;
+            font-size: 14px;
+            color: #818393;
+            line-height: 16px;
+        }
+        .bold_card .card_header .gold_bg{
+            width: 40px;
+            height: 40px;
+            background-image:url("/public/v21/img/blog/gold_bg.png") ;
+            background-size: 40px 40px;
+            background-repeat: no-repeat;
+            line-height: 40px;
+            font-family: Arial, Arial;
+            font-weight: 700;
+            font-size: 12px;
+            color: #FCAA00;
+            text-align: center;
+        }
+        .bold_card .contents {
+            margin-left: 40px;
+        }
+        .bold_card .contents .text{
+            font-family: Arial, Arial;
+            font-weight: 400;
+            font-size: 16px;
+            color: #666666;
+            line-height: 20px;
+            margin: 10px 0;
+        }
+        .blog_img{
+            width: 100%;
+            min-height: 84px;
+        }
+        .avatar{
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid #EEEEEE;
+        }
+        .footer{
+            margin-left: 40px ;
+            display: flex;
+            justify-content: space-between;
+        }
+        .footer   img{
+            width: 16px;
+            height: 16px;
+        }
+        .date{
+            font-family: PingFang SC, PingFang SC;
+            font-weight: 400;
+            font-size: 14px;
+            color: #888888;
+            line-height: 14px;
+        }
+        .icon{font-family: PingFang SC, PingFang SC;
+            font-weight: 400;
+            font-size: 16px;
+            color: #FCAA00;}
+        .layui-layer-msg{min-width:180px;border:1px solid #d3d4d3;box-shadow:none}
+        .layui-carousel{
+            background: none;
+            border-radius: 44px 12px 44px 12px;
+        }
+        .layui-carousel>[carousel-item] {
+            border-radius: 44px 12px 44px 12px;
+            background: none;
+        }
+    </style>
+</head>
+<body class="common_body">
+<div class="common_header" style="background:none;background-image: url('/public/v21/img/blog/bg.png');background-size:100% 197px;height: 197px">
+    <!--    <div class="club_header_title">Câu lạc bộ</div>-->
+    <a href="javascript:history.back(-1)" class="back position" style="color: #ffffff">
+        <p class="btn" style="color: #ffffff"><i class="layui-icon layui-icon-left layui-font-20"></i></p>
+        Blog    </a>
+</div>
+
+<div class="blog_contents" id="blog_contents" style="overflow: hidden; position: relative;top: -100px">
+
+</div>
+<div id="club_dialog" class="position" style="width: 100%;height: 400px;background: #FFFFFF;display: none;">
+    <div style="padding:20px;">
+        <div style="text-align: center">
+            <img src="/public/v21/img/blog/rule_icon.png" style="width: 160px;height:160px ">
+        </div>
+        <div class="club_title">
+            Share a withdrawal screenshot to receive a cash gift
+        </div>
+        <div class="club_text" style="font-family: Arial, Arial;font-weight: 400;font-size: 14px;color: #474747;line-height: 16px;margin-top: 10px;">
+            Send a screenshot of your latest successful withdrawal transaction in the comments section, and once received, you will immediately receive a gift of 15-555        </div>
+        <div style="margin: auto;text-align: center;width: 100%">
+            <a href='https://t.me/Reliance11223' class="layui-btn know_btn">
+                I understand
+            </a>
+        </div>
+    </div>
+</div>
+<div id="blog_post" style="position:fixed;right:0px;bottom:200px;background: #ffffff;box-shadow: 0px 4px 16px 0px rgba(0,0,0,0.15);border-radius: 100px 100px 100px 100px;width: 50px;height:120px;padding: 10px 0">
+    <a href="javascript:" class="rules" style="text-align: center;" >
+        <img src="/public/v21/img/blog/rules.png" style="width: 36px;height:36px;display: inline-block;text-align: center;padding-left: 8px">
+        <p class="rules_tip" style="color: #666666">Rule</p>
+    </a>
+    <a href="/postBlog" style="">
+        <img src="/public/v21/img/blog/publish.png" style="width: 36px;height: 36px;padding-left: 8px;margin-top: 10px">
+        <p class="rules_tip" style="color: #666666;text-align: center">Publish</p>
+    </a>
+</div>
+<div class="footer_menu">
+
+    <div class="content">
+        <a  href="/" class="item ">
+            <img src="/public/v21/img/footer/home.png"/>
+            <p>Home</p>
+        </a>
+        <a  href="/product" class="item ">
+            <img src="/public/v21/img/footer/invest.png"/>
+            <p>Invest</p>
+        </a>
+        <a  href="/notice" class="item ">
+            <img src="/public/v21/img/footer/notice.png"/>
+            <p>Notice</p>
+        </a>
+        <a  href="/team" class="item " >
+            <img src="/public/v21/img/footer/team.png"/>
+            <p>Team</p>
+        </a>
+
+        <a href="/my" class="item ">
+            <img src="/public/v21/img/footer/my.png"/>
+            <p>My</p>
+        </a>
+    </div>
+</div>
+
+<!-- body 末尾处引入 layui -->
+<script src="/public/v21/layui/layui.js"></script>
+
+<script>
+    layui.use(function(){
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var flow = layui.flow;
+        var carousel = layui.carousel;
+
+        // Render - set time interval, animation type, width height and other attributes
+        carousel.render({
+            elem: '.publish_image_1',
+            interval: 3000,
+            autoplay:true,
+            anim: 'fade',
+            width: '124px',
+            height: '170px',
+        });
+        $(document).on('click','.blog_img',function () {
+            var image = $(this).attr('src')
+            layer.photos({
+                photos: {
+                    "title": "blog image",
+                    "start": 0,
+                    "data": [
+                        {
+                            "alt": "",
+                            "pid": 1,
+                            "src": image,
+                        }
+                    ]
+                },
+                footer: false // Whether to show the bottom bar --- 2.8.16+
+            });
+        });
+        $('.rules').click(function(){
+            layer.open({
+                type: 1,
+                title: false,
+                offset: 'b',
+                anim: 'slideUp', // From bottom to top
+                area: ['100%', '400px'],
+                shade: 0.5,
+                shadeClose: true,
+                closeBtn: false,
+                id: 'ID-demo-layer-direction-b',
+                content: $('#club_dialog')
+            });
+        });
+
+        $(document).on('click','#close', function () {
+            layer.closeAll()
+        });
+
+        // Flow loading instance
+        flow.load({
+            elem: '#blog_contents', // Flow loading container
+            done: function(page, next){ // Callback for executing the next page
+                console.log(page)
+                var lis = [];
+
+                $.get('/getBlog?page='+page,function (res) {
+                    layui.each(res.result.list,function (index,item) {
+                    //     var html = '<div class="club_card flex_left">' +
+                    //         '    <div class="publish_left">' +
+                    //         '       <div class="layui-carousel publish_image_1" id="publish_image_'+item.id+'" >' +
+                    //         ' <div carousel-item>';
+
+                        // if(item.image){
+                        //     layui.each(item.image,function (key,image) {
+                        //         console.log(key,image)
+                        //         html += ' <div><img src="'+image+'"></div>'
+                        //     })
+                        // }
+                        // var html += '        </div></div>' +
+                        //     '    </div>' +
+                         var html =    '<div class="club_card flex_left">    <div class="publish_right">' +
+                            '       <div class="club_user flex_space">' +
+                            '           <div class="flex_left">' +
+                            '               <img class="club_avatar" src="'+item.avatar+'">' +
+                            '               <div class="club_info">' +
+                            '                   <div class="club_name">'+item.nickname+'</div>' +
+                            '                   <div class="club_account">'+item.username+'</div>' +
+                            '               </div>' +
+                            '           </div>' +
+                            '' +
+                            '           <div class="club_reward">' +
+                            '               <img class="club_reward_icon" src="/public/v21/img/blog/reward_icon.png" alt="">' +
+                            '₹' + item.reward_amount +
+                            '           </div>' +
+                            '' +
+                            '       </div>' +
+                            '       <div class="club_content">' + item.contents +
+                            '       </div>' 
+                        if(item.image){
+                            html += '<div class="image">' +
+                                '<div class="layui-row layui-col-space10">\n' ;
+                            layui.each(item.image,function (key,image) {
+                                html += '       <div class="layui-col-md'+item.col+' layui-col-xs'+item.col+' ">\n' +
+                                    '                 <img  class="blog_img" src="'+image+' " >\n' +
+                                    '            </div>\n'
+
+                            })
+                            html+= '</div>\n</div>';
+                        }
+                          html+=    '       <div class="date">'+ item.create_time + '</div>' +
+                            '    </div>' +
+                            '</div>';
+                        lis.push(html);
+                    })
+
+                    next(lis.join(''), page < res.result.page); // This assumes the total number of pages is 10
+                    carousel.render({
+                        elem: '.publish_image_1',
+                        interval: 1800,
+                        autoplay:true,
+                        anim: 'fade',
+                        width: '124px',
+                        height: '170px',
+                    });
+                })
+
+                // Execute the next page rendering, the second parameter is: the condition for satisfying "load more", that is, there are still pages afterwards, only when the current page is less than the total number of pages, "load more" will continue to appear
+                // pages is the total number of pages returned by Ajax, only when the current page is less than the total number of pages, "load more" will continue to appear
+            }
+        });
+    });
+</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"6f0a32fb3a5b44cb82f822c99ca5d011","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+
+</html>
