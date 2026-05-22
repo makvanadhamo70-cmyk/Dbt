@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucky Draw - Premium Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        .premium-glow {
+            box-shadow: 0 10px 30px rgba(234, 179, 8, 0.15);
+        }
+        .gold-text {
+            background: linear-gradient(135deg, #b45309, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-[#f8fafc] min-h-screen flex flex-col justify-between pb-8">
+
+    <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50 shadow-sm">
+        <div class="flex items-center gap-2">
+            <i class="fas fa-trophy text-amber-500 text-xl"></i>
+            <h1 class="text-lg font-bold text-slate-800 tracking-wide">Daily Mega Draw</h1>
+        </div>
+        <div class="bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700">
+            Wallet: <span class="text-emerald-600" id="user-balance">₹0.00</span>
+        </div>
+    </header>
+
+    <main class="p-4 flex-1 flex flex-col items-center justify-center max-w-md w-full mx-auto space-y-6">
+        
+        <div class="bg-white w-full border border-slate-200 p-6 rounded-3xl text-center premium-glow relative overflow-hidden">
+            <div class="absolute -right-6 -top-6 text-slate-100 text-7xl"><i class="fas fa-clock"></i></div>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Next Grand Result In</p>
+            <h2 id="draw-timer" class="text-4xl font-black text-amber-600 font-mono mt-2 tracking-wider">00:00:00</h2>
+            <p class="text-[10px] text-slate-500 mt-2 font-medium">Draw resets everyday automatically at <span class="text-amber-600 font-bold">09:00 AM</span></p>
+        </div>
+
+        <div class="bg-white w-full border border-slate-200 p-6 rounded-3xl space-y-4 shadow-sm">
+            <div class="text-center">
+                <h3 class="text-2xl font-black gold-text uppercase tracking-tight">Win up to ₹5,000</h3>
+                <p class="text-xs text-slate-400 font-medium mt-1">Entry Ticket Fee is fixed at ₹100 only</p>
+            </div>
+            
+            <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex justify-around text-center text-xs">
+                <div>
+                    <p class="text-slate-400 font-semibold">Entry Cost</p>
+                    <p class="font-bold text-slate-800 mt-1">₹100</p>
+                </div>
+                <div class="w-px bg-slate-200"></div>
+                <div>
+                    <p class="text-slate-400 font-semibold">Daily Limits</p>
+                    <p class="font-bold text-amber-600 mt-1">1 Draw / Day</p>
+                </div>
+            </div>
+
+            <button id="join-draw-btn" onclick="participateInDraw()" class="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-black text-sm py-4 rounded-2xl transition-all shadow-lg shadow-amber-500/20 uppercase tracking-wider">
+                Buy Entry Ticket (₹100)
+            </button>
+            
+            <p id="status-message" class="text-center text-xs text-emerald-600 font-bold hidden bg-emerald-50 border border-emerald-100 py-3 rounded-xl">
+                <i class="fas fa-check-circle text-emerald-500 mr-1"></i> You have already participated for today!
+            </p>
+        </div>
+
+        <div class="bg-white w-full border border-slate-200 rounded-3xl p-5 shadow-sm space-y-3">
+            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider"><i class="fas fa-history mr-1"></i> Your Lucky Draw History</h4>
+            <div class="divide-y divide-slate-100 max-h-48 overflow-y-auto text-xs" id="history-box">
+                <p class="text-center text-slate-400 py-4 font-medium">Loading history streams...</p>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC7apT-d-R9bpcb4LcpFk4P0cpw9sKxi-0",
+            authDomain: "dbt-online-earning.firebaseapp.com",
+            databaseURL: "https://dbt-online-earning-default-rtdb.firebaseio.com",
+            projectId: "dbt-online-earning",
+            storageBucket: "dbt-online-earning.firebasestorage.app",
+            messagingSenderId: "319083357519",
+            appId: "1:319083357519:web:62ccf6d8ce0dca3152513a"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        const myPhone = localStorage.getItem('userPhone');
+        let myCurrentBalance = 0;
+
+        if(!myPhone) {
+            Swal.fire('Error', 'Please Login First!', 'error').then(() => {
+                window.location.href = "index.html";
+            });
+        }
+
+        // Standard Fixed Date Stream (No local formatting issue)
+        function getTodayDateString() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            return yyyy + '-' + mm + '-' + dd;
+        }
+
+        // Live track balance
+        db.ref('users/' + myPhone).on('value', function(snap) {
+            const userData = snap.val();
+            if(userData) {
+                myCurrentBalance = parseFloat(userData.balance || 0);
+                document.getElementById('user-balance').innerText = "₹" + myCurrentBalance.toFixed(2);
+            }
+        });
+
+        // Track Daily Participation status
+        db.ref('lucky_draw/participants/' + getTodayDateString() + '/' + myPhone).on('value', function(snap) {
+            if(snap.exists()) {
+                document.getElementById('join-draw-btn').style.display = 'none';
+                document.getElementById('status-message').classList.remove('hidden');
+            }
+        });
+
+        // 24 Hour Countdown Machine Target System
+        function startLive9AMTimer() {
+            setInterval(function() {
+                const now = new Date();
+                let target = new Date();
+                target.setHours(9, 0, 0, 0);
+                if (now.getHours() >= 9) {
+                    target.setDate(target.getDate() + 1);
+                }
+                const diff = target - now;
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                const hh = hours < 10 ? "0" + hours : hours;
+                const mm = minutes < 10 ? "0" + minutes : minutes;
+                const ss = seconds < 10 ? "0" + seconds : seconds;
+
+                document.getElementById('draw-timer').innerText = hh + ":" + mm + ":" + ss;
+            }, 1000);
+        }
+        startLive9AMTimer();
+
+        // Participate Handler Execute Event
+        function participateInDraw() {
+            if(myCurrentBalance < 100) {
+                Swal.fire('Low Balance', 'You need minimum ₹100 inside wallet!', 'warning');
+                return;
+            }
+
+            Swal.fire({
+                title: 'Confirm Entry?',
+                text: '₹100 entry fees will be deducted from your wallet.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#d97706',
+                confirmButtonText: 'Yes, Buy Ticket'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const todayStr = getTodayDateString();
+                    const newBalance = myCurrentBalance - 100;
+
+                    db.ref('users/' + myPhone).update({ balance: newBalance }).then(function() {
+                        db.ref('lucky_draw/participants/' + todayStr + '/' + myPhone).set({
+                            phone: myPhone,
+                            timestamp: Date.now()
+                        }).then(function() {
+                            // Save inside user personal history tree node
+                            db.ref('lucky_draw/user_history/' + myPhone + '/' + todayStr).set({
+                                date: todayStr,
+                                fee: 100,
+                                status: 'pending',
+                                prize: 0
+                            }).then(function() {
+                                Swal.fire('Success', 'Successfully Enrolled inside Lucky Draw!', 'success');
+                            });
+                        });
+                    });
+                }
+            });
+        }
+
+        // Live Real-Time Result Listening Popups Engine
+        db.ref('lucky_draw/results/' + getTodayDateString()).on('value', function(snap) {
+            const res = snap.val();
+            if(res && res.announced === true) {
+                if(localStorage.getItem('last_viewed_draw') === getTodayDateString()) return;
+
+                if(res.winner === myPhone) {
+                    Swal.fire({
+                        title: '🎉 YOU WON!',
+                        text: 'Congratulations! You won Mega Prize Pool Reward of ₹' + res.prize,
+                        icon: 'success',
+                        confirmButtonText: 'Great!'
+                    });
+                } else {
+                    Swal.fire({
+                        title: '😞 YOU LOSE',
+                        text: 'Better luck next time! Winner was +91 ******' + res.winner.substring(6),
+                        icon: 'error',
+                        confirmButtonText: 'Ok'
+                    });
+                }
+                localStorage.setItem('last_viewed_draw', getTodayDateString());
+            }
+        });
+
+        // Load Personal History Stream Node
+        db.ref('lucky_draw/user_history/' + myPhone).on('value', function(snap) {
+            const historyBox = document.getElementById('history-box');
+            const data = snap.val();
+            if(!data) {
+                historyBox.innerHTML = '<p class="text-center text-slate-400 py-4 font-medium">No participation records found.</p>';
+                return;
+            }
+
+            let html = "";
+            Object.keys(data).reverse().forEach(function(dateKey) {
+                const h = data[dateKey];
+                let statusBadge = "";
+                
+                if(h.status === 'won') {
+                    statusBadge = '<span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded font-bold">Won +₹'+h.prize+'</span>';
+                } else if(h.status === 'lost') {
+                    statusBadge = '<span class="text-rose-600 bg-rose-50 px-2 py-0.5 rounded font-bold">Lost</span>';
+                } else {
+                    statusBadge = '<span class="text-amber-600 bg-amber-50 px-2 py-0.5 rounded font-bold">Pending</span>';
+                }
+
+                html += '<div class="py-3 flex justify-between items-center border-b border-slate-50">' +
+                    '<div>' +
+                        '<p class="font-bold text-slate-700">Daily Mega Draw</p>' +
+                        '<p class="text-[10px] text-slate-400">'+h.date+'</p>' +
+                    '</div>' +
+                    '<div class="text-right">' +
+                        '<p class="text-slate-500 font-semibold mb-0.5">Fee: ₹'+h.fee+'</p>' +
+                        statusBadge +
+                    '</div>' +
+                '</div>';
+            });
+            historyBox.innerHTML = html;
+        });
+    </script>
+</body>
+</html>
