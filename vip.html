@@ -1,12 +1,243 @@
-<!doctype html>
-<html>
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1">
-    </head>
-    <body>
-      <div>
-        Hello World!
-      </div>
-    </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>VIP Levels - Premium Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #070a13;
+            color: #f1f5f9;
+        }
+
+        /* Smooth Entry Animation for VIP Cards */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .vip-animate-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        /* Glowing Effects for VIP feel */
+        .gold-glow {
+            box-shadow: 0 4px 20px rgba(234, 179, 8, 0.08);
+        }
+        
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fbbf24, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-10">
+
+    <header class="bg-[#0b0f19]/80 backdrop-blur-md border-b border-slate-900/80 px-6 py-4 flex items-center justify-between sticky top-0 z-50 shadow-lg">
+        <a href="javascript:history.back(-1)" class="text-slate-400 hover:text-white transition-colors flex items-center justify-center w-9 h-9 rounded-xl bg-slate-900 border border-slate-800">
+            <i class="fas fa-arrow-left text-sm"></i>
+        </a>
+        <h1 class="text-base font-extrabold tracking-wider uppercase text-slate-200">VIP Privileges</h1>
+        <div class="w-9"></div> </header>
+
+    <main class="p-4 max-w-md mx-auto mt-4 space-y-5">
+        
+        <div class="bg-gradient-to-br from-[#111827] to-[#0b0f19] p-6 rounded-3xl border border-slate-900 text-center space-y-1 shadow-2xl relative overflow-hidden">
+            <div class="absolute -right-8 -top-8 text-slate-900/30 text-8xl pointer-events-none"><i class="fas fa-crown"></i></div>
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Your Account Standing</p>
+            <h2 class="text-2xl font-black text-amber-400 uppercase tracking-tight">VIP Club Status</h2>
+            <p class="text-[11px] text-slate-400 mt-2">Invest more to upgrade milestones and unlock bigger daily withdrawal caps!</p>
+        </div>
+
+        <div class="space-y-4" id="vip-list-container">
+
+            <div class="vip-animate-card bg-[#0b0f19] border border-slate-900 p-5 rounded-3xl flex items-start gap-4 gold-glow shadow-md" style="animation-delay: 0.1s;">
+                <div class="flex flex-col items-center justify-center bg-slate-900 border border-slate-800/60 rounded-2xl p-3 min-w-[70px] text-center shadow-inner">
+                    <img src="/public/v21/img/vip/lv0.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/616/616412.png'" class="w-8 h-8 object-contain mb-1">
+                    <span class="text-xs font-black text-slate-400 tracking-wider">LV0</span>
+                </div>
+                <div class="flex-1 space-y-3">
+                    <p class="text-xs text-slate-400 font-medium leading-relaxed">When the investment amount reaches <span class="text-slate-200 font-bold">₹0.00</span>, you can upgrade to VIP0 level.</p>
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center text-[11px] font-semibold text-slate-500">
+                            <span>Total Investment Progress</span>
+                            <span><span class="text-amber-500 font-bold">0</span> / 0.00</span>
+                        </div>
+                        <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden p-[2px] border border-slate-900">
+                            <div class="bg-gradient-to-r from-amber-500 to-yellow-400 h-full rounded-full shadow-lg shadow-amber-500/50" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vip-animate-card bg-[#0b0f19] border border-slate-900 p-5 rounded-3xl flex items-start gap-4 gold-glow shadow-md" style="animation-delay: 0.15s;">
+                <div class="flex flex-col items-center justify-center bg-slate-900 border border-slate-800/60 rounded-2xl p-3 min-w-[70px] text-center shadow-inner">
+                    <img src="/public/v21/img/vip/lv1.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/616/616412.png'" class="w-8 h-8 object-contain mb-1">
+                    <span class="text-xs font-black gold-gradient-text tracking-wider">LV1</span>
+                </div>
+                <div class="flex-1 space-y-3">
+                    <p class="text-xs text-slate-400 font-medium leading-relaxed">When the investment amount reaches <span class="text-slate-200 font-bold">₹290.00</span>, you can upgrade to VIP1 level.</p>
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center text-[11px] font-semibold text-slate-500">
+                            <span>Total Investment Progress</span>
+                            <span><span class="text-amber-500 font-bold">0</span> / 290.00</span>
+                        </div>
+                        <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden p-[2px] border border-slate-900">
+                            <div class="bg-gradient-to-r from-amber-500 to-yellow-400 h-full rounded-full shadow-lg shadow-amber-500/50" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vip-animate-card bg-[#0b0f19] border border-slate-900 p-5 rounded-3xl flex items-start gap-4 gold-glow shadow-md" style="animation-delay: 0.2s;">
+                <div class="flex flex-col items-center justify-center bg-slate-900 border border-slate-800/60 rounded-2xl p-3 min-w-[70px] text-center shadow-inner">
+                    <img src="/public/v21/img/vip/lv2.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/616/616412.png'" class="w-8 h-8 object-contain mb-1">
+                    <span class="text-xs font-black gold-gradient-text tracking-wider">LV2</span>
+                </div>
+                <div class="flex-1 space-y-3">
+                    <p class="text-xs text-slate-400 font-medium leading-relaxed">When the investment amount reaches <span class="text-slate-200 font-bold">₹2,770.00</span>, you can upgrade to VIP2 level.</p>
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center text-[11px] font-semibold text-slate-500">
+                            <span>Total Investment Progress</span>
+                            <span><span class="text-amber-500 font-bold">0</span> / 2,770.00</span>
+                        </div>
+                        <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden p-[2px] border border-slate-900">
+                            <div class="bg-gradient-to-r from-amber-500 to-yellow-400 h-full rounded-full shadow-lg shadow-amber-500/50" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vip-animate-card bg-[#0b0f19] border border-slate-900 p-5 rounded-3xl flex items-start gap-4 gold-glow shadow-md" style="animation-delay: 0.25s;">
+                <div class="flex flex-col items-center justify-center bg-slate-900 border border-slate-800/60 rounded-2xl p-3 min-w-[70px] text-center shadow-inner">
+                    <img src="/public/v21/img/vip/lv3.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/616/616412.png'" class="w-8 h-8 object-contain mb-1">
+                    <span class="text-xs font-black gold-gradient-text tracking-wider">LV3</span>
+                </div>
+                <div class="flex-1 space-y-3">
+                    <p class="text-xs text-slate-400 font-medium leading-relaxed">When the investment amount reaches <span class="text-slate-200 font-bold">₹7,770.00</span>, you can upgrade to VIP3 level.</p>
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center text-[11px] font-semibold text-slate-500">
+                            <span>Total Investment Progress</span>
+                            <span><span class="text-amber-500 font-bold">0</span> / 7,770.00</span>
+                        </div>
+                        <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden p-[2px] border border-slate-900">
+                            <div class="bg-gradient-to-r from-amber-500 to-yellow-400 h-full rounded-full shadow-lg shadow-amber-500/50" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vip-animate-card bg-[#0b0f19] border border-slate-900 p-5 rounded-3xl flex items-start gap-4 gold-glow shadow-md" style="animation-delay: 0.3s;">
+                <div class="flex flex-col items-center justify-center bg-slate-900 border border-slate-800/60 rounded-2xl p-3 min-w-[70px] text-center shadow-inner">
+                    <img src="/public/v21/img/vip/lv4.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/616/616412.png'" class="w-8 h-8 object-contain mb-1">
+                    <span class="text-xs font-black gold-gradient-text tracking-wider">LV4</span>
+                </div>
+                <div class="flex-1 space-y-3">
+                    <p class="text-xs text-slate-400 font-medium leading-relaxed">When the investment amount reaches <span class="text-slate-200 font-bold">₹17,770.00</span>, you can upgrade to VIP4 level.</p>
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center text-[11px] font-semibold text-slate-500">
+                            <span>Total Investment Progress</span>
+                            <span><span class="text-amber-500 font-bold">0</span> / 17,770.00</span>
+                        </div>
+                        <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden p-[2px] border border-slate-900">
+                            <div class="bg-gradient-to-r from-amber-500 to-yellow-400 h-full rounded-full shadow-lg shadow-amber-500/50" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vip-animate-card bg-[#0b0f19] border border-slate-900 p-5 rounded-3xl flex items-start gap-4 gold-glow shadow-md" style="animation-delay: 0.35s;">
+                <div class="flex flex-col items-center justify-center bg-slate-900 border border-slate-800/60 rounded-2xl p-3 min-w-[70px] text-center shadow-inner">
+                    <img src="/public/v21/img/vip/lv5.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/616/616412.png'" class="w-8 h-8 object-contain mb-1">
+                    <span class="text-xs font-black gold-gradient-text tracking-wider">LV5</span>
+                </div>
+                <div class="flex-1 space-y-3">
+                    <p class="text-xs text-slate-400 font-medium leading-relaxed">When the investment amount reaches <span class="text-slate-200 font-bold">₹27,770.00</span>, you can upgrade to VIP5 level.</p>
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center text-[11px] font-semibold text-slate-500">
+                            <span>Total Investment Progress</span>
+                            <span><span class="text-amber-500 font-bold">0</span> / 27,770.00</span>
+                        </div>
+                        <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden p-[2px] border border-slate-900">
+                            <div class="bg-gradient-to-r from-amber-500 to-yellow-400 h-full rounded-full shadow-lg shadow-amber-500/50" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vip-animate-card bg-[#0b0f19] border border-slate-900 p-5 rounded-3xl flex items-start gap-4 gold-glow shadow-md" style="animation-delay: 0.4s;">
+                <div class="flex flex-col items-center justify-center bg-slate-900 border border-slate-800/60 rounded-2xl p-3 min-w-[70px] text-center shadow-inner">
+                    <img src="/public/v21/img/vip/lv6.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/616/616412.png'" class="w-8 h-8 object-contain mb-1">
+                    <span class="text-xs font-black gold-gradient-text tracking-wider">LV6</span>
+                </div>
+                <div class="flex-1 space-y-3">
+                    <p class="text-xs text-slate-400 font-medium leading-relaxed">When the investment amount reaches <span class="text-slate-200 font-bold">₹37,770.00</span>, you can upgrade to VIP6 level.</p>
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center text-[11px] font-semibold text-slate-500">
+                            <span>Total Investment Progress</span>
+                            <span><span class="text-amber-500 font-bold">0</span> / 37,770.00</span>
+                        </div>
+                        <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden p-[2px] border border-slate-900">
+                            <div class="bg-gradient-to-r from-amber-500 to-yellow-400 h-full rounded-full shadow-lg shadow-amber-500/50" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vip-animate-card bg-[#0b0f19] border border-slate-900 p-5 rounded-3xl flex items-start gap-4 gold-glow shadow-md" style="animation-delay: 0.45s;">
+                <div class="flex flex-col items-center justify-center bg-slate-900 border border-slate-800/60 rounded-2xl p-3 min-w-[70px] text-center shadow-inner">
+                    <img src="/public/v21/img/vip/lv7.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/616/616412.png'" class="w-8 h-8 object-contain mb-1">
+                    <span class="text-xs font-black gold-gradient-text tracking-wider">LV7</span>
+                </div>
+                <div class="flex-1 space-y-3">
+                    <p class="text-xs text-slate-400 font-medium leading-relaxed">When the investment amount reaches <span class="text-slate-200 font-bold">₹77,770.00</span>, you can upgrade to VIP7 level.</p>
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center text-[11px] font-semibold text-slate-500">
+                            <span>Total Investment Progress</span>
+                            <span><span class="text-amber-500 font-bold">0</span> / 77,770.00</span>
+                        </div>
+                        <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden p-[2px] border border-slate-900">
+                            <div class="bg-gradient-to-r from-amber-500 to-yellow-400 h-full rounded-full shadow-lg shadow-amber-500/50" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vip-animate-card bg-[#0b0f19] border border-slate-900 p-5 rounded-3xl flex items-start gap-4 gold-glow shadow-md" style="animation-delay: 0.5s;">
+                <div class="flex flex-col items-center justify-center bg-slate-900 border border-slate-800/60 rounded-2xl p-3 min-w-[70px] text-center shadow-inner">
+                    <img src="/public/v21/img/vip/lv8.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/616/616412.png'" class="w-8 h-8 object-contain mb-1">
+                    <span class="text-xs font-black gold-gradient-text tracking-wider">LV8</span>
+                </div>
+                <div class="flex-1 space-y-3">
+                    <p class="text-xs text-slate-400 font-medium leading-relaxed">When the investment amount reaches <span class="text-slate-200 font-bold">₹137,770.00</span>, you can upgrade to VIP8 level.</p>
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center text-[11px] font-semibold text-slate-500">
+                            <span>Total Investment Progress</span>
+                            <span><span class="text-amber-500 font-bold">0</span> / 137,770.00</span>
+                        </div>
+                        <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden p-[2px] border border-slate-900">
+                            <div class="bg-gradient-to-r from-amber-500 to-yellow-400 h-full rounded-full shadow-lg shadow-amber-500/50" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</body>
 </html>
