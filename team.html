@@ -46,7 +46,6 @@
         .team_member_label { font-size: 11px; color: #94a3b8; font-weight: 600; margin-top: 2px; line-height: 1.2; }
         .team_member_value { font-size: 15px; color: #1e293b; font-weight: 800; }
         
-        /* Custom Custom Scrollbar Mechanics */
         .custom-scroll::-webkit-scrollbar { width: 5px; }
         .custom-scroll::-webkit-scrollbar-track { background: transparent; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
@@ -60,10 +59,9 @@
         <div class="w-full premium-card overflow-hidden relative native-banner h-48 flex items-center justify-between px-6 bg-gradient-to-br from-[#1e40af] to-[#0f172a] text-white">
             <div class="space-y-2 z-10">
                 <span class="bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full">Affiliate Network</span>
-                <h1 class="text-2xl font-black tracking-tight leading-none">Invite Friends & <br><span class="text-emerald-400">Earn Together</span></h1>
-                <p class="text-slate-400 text-xs font-medium">Multi-tier passive yield monitoring matrix.</p>
+                <h1 class="text-2xl font-black tracking-tight leading-none">Invite Friends & <br><span class="text-emerald-400">Get ₹50 Bonus</span></h1>
+                <p class="text-slate-400 text-xs font-medium">Mix Name & Number secure referral dynamic engine.</p>
             </div>
-            <!-- High Quality Tech Finance Vector Graphics Emblem -->
             <img src="https://cdni.iconscout.com/illustration/premium/thumb/illustration-of-refer-a-friend-banner-concept-7253594-5942416.png" class="w-32 h-32 object-contain absolute -right-2 bottom-4 opacity-95" alt="Network Emblem">
         </div>
 
@@ -155,11 +153,11 @@
             </div>
         </div>
 
-        <!-- INTEGRATED COMMISSION CLAIMS SECTION (ALWAYS VISIBLE) -->
+        <!-- INTEGRATED COMMISSION CLAIMS SECTION -->
         <div class="space-y-2.5 pt-2">
             <div class="flex items-center justify-between px-1">
-                <h3 class="font-extrabold text-xs text-slate-400 uppercase tracking-widest">Active Commissions Ledger</h3>
-                <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md"><i class="fas fa-bolt mr-0.5"></i> Instant Claims Enabled</span>
+                <h3 class="font-extrabold text-xs text-slate-400 uppercase tracking-widest">Active Commissions & Registration Rewards</h3>
+                <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md"><i class="fas fa-bolt mr-0.5"></i> Instant ₹50 + Commissions</span>
             </div>
             
             <!-- Live Claims Stream Node Container -->
@@ -191,7 +189,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Local Storage User Identity Fetch Rules
+        // Local Storage Identity Fetch Rules
         const activeUserPhone = localStorage.getItem('userPhone') || '9876543210';
         
         let globalInviteCode = "";
@@ -200,20 +198,27 @@
         layui.use(function(){
             var $ = layui.jquery;
             
-            // 1. Recover initialization profile structures data to generate unique target parameters
+            // 1. Recover profile data to generate dynamic mixed code (Name + Number)
             db.ref('users/' + activeUserPhone).once('value', function(snapshot){
                 const uData = snapshot.val();
                 if(uData) {
-                    globalInviteCode = uData.inviteCode || activeUserPhone.substring(activeUserPhone.length - 5).toUpperCase();
+                    if (uData.inviteCode) {
+                        globalInviteCode = uData.inviteCode;
+                    } else {
+                        // Agar code nahi bana, to Name ke upper characters aur phone ke last 4 digits ko mix karo
+                        let cleanName = (uData.name || "USER").replace(/\s+/g, '').toUpperCase().substring(0, 4);
+                        let numPart = activeUserPhone.substring(activeUserPhone.length - 4);
+                        globalInviteCode = cleanName + numPart;
+                    }
                     
-                    // Setting target destination directly to index.html with invitation search code rules
+                    // Setting target landing link to index.html with query param
                     const baseDomain = "https://dbt-one.vercel.app";
                     computedReferralLink = baseDomain + "/index.html?invitation_code=" + globalInviteCode;
                     
                     $('#ui-referral-link').text(computedReferralLink);
                     $('#copyTxt').val(computedReferralLink);
 
-                    // Re-assert structural root indices if data objects were void
+                    // Save data models if it's the first execution pass
                     if(!uData.inviteCode){
                         db.ref('users/' + activeUserPhone + '/inviteCode').set(globalInviteCode);
                         db.ref('referrals/' + globalInviteCode).set(activeUserPhone);
@@ -228,9 +233,8 @@
                 let lvl1Count = 0, lvl1Rev = 0;
                 let lvl2Count = 0, lvl2Rev = 0;
                 let lvl3Count = 0, lvl3Rev = 0;
-                let totalRefCommission = 0;
+                let totalRefIncomeAccumulator = 0;
 
-                // Loop through all database elements checking dependencies maps
                 Object.keys(allUsers).forEach(phone => {
                     const usr = allUsers[phone];
                     
@@ -239,7 +243,8 @@
                         lvl1Count++;
                         let deposits = parseFloat(usr.totalDeposit || 0);
                         lvl1Rev += deposits;
-                        totalRefCommission += (deposits * 0.15);
+                        totalRefIncomeAccumulator += (deposits * 0.15);
+                        if(usr.rewardClaimedByParent) { totalRefIncomeAccumulator += 50; } // Add reward to total ledger metrics if claimed
                     }
                     
                     // Level 2 Chain Validation
@@ -247,7 +252,7 @@
                         lvl2Count++;
                         let deposits = parseFloat(usr.totalDeposit || 0);
                         lvl2Rev += deposits;
-                        totalRefCommission += (deposits * 0.09);
+                        totalRefIncomeAccumulator += (deposits * 0.09);
                     }
 
                     // Level 3 Chain Validation
@@ -257,14 +262,14 @@
                             lvl3Count++;
                             let deposits = parseFloat(usr.totalDeposit || 0);
                             lvl3Rev += deposits;
-                            totalRefCommission += (deposits * 0.01);
+                            totalRefIncomeAccumulator += (deposits * 0.01);
                         }
                     }
                 });
 
-                // Update UI Counter View Nodes elements 
+                // Update UI Counter Elements 
                 $('#display-team-size').text(lvl1Count + lvl2Count + lvl3Count);
-                $('#display-ref-amount').text(totalRefCommission.toFixed(2));
+                $('#display-ref-amount').text(totalRefIncomeAccumulator.toFixed(2));
                 
                 $('#lv1-count').text(lvl1Count);
                 $('#lv1-revenue').text(lvl1Rev.toFixed(2));
@@ -273,11 +278,11 @@
                 $('#lv3-count').text(lvl3Count);
                 $('#lv3-revenue').text(lvl3Rev.toFixed(2));
 
-                // Process dynamic generation for the Inline Claim elements list panel
+                // Process generation for Inline Claim rows layout
                 renderLiveClaimsPanel(allUsers);
             });
 
-            // Action Clipboard Controller Node Trigger Click Binding
+            // Action Clipboard Controller Node Trigger
             $('#copy').click(function () {
                 var copyText = document.getElementById("copyTxt");
                 copyText.select();
@@ -295,7 +300,7 @@
             });
         });
 
-        // RENDER INLINE REAL-TIME CLAIMS HUB ELEMENTS VIEW
+        // RENDER INLINE REAL-TIME CLAIMS LIST WITH EXPLICIT ₹50 INCENTIVE LOGIC
         function renderLiveClaimsPanel(allUsers) {
             const container = document.getElementById('claims-inline-engine');
             if(!container) return;
@@ -312,23 +317,30 @@
                     const maskedMemberPhone = phone.substring(0, 3) + "****" + phone.substring(phone.length - 3);
                     const totalDepositNum = parseFloat(item.totalDeposit || 0);
                     
-                    let calculatedYield = (totalDepositNum * 0.15);
-                    let claimedState = item.commissionClaimedByParent || false;
+                    // Dynamic calculations
+                    let investmentCommission = (totalDepositNum * 0.15);
+                    let registrationReward = 50; // Fixed direct signup reward money incentive
+                    
+                    let totalPendingClaimable = 0;
+                    if (!item.rewardClaimedByParent) { totalPendingClaimable += registrationReward; }
+                    if (!item.commissionClaimedByParent && investmentCommission > 0) { totalPendingClaimable += investmentCommission; }
+
+                    let completelyClaimed = (item.rewardClaimedByParent && (investmentCommission > 0 ? item.commissionClaimedByParent : true));
 
                     htmlStr += `
                         <div class="p-3.5 bg-white border border-slate-100 rounded-2xl flex items-center justify-between text-xs font-bold shadow-sm">
                             <div class="space-y-0.5">
                                 <p class="text-slate-700 font-mono tracking-wider"><i class="fas fa-user-circle mr-1 text-slate-400"></i> ${maskedMemberPhone}</p>
-                                <p class="text-[10px] text-slate-400 font-medium">Deposited: <span class="text-slate-600 font-bold">₹${totalDepositNum.toFixed(2)}</span></p>
-                                <p class="text-[10px] text-slate-400 font-medium">Commission: <span class="text-emerald-600 font-extrabold">₹${calculatedYield.toFixed(2)}</span></p>
+                                <p class="text-[10px] text-slate-400 font-medium">Signup Reward: <span class="${item.rewardClaimedByParent ? 'text-slate-400 line-through' : 'text-blue-600'}">₹50.00</span></p>
+                                <p class="text-[10px] text-slate-400 font-medium">Inv. Commission (15%): <span class="${item.commissionClaimedByParent ? 'text-slate-400 line-through' : 'text-emerald-600'}">₹${investmentCommission.toFixed(2)}</span></p>
                             </div>
                             <div>
-                                ${claimedState ? `
-                                    <span class="bg-slate-100 text-slate-400 font-black text-[9px] px-3 py-1.5 rounded-xl uppercase tracking-wider select-none">Claimed</span>
-                                ` : calculatedYield > 0 ? `
-                                    <button onclick="executeWalletYieldDeposit('${phone}', ${calculatedYield})" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:shadow-emerald-100 text-white font-black text-[10px] px-3.5 py-1.5 rounded-xl uppercase tracking-wider transition-all shadow-md">Claim</button>
+                                ${completelyClaimed ? `
+                                    <span class="bg-slate-100 text-slate-400 font-black text-[9px] px-3 py-1.5 rounded-xl uppercase tracking-wider select-none">All Claimed</span>
+                                ` : totalPendingClaimable > 0 ? `
+                                    <button onclick="executeWalletYieldDeposit('${phone}', ${investmentCommission}, ${!item.rewardClaimedByParent})" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:shadow-emerald-100 text-white font-black text-[10px] px-3.5 py-1.5 rounded-xl uppercase tracking-wider transition-all shadow-md">Claim ₹${totalPendingClaimable.toFixed(2)}</button>
                                 ` : `
-                                    <span class="bg-slate-50 text-slate-400 font-bold text-[9px] px-2.5 py-1.5 rounded-xl uppercase tracking-wider select-none">Zero Yield</span>
+                                    <span class="bg-slate-50 text-slate-400 font-bold text-[9px] px-2.5 py-1.5 rounded-xl uppercase tracking-wider select-none">No Yield</span>
                                 `}
                             </div>
                         </div>
@@ -346,11 +358,15 @@
             }
         }
 
-        // TRANSACTION ENGINE FOR SETTLING GENERATED COMMISSION YIELDS TO WALLET BALANCE
-        window.executeWalletYieldDeposit = function(childPhone, yieldAmount) {
+        // TRANSACTION ENGINE FOR SETTLING GENERATED COMMISSION & REGISTRATION YIELDS
+        window.executeWalletYieldDeposit = function(childPhone, commissionAmount, isRewardPending) {
+            let directPayoutAmount = 0;
+            if (isRewardPending) directPayoutAmount += 50;
+            if (commissionAmount > 0) directPayoutAmount += commissionAmount;
+
             Swal.fire({
-                title: 'Claim Commission Amount?',
-                text: `Are you sure you want to add ₹${yieldAmount.toFixed(2)} into your main spendable account balance?`,
+                title: 'Claim Income Capital?',
+                text: `Transfer your payout of ₹${directPayoutAmount.toFixed(2)} directly into your spendable account balance?`,
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#10b981',
@@ -361,22 +377,28 @@
                 if(res.isConfirmed) {
                     Swal.fire({ title: 'Processing balance settlement...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
-                    // Execute secure isolated transaction adjustments inside target database reference strings
+                    // Atomic database operation loop execution to increment main balance node
                     db.ref('users/' + activeUserPhone + '/balance').transaction((currentBalance) => {
-                        return (parseFloat(currentBalance || 0) + yieldAmount);
+                        return (parseFloat(currentBalance || 0) + directPayoutAmount);
                     }, (err, committed) => {
                         if (committed) {
-                            // Close double claiming route vector loop paths instantly
-                            db.ref('users/' + childPhone + '/commissionClaimedByParent').set(true).then(() => {
+                            // Turn down line referral flags tracking state to true 
+                            let updates = {};
+                            updates['users/' + childPhone + '/rewardClaimedByParent'] = true;
+                            if (commissionAmount > 0) {
+                                updates['users/' + childPhone + '/commissionClaimedByParent'] = true;
+                            }
+                            
+                            db.ref().update(updates).then(() => {
                                 Swal.fire({
                                     title: 'Claimed Successfully!',
-                                    text: `₹${yieldAmount.toFixed(2)} cash credit balance added to your wallet account profile.`,
+                                    text: `₹${directPayoutAmount.toFixed(2)} cash balance transferred to your account profile layout.`,
                                     icon: 'success',
                                     confirmButtonColor: '#3b82f6'
                                 });
                             });
                         } else {
-                            Swal.fire('Transaction Failed', err ? err.message : 'Database error processing ledger nodes.', 'error');
+                            Swal.fire('Transaction Failed', err ? err.message : 'Database node ledger verification error.', 'error');
                         }
                     });
                 }
