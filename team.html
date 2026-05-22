@@ -3,87 +3,108 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Team Network Network - Reliance Hub</title>
+    <title>Alliance Hub Network</title>
+    <!-- Framework Asset Node Stacks -->
     <link rel="stylesheet" href="/public/v21/layui/css/layui.css">
-    <link rel="stylesheet" href="/public/v21/css/swiper-bundle.min.css">
-    <link rel="stylesheet" href="/public/v21/css/common.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
+    <!-- Real-time Connected Firebase System Stack -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f6f9fc; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); 
+            min-height: 100vh;
+        }
+        .premium-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 10px 30px -5px rgba(0,0,0,0.03);
+        }
         .index_invite_card {
-            background: #fff; border-radius: 16px; padding: 15px; position: relative;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); border: 1px solid #eef2f6; display: flex; align-items: center; justify-content: space-between;
+            background: white; border-radius: 20px; padding: 18px; position: relative;
+            box-shadow: 0 12px 24px -6px rgba(16, 75, 145, 0.08); border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between;
         }
         .index_invite_btn {
-            background: linear-gradient(135deg, #114180 0%, #104B91 100%); color: white;
-            padding: 8px 18px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; transition: transform 0.2s;
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%); color: white;
+            padding: 10px 20px; border-radius: 12px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.2);
         }
-        .index_invite_btn:active { transform: scale(0.96); }
+        .index_invite_btn:active { transform: scale(0.95); }
         .team_member_card {
-            background: white; border-radius: 20px; padding: 15px; display: flex; align-items: center;
-            justify-content: space-between; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-            border: 1px solid #f1f5f9; text-decoration: none !important; transition: all 0.2s;
+            background: white; border-radius: 20px; padding: 16px; display: flex; align-items: center;
+            justify-content: space-between; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.01);
+            border: 1px solid #f1f5f9; transition: all 0.2s;
         }
-        .team_member_card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
-        .team_member_label { font-size: 10px; color: #94a3b8; font-weight: 600; margin-top: 3px; line-height: 1.2; }
-        .team_member_value { font-size: 14px; color: #1e293b; font-weight: 800; }
-        .footer_menu { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-t: 1px solid #e2e8f0; z-index: 50; }
-        .footer_menu .content { display: flex; justify-content: space-around; padding: 8px 0; }
-        .footer_menu .item { text-align: center; font-size: 11px; font-weight: 700; color: #94a3b8; }
-        .footer_menu .item.active { color: #104B91; }
-        .footer_menu .item img { width: 22px; height: 22px; margin: 0 auto 3px; display: block; }
+        .team_member_label { font-size: 11px; color: #94a3b8; font-weight: 600; margin-top: 2px; line-height: 1.2; }
+        .team_member_value { font-size: 15px; color: #1e293b; font-weight: 800; }
+        
+        /* Custom Custom Scrollbar Mechanics */
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
-<body class="team_body pb-24">
+<body class="team_body py-6">
 
-    <div class="club_header" style="background-image: url('/public/v21/img/invite/bg.png'); background-size: 100% 100%; height: auto; background-repeat: no-repeat;">
-        <img src="/public/v21/img/team/top.png" style="width: 100%; text-align: center; padding-top: 40px;" alt="Banner">
-    </div>
-
-    <main class="max-w-md mx-auto px-4 mt-4">
+    <main class="max-w-md mx-auto px-4 space-y-5">
         
-        <div class="grid grid-cols-2 gap-3 mb-4">
-            <div class="bg-blue-50/80 border border-blue-100 rounded-2xl p-4 flex flex-col justify-between shadow-sm">
-                <span id="display-team-size" class="text-xl font-black text-slate-800">0</span>
+        <!-- VISUAL HEAD BANNER ILLUSTRATION CARD -->
+        <div class="w-full premium-card overflow-hidden relative native-banner h-48 flex items-center justify-between px-6 bg-gradient-to-br from-[#1e40af] to-[#0f172a] text-white">
+            <div class="space-y-2 z-10">
+                <span class="bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full">Affiliate Network</span>
+                <h1 class="text-2xl font-black tracking-tight leading-none">Invite Friends & <br><span class="text-emerald-400">Earn Together</span></h1>
+                <p class="text-slate-400 text-xs font-medium">Multi-tier passive yield monitoring matrix.</p>
+            </div>
+            <!-- High Quality Tech Finance Vector Graphics Emblem -->
+            <img src="https://cdni.iconscout.com/illustration/premium/thumb/illustration-of-refer-a-friend-banner-concept-7253594-5942416.png" class="w-32 h-32 object-contain absolute -right-2 bottom-4 opacity-95" alt="Network Emblem">
+        </div>
+
+        <!-- COUNTER METRICS DASHBOARD REGION -->
+        <div class="grid grid-cols-2 gap-3">
+            <div class="bg-blue-50/80 border border-blue-100/70 rounded-2xl p-4 flex flex-col justify-between shadow-sm">
+                <span id="display-team-size" class="text-2xl font-black text-slate-800">0</span>
                 <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wide mt-1">Total Team Size</span>
             </div>
-            <div class="bg-emerald-50/80 border border-emerald-100 rounded-2xl p-4 flex flex-col justify-between shadow-sm">
-                <span class="text-xl font-black text-emerald-600">₹<span id="display-ref-amount">0.00</span></span>
+            <div class="bg-emerald-50/80 border border-emerald-100/70 rounded-2xl p-4 flex flex-col justify-between shadow-sm">
+                <span class="text-2xl font-black text-emerald-600">₹<span id="display-ref-amount">0.00</span></span>
                 <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wide mt-1">Referral Income</span>
             </div>
         </div>
 
-        <div class="index_invite_card mb-5">
-            <img src="/public/v21/img/invite/invite_friend.png" style="width: 39px; height: 30px; position: absolute; top: 12px; left: 10px;" alt="icon">
-            <div class="flex items-center justify-between w-full pl-11">
+        <!-- SHARE CARD COMPONENT LINK GENERATION -->
+        <div class="index_invite_card">
+            <div class="flex items-center justify-center w-10 h-10 bg-blue-50 rounded-xl text-blue-600 text-lg">
+                <i class="fas fa-share-nodes"></i>
+            </div>
+            <div class="flex items-center justify-between w-full pl-4">
                 <div class="space-y-0.5">
-                    <p class="text-xs font-black text-slate-800 uppercase tracking-wider">Invitation Link</p>
-                    <p id="ui-referral-link" class="text-xs font-medium font-mono text-blue-600 truncate w-48">Generating your secure link...</p>
+                    <p class="text-xs font-black text-slate-800 uppercase tracking-wider">Your Unique Invitation Link</p>
+                    <p id="ui-referral-link" class="text-xs font-medium font-mono text-blue-600 truncate w-44">Generating secure link...</p>
                 </div>
                 <button id="copy" class="index_invite_btn">Copy</button>
             </div>
         </div>
 
-        <div class="flex items-center justify-between mb-3 px-1">
-            <h3 class="font-extrabold text-sm text-slate-800 uppercase tracking-wide">Team Level Structure</h3>
-            <button onclick="toggleTeamDetailsDrawer()" class="text-xs font-bold text-blue-600 hover:underline">Team Claims Area &gt;</button>
-        </div>
-
-        <div class="space-y-3">
+        <!-- MATRIX CHANNELS TAB STRUCTURE -->
+        <div class="space-y-2.5">
+            <h3 class="font-extrabold text-xs text-slate-400 uppercase tracking-widest px-1">Network Structure</h3>
+            
+            <!-- LEVEL 1 MODULE -->
             <div class="team_member_card">
-                <div class="flex items-center justify-center w-12 h-12 bg-slate-50 border border-dashed border-slate-300 rounded-xl font-mono text-slate-600 font-bold">
-                    lv<span class="text-lg font-black ml-0.5">1</span>
+                <div class="flex items-center justify-center w-11 h-11 bg-blue-50 border border-dashed border-blue-200 rounded-xl font-mono text-blue-600 font-bold">
+                    Lv1
                 </div>
                 <div class="text-center">
                     <p class="team_member_value text-blue-600">15%</p>
-                    <p class="team_member_label">Commission<br>Ratio</p>
+                    <p class="team_member_label">Commission</p>
                 </div>
                 <div class="text-center">
                     <p class="team_member_value"><span id="lv1-count">0</span> Users</p>
@@ -91,17 +112,18 @@
                 </div>
                 <div class="text-center">
                     <p class="team_member_value text-slate-800">₹<span id="lv1-revenue">0.00</span></p>
-                    <p class="team_member_label">Total Revenue</p>
+                    <p class="team_member_label">Revenue</p>
                 </div>
             </div>
 
+            <!-- LEVEL 2 MODULE -->
             <div class="team_member_card">
-                <div class="flex items-center justify-center w-12 h-12 bg-slate-50 border border-dashed border-slate-300 rounded-xl font-mono text-slate-600 font-bold">
-                    lv<span class="text-lg font-black ml-0.5">2</span>
+                <div class="flex items-center justify-center w-11 h-11 bg-purple-50 border border-dashed border-purple-200 rounded-xl font-mono text-purple-600 font-bold">
+                    Lv2
                 </div>
                 <div class="text-center">
                     <p class="team_member_value text-purple-600">9%</p>
-                    <p class="team_member_label">Commission<br>Ratio</p>
+                    <p class="team_member_label">Commission</p>
                 </div>
                 <div class="text-center">
                     <p class="team_member_value"><span id="lv2-count">0</span> Users</p>
@@ -109,17 +131,18 @@
                 </div>
                 <div class="text-center">
                     <p class="team_member_value text-slate-800">₹<span id="lv2-revenue">0.00</span></p>
-                    <p class="team_member_label">Total Revenue</p>
+                    <p class="team_member_label">Revenue</p>
                 </div>
             </div>
 
+            <!-- LEVEL 3 MODULE -->
             <div class="team_member_card">
-                <div class="flex items-center justify-center w-12 h-12 bg-slate-50 border border-dashed border-slate-300 rounded-xl font-mono text-slate-600 font-bold">
-                    lv<span class="text-lg font-black ml-0.5">3</span>
+                <div class="flex items-center justify-center w-11 h-11 bg-amber-50 border border-dashed border-amber-200 rounded-xl font-mono text-amber-600 font-bold">
+                    Lv3
                 </div>
                 <div class="text-center">
                     <p class="team_member_value text-amber-600">1%</p>
-                    <p class="team_member_label">Commission<br>Ratio</p>
+                    <p class="team_member_label">Commission</p>
                 </div>
                 <div class="text-center">
                     <p class="team_member_value"><span id="lv3-count">0</span> Users</p>
@@ -127,38 +150,35 @@
                 </div>
                 <div class="text-center">
                     <p class="team_member_value text-slate-800">₹<span id="lv3-revenue">0.00</span></p>
-                    <p class="team_member_label">Total Revenue</p>
+                    <p class="team_member_label">Revenue</p>
                 </div>
             </div>
         </div>
+
+        <!-- INTEGRATED COMMISSION CLAIMS SECTION (ALWAYS VISIBLE) -->
+        <div class="space-y-2.5 pt-2">
+            <div class="flex items-center justify-between px-1">
+                <h3 class="font-extrabold text-xs text-slate-400 uppercase tracking-widest">Active Commissions Ledger</h3>
+                <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md"><i class="fas fa-bolt mr-0.5"></i> Instant Claims Enabled</span>
+            </div>
+            
+            <!-- Live Claims Stream Node Container -->
+            <div id="claims-inline-engine" class="space-y-2 max-h-64 overflow-y-auto custom-scroll pr-0.5">
+                <div class="text-center py-6 text-xs text-slate-400 font-medium bg-white rounded-2xl border border-slate-100">
+                    <i class="fas fa-spinner fa-spin mr-1 text-blue-500"></i> Fetching referral network metrics...
+                </div>
+            </div>
+        </div>
+
     </main>
 
+    <!-- HIDDEN CLIPBOARD BUFFER -->
     <textarea class="absolute opacity-0 pointer-events-none" id="copyTxt" readonly></textarea>
 
-    <div class="footer_menu">
-        <div class="content">
-            <a href="dashboard.html" class="item">
-                <img src="/public/v21/img/footer/home.png"/><p>Home</p>
-            </a>
-            <a href="product.html" class="item">
-                <img src="/public/v21/img/footer/invest.png"/><p>Invest</p>
-            </a>
-            <a href="notice.html" class="item">
-                <img src="/public/v21/img/footer/notice.png"/><p>Notice</p>
-            </a>
-            <a href="team.html" class="item active">
-                <img src="/public/v21/img/footer/team.png"/><p>Team</p>
-            </a>
-            <a href="my.html" class="item">
-                <img src="/public/v21/img/footer/my.png"/><p>My</p>
-            </a>
-        </div>
-    </div>
-
+    <!-- SYSTEM CORE ARCHITECTURE SCRIPT DRIVERS -->
     <script src="/public/v21/layui/layui.js"></script>
-    <script src="/public/v21/js/swiper-bundle.min.js"></script>
     <script>
-        // System Firebase Endpoint Connection Initialization
+        // System Firebase Endpoint Core Stacks
         const firebaseConfig = {
             apiKey: "AIzaSyC7apT-d-R9bpcb4LcpFk4P0cpw9sKxi-0",
             authDomain: "dbt-online-earning.firebaseapp.com",
@@ -171,7 +191,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Local Storage Session Recovery
+        // Local Storage User Identity Fetch Rules
         const activeUserPhone = localStorage.getItem('userPhone') || '9876543210';
         
         let globalInviteCode = "";
@@ -180,20 +200,20 @@
         layui.use(function(){
             var $ = layui.jquery;
             
-            // 1. Fetch user's invite validation token parameters dynamically
+            // 1. Recover initialization profile structures data to generate unique target parameters
             db.ref('users/' + activeUserPhone).once('value', function(snapshot){
                 const uData = snapshot.val();
                 if(uData) {
                     globalInviteCode = uData.inviteCode || activeUserPhone.substring(activeUserPhone.length - 5).toUpperCase();
                     
-                    // Generate registration landing endpoint containing URLSearchParams auto-fill queries
-                    const currentHost = window.location.origin;
-                    computedReferralLink = currentHost + "/register.html?invitation_code=" + globalInviteCode;
+                    // Setting target destination directly to index.html with invitation search code rules
+                    const baseDomain = "https://dbt-one.vercel.app";
+                    computedReferralLink = baseDomain + "/index.html?invitation_code=" + globalInviteCode;
                     
                     $('#ui-referral-link').text(computedReferralLink);
                     $('#copyTxt').val(computedReferralLink);
 
-                    // If inviteCode didn't exist in user model root nodes write it down safely
+                    // Re-assert structural root indices if data objects were void
                     if(!uData.inviteCode){
                         db.ref('users/' + activeUserPhone + '/inviteCode').set(globalInviteCode);
                         db.ref('referrals/' + globalInviteCode).set(activeUserPhone);
@@ -201,7 +221,7 @@
                 }
             });
 
-            // 2. Real-time Multilevel Downstream Network Tree Computation Node Matrix Engine
+            // 2. Multilevel Downstream Network Computing Map Stream
             db.ref('users').on('value', function(snapshot) {
                 const allUsers = snapshot.val() || {};
                 
@@ -210,39 +230,39 @@
                 let lvl3Count = 0, lvl3Rev = 0;
                 let totalRefCommission = 0;
 
-                // Process Downstream relations
+                // Loop through all database elements checking dependencies maps
                 Object.keys(allUsers).forEach(phone => {
                     const usr = allUsers[phone];
                     
-                    // Check Level 1 (Direct Child nodes mapping)
+                    // Level 1 Chain Validation
                     if(usr.referredBy === activeUserPhone) {
                         lvl1Count++;
                         let deposits = parseFloat(usr.totalDeposit || 0);
                         lvl1Rev += deposits;
-                        totalRefCommission += (deposits * 0.15); // 15% Core allocation
+                        totalRefCommission += (deposits * 0.15);
                     }
                     
-                    // Check Level 2 (Indirect Chain mapping calculations)
+                    // Level 2 Chain Validation
                     if(usr.referredBy && allUsers[usr.referredBy] && allUsers[usr.referredBy].referredBy === activeUserPhone) {
                         lvl2Count++;
                         let deposits = parseFloat(usr.totalDeposit || 0);
                         lvl2Rev += deposits;
-                        totalRefCommission += (deposits * 0.09); // 9% Chain allocation
+                        totalRefCommission += (deposits * 0.09);
                     }
 
-                    // Check Level 3 (Deep Tier hierarchy network nodes parsing)
+                    // Level 3 Chain Validation
                     if(usr.referredBy && allUsers[usr.referredBy] && allUsers[usr.referredBy].referredBy) {
                         const parentPhone = allUsers[usr.referredBy].referredBy;
                         if(allUsers[parentPhone] && allUsers[parentPhone].referredBy === activeUserPhone) {
                             lvl3Count++;
                             let deposits = parseFloat(usr.totalDeposit || 0);
                             lvl3Rev += deposits;
-                            totalRefCommission += (deposits * 0.01); // 1% Deep tier allocation
+                            totalRefCommission += (deposits * 0.01);
                         }
                     }
                 });
 
-                // Update metrics UI views variables
+                // Update UI Counter View Nodes elements 
                 $('#display-team-size').text(lvl1Count + lvl2Count + lvl3Count);
                 $('#display-ref-amount').text(totalRefCommission.toFixed(2));
                 
@@ -252,17 +272,20 @@
                 $('#lv2-revenue').text(lvl2Rev.toFixed(2));
                 $('#lv3-count').text(lvl3Count);
                 $('#lv3-revenue').text(lvl3Rev.toFixed(2));
+
+                // Process dynamic generation for the Inline Claim elements list panel
+                renderLiveClaimsPanel(allUsers);
             });
 
-            // Clipboard Action Controller Element Wireup Handler
+            // Action Clipboard Controller Node Trigger Click Binding
             $('#copy').click(function () {
                 var copyText = document.getElementById("copyTxt");
                 copyText.select();
-                copyText.setSelectionRange(0, 99999); // Mobile compliance support
+                copyText.setSelectionRange(0, 99999);
                 document.execCommand("Copy");
                 
                 Swal.fire({
-                    text: 'Invitation Link Copied Successfully!',
+                    text: 'Invitation URL Link Copied!',
                     icon: 'success',
                     toast: true,
                     position: 'top',
@@ -272,106 +295,88 @@
             });
         });
 
-        // DRAWERS/MODAL SYSTEM EXTENSION FOR CLAIM AREA REGION MANAGEMENT
-        function toggleTeamDetailsDrawer() {
-            Swal.fire({
-                title: '<span class="text-white text-sm font-extrabold uppercase tracking-wide">Real-time Team Claims Hub</span>',
-                background: '#0f172a',
-                customClass: { popup: 'rounded-t-[30px] sm:rounded-2xl border border-slate-800' },
-                showConfirmButton: false,
-                showCloseButton: true,
-                width: '100%',
-                html: `
-                    <p class="text-slate-400 text-[11px] font-semibold text-left mb-3 px-1">Below are downlines providing dynamic commission yields:</p>
-                    <div id="modal-claims-container" class="space-y-2 max-h-[50vh] overflow-y-auto text-left pr-1">
-                        <div class="text-center py-6 text-xs text-slate-500 font-medium">Scanning network vectors...</div>
-                    </div>
-                `,
-                didOpen: () => {
-                    renderLiveClaimsDOM();
-                }
-            });
-        }
+        // RENDER INLINE REAL-TIME CLAIMS HUB ELEMENTS VIEW
+        function renderLiveClaimsPanel(allUsers) {
+            const container = document.getElementById('claims-inline-engine');
+            if(!container) return;
+            
+            let htmlStr = "";
+            let uniqueMatchFound = false;
 
-        function renderLiveClaimsDOM() {
-            db.ref('users').once('value', function(snapshot) {
-                const container = document.getElementById('modal-claims-container');
-                if(!container) return;
+            Object.keys(allUsers).forEach(phone => {
+                const item = allUsers[phone];
                 
-                const data = snapshot.val() || {};
-                let htmlStr = "";
-                let uniqueMatchFound = false;
-
-                Object.keys(data).forEach(phone => {
-                    const item = data[phone];
+                // Track direct Level 1 children values
+                if(item.referredBy === activeUserPhone) {
+                    uniqueMatchFound = true;
+                    const maskedMemberPhone = phone.substring(0, 3) + "****" + phone.substring(phone.length - 3);
+                    const totalDepositNum = parseFloat(item.totalDeposit || 0);
                     
-                    // Match direct child tier network references
-                    if(item.referredBy === activeUserPhone) {
-                        uniqueMatchFound = true;
-                        const maskedMemberPhone = phone.substring(0, 3) + "****" + phone.substring(phone.length - 3);
-                        const totalDepositNum = parseFloat(item.totalDeposit || 0);
-                        
-                        // Calculate 15% pending available balance criteria allocations
-                        let calculatedYield = (totalDepositNum * 0.15);
-                        let claimedState = item.commissionClaimedByParent || false;
+                    let calculatedYield = (totalDepositNum * 0.15);
+                    let claimedState = item.commissionClaimedByParent || false;
 
-                        htmlStr += `
-                            <div class="p-4 bg-slate-900 border border-slate-800/80 rounded-2xl flex items-center justify-between text-xs font-bold text-white">
-                                <div class="space-y-1">
-                                    <p class="text-slate-200 font-mono tracking-wider"><i class="fas fa-mobile-alt mr-1 text-blue-400"></i> ${maskedMemberPhone}</p>
-                                    <p class="text-[10px] text-slate-500 font-medium">Total Deposited: <span class="text-emerald-500 font-bold">₹${totalDepositNum.toFixed(2)}</span></p>
-                                    <p class="text-[10px] text-slate-500 font-medium">Yield Commission: <span class="text-amber-400 font-bold">₹${calculatedYield.toFixed(2)}</span></p>
-                                </div>
-                                <div>
-                                    ${claimedState ? `
-                                        <span class="bg-slate-800 border border-slate-700 text-slate-400 font-black text-[9px] px-2.5 py-1.5 rounded-lg uppercase tracking-wider select-none">Claimed</span>
-                                    ` : calculatedYield > 0 ? `
-                                        <button onclick="triggerDirectNodeClaimYield('${phone}', ${calculatedYield})" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-white font-black text-[10px] px-3 py-1.5 rounded-xl uppercase tracking-wider transition-all shadow-md">Claim</button>
-                                    ` : `
-                                        <span class="bg-slate-800/40 text-slate-600 font-black text-[9px] px-2.5 py-1.5 rounded-lg uppercase tracking-wider select-none">No Yield</span>
-                                    `}
-                                </div>
+                    htmlStr += `
+                        <div class="p-3.5 bg-white border border-slate-100 rounded-2xl flex items-center justify-between text-xs font-bold shadow-sm">
+                            <div class="space-y-0.5">
+                                <p class="text-slate-700 font-mono tracking-wider"><i class="fas fa-user-circle mr-1 text-slate-400"></i> ${maskedMemberPhone}</p>
+                                <p class="text-[10px] text-slate-400 font-medium">Deposited: <span class="text-slate-600 font-bold">₹${totalDepositNum.toFixed(2)}</span></p>
+                                <p class="text-[10px] text-slate-400 font-medium">Commission: <span class="text-emerald-600 font-extrabold">₹${calculatedYield.toFixed(2)}</span></p>
                             </div>
-                        `;
-                    }
-                });
-
-                if(!uniqueMatchFound) {
-                    container.innerHTML = `<div class="text-center py-8 text-slate-500 text-xs font-medium"><i class="fas fa-users-slash text-xl mb-1 block opacity-30"></i> No referrals found inside Level 1 channels.</div>`;
-                } else {
-                    container.innerHTML = htmlStr;
+                            <div>
+                                ${claimedState ? `
+                                    <span class="bg-slate-100 text-slate-400 font-black text-[9px] px-3 py-1.5 rounded-xl uppercase tracking-wider select-none">Claimed</span>
+                                ` : calculatedYield > 0 ? `
+                                    <button onclick="executeWalletYieldDeposit('${phone}', ${calculatedYield})" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:shadow-emerald-100 text-white font-black text-[10px] px-3.5 py-1.5 rounded-xl uppercase tracking-wider transition-all shadow-md">Claim</button>
+                                ` : `
+                                    <span class="bg-slate-50 text-slate-400 font-bold text-[9px] px-2.5 py-1.5 rounded-xl uppercase tracking-wider select-none">Zero Yield</span>
+                                `}
+                            </div>
+                        </div>
+                    `;
                 }
             });
+
+            if(!uniqueMatchFound) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-slate-400 text-xs font-medium bg-white rounded-2xl border border-slate-100">
+                        <i class="fas fa-users-slash text-xl mb-1.5 block opacity-30"></i> No registered downline members found yet.
+                    </div>`;
+            } else {
+                container.innerHTML = htmlStr;
+            }
         }
 
-        // BACKEND CLAIM COMMISSIONS TRANSACTIONAL PROCESS ROUTER
-        window.triggerDirectNodeClaimYield = function(childPhone, yieldAmount) {
+        // TRANSACTION ENGINE FOR SETTLING GENERATED COMMISSION YIELDS TO WALLET BALANCE
+        window.executeWalletYieldDeposit = function(childPhone, yieldAmount) {
             Swal.fire({
-                title: 'Claim Commission?',
-                text: `Transfer ₹${yieldAmount.toFixed(2)} level allocation earnings into your spendable balance wallet profile safely?`,
+                title: 'Claim Commission Amount?',
+                text: `Are you sure you want to add ₹${yieldAmount.toFixed(2)} into your main spendable account balance?`,
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#10b981',
-                cancelButtonColor: '#64748b',
-                confirmButtonText: 'Confirm Claim',
-                background: '#0f172a',
-                customClass: { popup: 'rounded-2xl border border-slate-800 text-white', title: 'text-white' }
+                cancelButtonColor: '#94a3b8',
+                confirmButtonText: 'Yes, Claim Now',
+                customClass: { popup: 'rounded-2xl font-bold text-sm' }
             }).then((res) => {
                 if(res.isConfirmed) {
-                    Swal.fire({ title: 'Processing Transaction Ledger...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+                    Swal.fire({ title: 'Processing balance settlement...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
-                    // Update parent's spendable main wallet balance nodes
+                    // Execute secure isolated transaction adjustments inside target database reference strings
                     db.ref('users/' + activeUserPhone + '/balance').transaction((currentBalance) => {
                         return (parseFloat(currentBalance || 0) + yieldAmount);
                     }, (err, committed) => {
                         if (committed) {
-                            // Update child flag state to prevent double claiming metrics allocation loops
+                            // Close double claiming route vector loop paths instantly
                             db.ref('users/' + childPhone + '/commissionClaimedByParent').set(true).then(() => {
-                                Swal.fire('Yield Deposited!', `Commission payout credit of ₹${yieldAmount.toFixed(2)} transferred to balance.`, 'success');
-                                renderLiveClaimsDOM(); // Refresh internal rows layout
+                                Swal.fire({
+                                    title: 'Claimed Successfully!',
+                                    text: `₹${yieldAmount.toFixed(2)} cash credit balance added to your wallet account profile.`,
+                                    icon: 'success',
+                                    confirmButtonColor: '#3b82f6'
+                                });
                             });
                         } else {
-                            Swal.fire('Ledger Failure', err ? err.message : 'Transaction failed to commit', 'error');
+                            Swal.fire('Transaction Failed', err ? err.message : 'Database error processing ledger nodes.', 'error');
                         }
                     });
                 }
