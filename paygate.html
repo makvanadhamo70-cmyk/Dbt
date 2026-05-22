@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Payment Gateway</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background: #f0f2f5; font-family: 'sans-serif'; }
+        .qr-box { background: white; border: 2px dashed #cbd5e1; padding: 15px; border-radius: 15px; min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .method-card { border: 1.5px solid #e2e8f0; border-radius: 12px; transition: 0.3s; cursor: pointer; background: white; }
+        .method-card.active { border-color: #2563eb; background: #eff6ff; transform: scale(1.05); }
+    </style>
+</head>
+<body class="p-4">
+
+<div class="max-w-md mx-auto">
+    <div class="flex items-center justify-between mb-6">
+        <i class="fas fa-arrow-left text-gray-600" onclick="history.back()"></i>
+        <h2 class="font-bold text-lg">Secure Payment</h2>
+        <i class="fas fa-lock text-green-600"></i>
+    </div>
+
+    <div class="bg-white rounded-2xl p-6 text-center shadow-sm mb-4">
+        <p class="text-gray-500 text-sm font-medium">Payable Amount</p>
+        <h1 id="display-amt" class="text-4xl font-black text-blue-900 mt-1">₹0.00</h1>
+        <div class="inline-flex items-center gap-2 bg-red-50 text-red-600 px-4 py-1 rounded-full mt-4">
+            <i class="fas fa-clock text-xs"></i>
+            <span id="timer" class="font-bold text-sm">05:00</span>
+        </div>
+    </div>
+
+    <div class="qr-box text-center mb-6">
+        <p id="qr-instruction" class="text-[10px] text-gray-400 mb-2 font-bold uppercase tracking-widest">Select App to see QR</p>
+        <img id="qr-display" src="" class="w-48 h-48 mx-auto mb-2 hidden" alt="QR">
+        <div id="qr-placeholder" class="text-gray-300"><i class="fas fa-qrcode text-6xl"></i></div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-3 mb-8">
+        <div class="method-card p-3 text-center app-btn" onclick="setQR('phonepe')">
+            <img src="https://img.icons8.com/color/48/phone-pe.png" class="w-10 mx-auto">
+            <p class="text-[10px] font-bold mt-1">PhonePe</p>
+        </div>
+        <div class="method-card p-3 text-center app-btn" onclick="setQR('gpay')">
+            <img src="https://img.icons8.com/color/48/google-pay.png" class="w-10 mx-auto">
+            <p class="text-[10px] font-bold mt-1">GPay</p>
+        </div>
+        <div class="method-card p-3 text-center app-btn" onclick="setQR('paytm')">
+            <img src="https://img.icons8.com/color/48/paytm.png" class="w-10 mx-auto">
+            <p class="text-[10px] font-bold mt-1">Paytm</p>
+        </div>
+    </div>
+
+    <div class="bg-blue-900 rounded-2xl p-6 text-white">
+        <input type="number" id="utr-input" placeholder="Enter 12-Digit UTR" 
+            class="w-full bg-white/10 border border-white/20 rounded-xl py-4 px-4 text-white text-center text-lg font-bold outline-none mb-4">
+        <button onclick="verifyPayment()" class="w-full bg-yellow-500 text-blue-900 font-black py-4 rounded-xl">
+            Verify Payment
+        </button>
+    </div>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const amount = urlParams.get('amount') || "300";
+    document.getElementById('display-amt').innerText = "₹" + amount;
+
+    function setQR(app) {
+        const qrImg = document.getElementById('qr-display');
+        qrImg.src = app === 'phonepe' ? 'ppqr1.png' : app === 'gpay' ? 'gpqr1.png' : 'pqr1.png';
+        qrImg.classList.remove('hidden');
+        document.getElementById('qr-placeholder').classList.add('hidden');
+        document.querySelectorAll('.method-card').forEach(m => m.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+    }
+
+    let time = 300;
+    setInterval(() => {
+        let mins = Math.floor(time / 60);
+        let secs = time % 60;
+        document.getElementById('timer').innerText = `0${mins}:${secs < 10 ? '0'+secs : secs}`;
+        if (time > 0) time--;
+    }, 1000);
+
+    function verifyPayment() {
+        const utr = document.getElementById('utr-input').value;
+        if (utr.length !== 12) return Swal.fire('Error', 'Enter 12-digit UTR', 'error');
+
+        Swal.fire({ title: 'Verifying...', didOpen: () => { Swal.showLoading() }, timer: 2000, showConfirmButton: false })
+        .then(() => {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            
+            // SAVE TO HISTORY
+            const history = JSON.parse(localStorage.getItem('depositHistory') || '[]');
+            history.push({ amount: amount, date: new Date().toLocaleString() });
+            localStorage.setItem('depositHistory', JSON.stringify(history));
+
+            Swal.fire('Success', `₹${amount} Added!`, 'success').then(() => {
+                window.location.href = "recharge.html";
+            });
+        });
+    }
+</script>
+</body>
+</html>

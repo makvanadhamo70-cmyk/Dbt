@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit - Reliance Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+        body { background: #f4f7f9; font-family: 'Roboto', sans-serif; margin: 0; padding-bottom: 20px; }
+        .header-blue {
+            background: linear-gradient(to bottom, #1a4a8e, #2563eb);
+            height: 180px; border-bottom-left-radius: 50px; border-bottom-right-radius: 50px;
+            padding: 20px; position: relative;
+        }
+        .deposit-card {
+            background: white; border-radius: 20px; margin: -80px 15px 20px;
+            padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .amt-circle {
+            width: 70px; height: 70px; border: 1.5px solid #e2e8f0; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; cursor: pointer; transition: 0.3s; background: white; color: #64748b;
+        }
+        .amt-circle.active { border-color: #1e40af; color: #1e40af; background: #eff6ff; }
+        .bonus-badge { background: #fef2f2; color: #ef4444; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 10px; margin-top: 4px; }
+        .history-card { background: white; border-radius: 15px; margin: 0 15px; padding: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="header-blue">
+    <div class="flex items-center justify-between">
+        <i class="fas fa-chevron-left text-white text-xl" onclick="history.back()"></i>
+        <h1 class="text-white text-xl font-bold">Deposit</h1>
+    </div>
+</div>
+
+<div class="deposit-card">
+    <label class="text-gray-500 font-bold text-sm">Deposit Amount</label>
+    <div class="relative mt-2">
+        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">₹</span>
+        <input type="number" id="final-amt" value="300" class="w-full bg-gray-50 border border-gray-200 rounded-lg py-4 pl-10 pr-4 text-xl font-bold text-blue-900 outline-none" readonly>
+    </div>
+
+    <div class="grid grid-cols-3 gap-y-6 mt-6 justify-items-center">
+        <div class="flex flex-col items-center" onclick="selectAmt(300, this)"><div class="amt-circle active">300</div><span class="bonus-badge">+₹50</span></div>
+        <div class="flex flex-col items-center" onclick="selectAmt(500, this)"><div class="amt-circle">500</div><span class="bonus-badge">+₹100</span></div>
+        <div class="flex flex-col items-center" onclick="selectAmt(1000, this)"><div class="amt-circle">1000</div><span class="bonus-badge">+₹200</span></div>
+        <div class="flex flex-col items-center" onclick="selectAmt(2000, this)"><div class="amt-circle">2000</div><span class="bonus-badge">+₹400</span></div>
+        <div class="flex flex-col items-center" onclick="selectAmt(5000, this)"><div class="amt-circle">5000</div><span class="bonus-badge">+₹1000</span></div>
+        <div class="flex flex-col items-center" onclick="selectAmt(10000, this)"><div class="amt-circle">10000</div><span class="bonus-badge">+₹2000</span></div>
+    </div>
+
+    <button onclick="goPay()" class="w-full mt-8 bg-blue-900 text-white font-bold py-4 rounded-full shadow-lg active:scale-95 transition-all">
+        Deposit Now
+    </button>
+</div>
+
+<div class="history-card shadow-sm border border-gray-100">
+    <h3 class="font-bold text-blue-900 text-sm mb-4"><i class="fas fa-history mr-2"></i> Recent Deposits</h3>
+    <div id="history-list" class="space-y-3">
+        <p class="text-center text-gray-400 text-xs py-4">No records found</p>
+    </div>
+</div>
+
+<script>
+    function selectAmt(val, el) {
+        document.getElementById('final-amt').value = val;
+        document.querySelectorAll('.amt-circle').forEach(c => c.classList.remove('active'));
+        el.querySelector('.amt-circle').classList.add('active');
+    }
+
+    function goPay() {
+        const amt = document.getElementById('final-amt').value;
+        Swal.fire({
+            title: 'Redirecting...',
+            html: 'Connecting to secure payment gateway',
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: () => { Swal.showLoading() }
+        }).then(() => {
+            window.location.href = `paygate.html?amount=${amt}`;
+        });
+    }
+
+    // Load History
+    function loadHistory() {
+        const history = JSON.parse(localStorage.getItem('depositHistory') || '[]');
+        const list = document.getElementById('history-list');
+        if (history.length > 0) {
+            list.innerHTML = history.reverse().map(item => `
+                <div class="flex justify-between items-center border-b pb-2">
+                    <div>
+                        <p class="font-bold text-sm text-gray-700">₹${item.amount}</p>
+                        <p class="text-[10px] text-gray-400">${item.date}</p>
+                    </div>
+                    <span class="text-[10px] font-bold bg-green-100 text-green-600 px-2 py-1 rounded-full">Successful</span>
+                </div>
+            `).join('');
+        }
+    }
+    window.onload = loadHistory;
+</script>
+
+</body>
+</html>

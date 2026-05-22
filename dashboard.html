@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reliance Investment Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+        
+        body {
+            background: #f4f7f9;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding-bottom: 70px;
+        }
+
+        .header-bg {
+            background: url('bg2.png') no-repeat center top;
+            background-size: cover;
+            height: 220px;
+            position: relative;
+        }
+
+        /* REAL-TIME BALANCE STYLE */
+        #balance-badge {
+            position: absolute;
+            top: 15px;
+            right: 55px; 
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-weight: bold;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 50;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 15px;
+            margin: -40px 12px 15px;
+            padding: 20px 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 10;
+        }
+
+        .action-item { text-align: center; flex: 1; }
+        .action-item img { width: 45px; margin: 0 auto 8px; }
+
+        .promo-card {
+            background: #fff5e6;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 0 12px 15px;
+            border: 1px solid #ffe0b3;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            margin: 0 12px 15px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+
+        .float-service {
+            position: fixed;
+            right: 15px;
+            bottom: 100px;
+            z-index: 999;
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        #teleModal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .nav-bottom {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: #1a2a5e;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div id="teleModal">
+    <div class="bg-white rounded-2xl w-[85%] max-w-sm overflow-hidden shadow-2xl animate-zoomIn">
+        <div class="p-6 text-center">
+            <div class="w-20 h-20 bg-gradient-to-tr from-blue-500 to-indigo-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fab fa-telegram-plane text-4xl text-white"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-800">Official Channel</h2>
+            <p class="text-gray-500 text-sm mt-2">Follow our official channel for the latest news</p>
+            <button onclick="window.location.href='https://t.me/+2kCeWFpP24FmYWE1'" class="w-full mt-6 bg-gradient-to-r from-red-500 to-blue-800 text-white font-bold py-3 rounded-full shadow-lg">Focus Now.</button>
+        </div>
+        <div class="bg-gray-100 py-3 text-center cursor-pointer" onclick="closeModal()">
+            <i class="fas fa-times-circle text-gray-400 text-2xl"></i>
+        </div>
+    </div>
+</div>
+
+<div class="header-bg">
+    <div id="balance-badge">
+        <i class="fas fa-wallet text-yellow-400"></i>
+        <span>₹<span id="rt-balance">0.00</span></span>
+    </div>
+
+    <div class="p-4 flex justify-between items-center">
+        <img src="logo2.png" class="h-10">
+        <div class="bg-white/20 p-2 rounded-full" onclick="location.href='service.html'"><i class="fas fa-headset text-white"></i></div>
+    </div>
+    <div class="px-6 mt-4">
+        <h1 class="text-white font-bold text-lg leading-tight">Reliance Industries' mission is to create the ultimate products for consumers.</h1>
+    </div>
+</div>
+
+<div class="main-card flex justify-between">
+    <div class="action-item" onclick="location.href='recharge.html'">
+        <img src="https://img.icons8.com/fluency/96/wallet.png">
+        <p class="text-xs font-bold text-gray-600">Recharge</p>
+    </div>
+    <div class="action-item" onclick="location.href='withdraw.html'">
+        <img src="https://img.icons8.com/fluency/96/withdrawal.png">
+        <p class="text-xs font-bold text-gray-600">Withdraw</p>
+    </div>
+    <div class="action-item" onclick="location.href='vip.html'">
+        <img src="https://img.icons8.com/fluency/96/vip.png">
+        <p class="text-xs font-bold text-gray-600">VIP</p>
+    </div>
+    <div class="action-item" onclick="location.href='blog.html'">
+        <img src="https://img.icons8.com/fluency/96/chat.png">
+        <p class="text-xs font-bold text-gray-600">Blog</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-2 gap-3 px-3 mb-4">
+    <div onclick="location.href='service.html'" class="bg-orange-50 p-4 rounded-xl flex items-center justify-between border border-orange-100">
+        <div class="flex items-center gap-2">
+            <img src="https://img.icons8.com/color/48/customer-support.png" class="w-6">
+            <span class="font-bold text-gray-700">Service</span>
+        </div>
+        <i class="fas fa-arrow-right text-orange-400 text-xs"></i>
+    </div>
+    <div onclick="window.location.href='https://t.me/+2kCeWFpP24FmYWE1'" class="bg-green-50 p-4 rounded-xl flex items-center justify-between border border-green-100">
+        <div class="flex items-center gap-2">
+            <img src="https://img.icons8.com/color/48/telegram-app.png" class="w-6">
+            <span class="font-bold text-gray-700">Telegram</span>
+        </div>
+        <i class="fas fa-arrow-right text-green-400 text-xs"></i>
+    </div>
+</div>
+
+<div class="promo-card">
+    <p class="text-gray-500 text-xs font-bold">Promotional Link</p>
+    <div class="flex justify-between items-center mt-1">
+        <span class="text-orange-500 font-bold text-xs truncate mr-2">https://lumo9.ru/?invitation_code=C491D</span>
+        <button onclick="copyLink()" class="bg-orange-500 text-white text-[10px] px-4 py-1 rounded-md font-bold">Copy</button>
+    </div>
+    <p class="text-[10px] text-gray-400 mt-2">Invite a friend and receive a 50 activation reward.</p>
+</div>
+
+<div class="feature-card" onclick="location.href='luckydraw.html'">
+    <div class="flex items-center gap-4">
+        <img src="https://img.icons8.com/color/96/treasure-chest.png" class="w-12">
+        <div>
+            <h4 class="font-bold text-sm">Lucky Draw</h4>
+            <p class="text-[10px] text-gray-400">Chances to win a prize.</p>
+        </div>
+    </div>
+    <button class="bg-yellow-500 text-white text-[10px] px-4 py-1 rounded-full">Go to →</button>
+</div>
+
+<a href="service.html" class="float-service">
+    <img src="https://img.icons8.com/color/48/headset.png" class="w-8">
+</a>
+
+<div class="nav-bottom">
+    <div class="text-center opacity-100" onclick="location.href='index.html'">
+        <i class="fas fa-home text-lg"></i>
+        <p class="text-[10px] mt-1">Home</p>
+    </div>
+    <div class="text-center opacity-60" onclick="location.href='invest.html'">
+        <i class="fas fa-chart-line text-lg"></i>
+        <p class="text-[10px] mt-1">Invest</p>
+    </div>
+    <div class="text-center opacity-60" onclick="location.href='notice.html'">
+        <i class="fas fa-bell text-lg"></i>
+        <p class="text-[10px] mt-1">Notice</p>
+    </div>
+    <div class="text-center opacity-60" onclick="location.href='team.html'">
+        <i class="fas fa-users text-lg"></i>
+        <p class="text-[10px] mt-1">Team</p>
+    </div>
+    <div class="text-center opacity-60" onclick="location.href='my.html'">
+        <i class="fas fa-user text-lg"></i>
+        <p class="text-[10px] mt-1">My</p>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyC7apT-d-R9bpcb4LcpFk4P0cpw9sKxi-0",
+        authDomain: "dbt-online-earning.firebaseapp.com",
+        databaseURL: "https://dbt-online-earning-default-rtdb.firebaseio.com",
+        projectId: "dbt-online-earning",
+        storageBucket: "dbt-online-earning.firebasestorage.app",
+        messagingSenderId: "319083357519",
+        appId: "1:319083357519:web:62ccf6d8ce0dca3152513a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const userPhone = localStorage.getItem('userPhone');
+
+    if (userPhone) {
+        const balanceRef = ref(db, 'users/' + userPhone + '/balance');
+        onValue(balanceRef, (snapshot) => {
+            const bal = snapshot.val();
+            const finalBal = (bal !== null && bal !== undefined) ? bal : 0;
+            const balElement = document.getElementById('rt-balance');
+            if(balElement) {
+                balElement.innerText = parseFloat(finalBal).toFixed(2);
+            }
+        });
+    }
+
+    window.closeModal = function() {
+        document.getElementById('teleModal').style.display = 'none';
+    }
+
+    window.copyLink = function() {
+        const link = "https://lumo9.ru/?invitation_code=C491D";
+        navigator.clipboard.writeText(link);
+        Swal.fire({ icon: 'success', title: 'Copied!', text: 'Link copied to clipboard', timer: 1500, showConfirmButton: false });
+    }
+
+    window.onload = () => {
+        document.getElementById('teleModal').style.display = 'flex';
+    };
+</script>
+
+</body>
+</html>
