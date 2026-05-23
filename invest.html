@@ -79,7 +79,6 @@
     <div class="wallet-card">
         <div class="wallet-info">
             <h3>Current Balance</h3>
-            <!-- No hardcoding, text completely managed by Firebase hook -->
             <div class="balance">₹<span id="wallet-balance">0.00</span></div>
         </div>
         <div class="wallet-stats">
@@ -118,7 +117,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Your production Web App's Firebase configuration injected successfully
+    // Your production Web App's Firebase configuration
     const firebaseConfig = {
         apiKey: "AIzaSyC7apT-d-R9bpcb4LcpFk4P0cpw9sKxi-0",
         authDomain: "dbt-online-earning.firebaseapp.com",
@@ -134,13 +133,15 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Global Component Memory Buffers
-    let globalWalletBalance = 0.00;
+    // Global Fallback & Component Memory Buffers
+    // Dashboard balance directly fetched if firebase takes time to hand-shake
+    let backupLocalBalance = localStorage.getItem('mob_wallet') !== null ? parseFloat(localStorage.getItem('mob_wallet')) : 0.00;
+    let globalWalletBalance = backupLocalBalance; 
     let productsArray = [];
     let userInvestmentsArray = [];
     let currentCategory = "Daily";
     
-    // Dynamic Session UID Targeter (Takes user session key or defaults to template node)
+    // Dynamic Session UID Targeter (Takes current dashboard user id or defaults to USER_01)
     const userId = localStorage.getItem('current_user_id') || "USER_01"; 
 
     // Visual Bind Hooks
@@ -151,21 +152,33 @@
     const expiredChipsContainer = document.getElementById('expiredChipsContainer');
     const ownedHighlightArea = document.getElementById('ownedHighlightArea');
 
+    // Bootstrap initial view with backup storage values instantly so screen doesn't stay 0.00
+    walletBal.innerText = globalWalletBalance.toFixed(2);
+
     // --- 1. REAL-TIME ACCOUNT BALANCE SYNC ENGINE ---
     const userRef = ref(db, 'users/' + userId);
     onValue(userRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
-            globalWalletBalance = parseFloat(data.balance) || 0.00;
+            globalWalletBalance = parseFloat(data.balance);
+            if (isNaN(globalWalletBalance)) globalWalletBalance = 0.00;
+            
             userInvestmentsArray = data.investments ? Object.values(data.investments) : [];
             
-            // Render back values to user layout without delays or local caching glitches
+            // Sync backward compatibility to dashboard local vars
+            localStorage.setItem('mob_wallet', globalWalletBalance);
             walletBal.innerText = globalWalletBalance.toFixed(2);
             calculateActiveInvestmentSum();
             renderUserPortfolio();
         } else {
-            walletBal.innerText = "0.00";
+            // Auto initialization bucket if user node is missing in database tree
+            set(ref(db, 'users/' + userId), {
+                balance: backupLocalBalance,
+                investments: {}
+            });
         }
+    }, (error) => {
+        console.log("Firebase direct block rules activated. Shifting to local view pipeline.", error);
     });
 
     // --- 2. LIVE DASHBOARD MARKETPLACE PRODUCTS FEEDER ---
@@ -179,6 +192,8 @@
             });
         }
         renderMarketplace();
+    }, (error) => {
+        marketplaceContainer.innerHTML = `<p style="font-size:12px; text-align:center; color:var(--text-muted); padding:20px;">Database configuration error or rule denial.</p>`;
     });
 
     function calculateActiveInvestmentSum() {
@@ -196,7 +211,7 @@
             let lastPlan = currentRunningPlans[currentRunningPlans.length - 1];
             ownedHighlightArea.innerHTML = `
                 <div class="user-owned-header">
-                    👑 <b>My Active Product:</b> ${lastPlan.heading} is live and linked to your session.
+                    👑 <b>My Active Product:</b> ${lastPlan.heading} is active on server lines.
                 </div>
             `;
         }
@@ -215,7 +230,7 @@
         let filtered = productsArray.filter(p => p.category === currentCategory);
 
         if(filtered.length === 0) {
-            marketplaceContainer.innerHTML = `<p style="font-size:12px; text-align:center; color:var(--text-muted); padding:20px;">No listed products found matching this filter tier.</p>`;
+            marketplaceContainer.innerHTML = `<p style="font-size:12px; text-align:center; color:var(--text-muted); padding:20px;">No products listed inside admin panel database node.</p>`;
             return;
         }
 
@@ -249,7 +264,7 @@
         
         let cost = parseFloat(product.price);
         if (globalWalletBalance < cost) {
-            alert("Transaction Blocked: Insufficient Balance inside live node account.");
+            alert("Transaction Blocked: Insufficient Balance.");
             return;
         }
 
@@ -338,7 +353,7 @@
         });
 
         if (activeCount === 0) {
-            activePortfolioContainer.innerHTML = `<p style="font-size:11px; text-align:center; color:var(--text-muted); padding:8px;">No dynamic ledger active stream found.</p>`;
+            activePortfolioContainer.innerHTML = `<p style="font-size:11px; text-align:center; color:var(--text-muted); padding:8px;">No active investments found.</p>`;
         }
         if (expiredChipsContainer.children.length === 0) {
             expiredChipsContainer.innerHTML = `<div class="expired-chip">No historic entries.</div>`;
@@ -361,6 +376,7 @@
         update(ref(db), claimUpdates);
     };
 
+    // Fast interval clock to track precision updates on screen interface
     setInterval(() => {
         renderUserPortfolio();
     }, 1000);
