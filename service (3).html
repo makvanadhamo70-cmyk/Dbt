@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Help Center</title>
+    <!-- Core Framework Assets -->
+    <link rel="stylesheet" href="/public/v21/layui/css/layui.css">
+    <link rel="stylesheet" href="/public/v21/css/common.css">
+    <!-- Tailwind CSS for Modern UI Layout -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap');
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f8fafc;
+        }
+        .header-bg {
+            background: linear-gradient(180deg, #1e3a8a 0%, #3b82f6 100%);
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+    </style>
+</head>
+<body class="pb-10">
+
+    <!-- TOP BLUE HEADER SECTION WITH LANGUAGE SWITCHER -->
+    <div class="header-bg w-full pt-6 pb-20 px-4 relative shadow-md">
+        <div class="max-w-md mx-auto flex items-center justify-between text-white">
+            <a href="javascript:history.back(-1)" class="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 active:scale-95 transition-transform">
+                <i class="layui-icon layui-icon-left text-xl font-bold"></i>
+            </a>
+            <h1 id="pageTitle" class="text-xl font-bold tracking-wide">Help Center</h1>
+            
+            <!-- Language Dropdown -->
+            <div class="relative inline-block text-left">
+                <select id="langSelect" onchange="switchLanguage()" class="bg-white/20 text-white text-xs font-bold rounded-lg px-2 py-1.5 border border-white/30 focus:outline-none cursor-pointer">
+                    <option value="en" class="text-slate-900 font-semibold">English</option>
+                    <option value="hi" class="text-slate-900 font-semibold">हिन्दी (Hindi)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN INTERACTIVE WRAPPER -->
+    <main class="max-w-md mx-auto px-4 -mt-12 relative z-10 space-y-5">
+        
+        <!-- QUICK ACTION SUPPORT BUTTONS -->
+        <div class="glass-card rounded-3xl p-5 shadow-xl grid grid-cols-2 gap-4 text-center">
+            <!-- Telegram Support Link -->
+            <a href="https://t.me/Dbtreliance_Support" target="_blank" class="flex flex-col items-center justify-center p-3 rounded-2xl hover:bg-slate-50 active:scale-95 transition-transform">
+                <div class="w-14 h-14 bg-[#24A1DE]/10 rounded-full flex items-center justify-center mb-2">
+                    <svg class="w-8 h-8 text-[#24A1DE]" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-1-.65-.35-1 .22-1.62.15-.15 2.71-2.48 2.76-2.7.01-.03.01-.14-.05-.2-.06-.06-.14-.04-.2-.03-.08.01-1.29.82-3.65 2.42-.35.24-.66.35-.94.34-.31 0-.91-.17-1.35-.32-.54-.18-.97-.28-.93-.59.02-.16.24-.33.66-.51 2.58-1.12 4.31-1.86 5.17-2.22 2.46-1 2.97-1.17 3.31-1.18.07 0 .24.02.35.1.09.07.12.16.13.26 0 .05-.01.13-.02.2z"/>
+                    </svg>
+                </div>
+                <span id="tgLabel" class="text-slate-800 font-bold text-sm">Telegram Support</span>
+            </a>
+
+            <!-- Online Service Card - Using JavaScript Force Redirect -->
+            <div onclick="redirectToService()" class="flex flex-col items-center justify-center p-3 rounded-2xl hover:bg-slate-50 active:scale-95 transition-transform cursor-pointer focus:outline-none">
+                <div class="w-14 h-14 bg-amber-500/10 rounded-full flex items-center justify-center mb-2 text-amber-500">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a4 4 0 01-8 0M5 11a4 4 0 018 0"></path>
+                    </svg>
+                </div>
+                <span id="osLabel" class="text-slate-800 font-bold text-sm">Online Service</span>
+            </div>
+        </div>
+
+        <!-- COMPANY PROFILE / ABOUT US SECTION -->
+        <div id="companyBox" class="bg-white rounded-2xl p-5 shadow-md border border-slate-100 space-y-3">
+            <div class="flex items-center gap-2 text-blue-600">
+                <i class="layui-icon layui-icon-about text-xl font-bold"></i>
+                <h3 id="aboutTitle" class="text-slate-900 font-extrabold text-base">About Our Company</h3>
+            </div>
+            <p id="aboutDesc" class="text-slate-500 text-xs leading-relaxed font-medium">
+                Welcome to our premium official platform. We are dedicated to delivering top-tier service security, transparent transactional parameters, and high-speed network infrastructure configurations. Our customer satisfaction is anchored on continuous operational growth parameters.
+            </p>
+        </div>
+
+    </main>
+
+    <!-- CORE SCRIPT LOADERS -->
+    <script src="/public/v21/layui/layui.js"></script>
+    <script>
+        let currentLang = 'en';
+
+        // Language Translation Packs Dictionary Matrix
+        const dictionary = {
+            en: {
+                title: "Help Center",
+                tg: "Telegram Support",
+                os: "Online Service",
+                aboutTitle: "About Our Company",
+                aboutDesc: "Welcome to our premium official platform. We are dedicated to delivering top-tier service security, transparent transactional parameters, and high-speed network infrastructure configurations. Our customer satisfaction is anchored on continuous operational growth parameters."
+            },
+            hi: {
+                title: "सहायता केंद्र",
+                tg: "टेलीग्राम सहायता",
+                os: "ऑनलाइन सेवा",
+                aboutTitle: "हमारी कंपनी के बारे में",
+                aboutDesc: "हमारे प्रीमियम आधिकारिक प्लेटफॉर्म पर आपका स्वागत है। हम शीर्ष स्तर की सेवा सुरक्षा, पारदर्शी लेनदेन पैरामीटर और उच्च गति नेटवर्क बुनियादी ढांचा प्रदान करने के लिए समर्पित हैं। हमारी ग्राहक संतुष्टि निरंतर परिचालन विकास पर आधारित है।"
+            }
+        };
+
+        // JavaScript Function for Instant Forced Redirect
+        function redirectToService() {
+            window.location.href = "oservice.html";
+        }
+
+        // Language Switch Translation Engine
+        function switchLanguage() {
+            currentLang = document.getElementById('langSelect').value;
+            
+            // Page elements text string translations
+            document.getElementById('pageTitle').textContent = dictionary[currentLang].title;
+            document.getElementById('tgLabel').textContent = dictionary[currentLang].tg;
+            document.getElementById('osLabel').textContent = dictionary[currentLang].os;
+            document.getElementById('aboutTitle').textContent = dictionary[currentLang].aboutTitle;
+            document.getElementById('aboutDesc').textContent = dictionary[currentLang].aboutDesc;
+        }
+    </script>
+</body>
+</html>

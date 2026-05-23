@@ -1,100 +1,949 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Balance Monitor</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --background: #f8fafc;
-            --text-main: #0f172a;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: var(--background); color: var(--text-main); padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .container { width: 100%; max-width: 450px; }
+<title>Investment Plans</title>
 
-        /* --- LIVE WALLET PANEL --- */
-        .wallet-card {
-            background: linear-gradient(135deg, #0b132b, #1c2541);
-            padding: 24px; border-radius: 24px; color: white;
-            box-shadow: 0 12px 30px rgba(11, 19, 43, 0.2);
-            text-align: center;
-        }
-        .wallet-card h3 { font-size: 13px; text-transform: uppercase; color: #94a3b8; letter-spacing: 1px; margin-bottom: 8px; }
-        
-        .balance-display { font-size: 38px; font-weight: 800; color: #ffffff; letter-spacing: -0.5px; }
-        .currency-symbol { color: #38bdf8; margin-right: 2px; }
-        
-        .status-badge { display: inline-block; background: rgba(34, 197, 94, 0.1); color: #22c55e; font-size: 11px; padding: 4px 12px; border-radius: 50px; margin-top: 12px; font-weight: 700; }
-        .user-path-tag { font-size: 11px; color: #64748b; margin-top: 8px; font-weight: 600; display: block; }
-    </style>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+    --primary:#104B91;
+    --primary2:#1e40af;
+    --success:#16a34a;
+    --warning:#ea580c;
+    --bg:#f4f7fb;
+    --surface:#ffffff;
+    --text:#0f172a;
+    --muted:#64748b;
+    --border:#e2e8f0;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Plus Jakarta Sans',sans-serif;
+}
+
+body{
+    background:var(--bg);
+    padding:12px;
+    color:var(--text);
+    padding-bottom:100px;
+}
+
+.container{
+    max-width:500px;
+    margin:auto;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+}
+
+/* BALANCE CARD */
+
+.wallet-card{
+    background:linear-gradient(135deg,#0b132b,#1c2541);
+    color:white;
+    border-radius:22px;
+    padding:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+.wallet-info h3{
+    font-size:11px;
+    color:#94a3b8;
+    text-transform:uppercase;
+}
+
+.balance{
+    font-size:30px;
+    font-weight:800;
+    margin-top:5px;
+}
+
+.wallet-stats{
+    text-align:right;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.wallet-stats p{
+    font-size:11px;
+    color:#cbd5e1;
+    margin:0;
+}
+
+.inv-amount{
+    font-size:16px;
+    font-weight:800;
+    color:#38bdf8;
+}
+
+.earn-amount{
+    font-size:16px;
+    font-weight:800;
+    color:#34d399;
+}
+
+/* CUSTOM ALERT DESIGN */
+.custom-alert {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0f172a;
+    color: white;
+    padding: 14px 24px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    z-index: 9999;
+    font-weight: 700;
+    font-size: 14px;
+    transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-left: 4px solid var(--primary);
+    width: 90%;
+    max-width: 400px;
+}
+.custom-alert.show { top: 20px; }
+.custom-alert.alert-success { border-left-color: var(--success); }
+.custom-alert.alert-error { border-left-color: #ef4444; }
+
+/* CATEGORY */
+
+.tabs{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:5px;
+    background:#e2e8f0;
+    padding:4px;
+    border-radius:12px;
+}
+
+.tab-btn{
+    border:none;
+    padding:10px;
+    border-radius:8px;
+    font-weight:700;
+    cursor:pointer;
+    background:transparent;
+    color:#475569;
+}
+
+.tab-btn.active{
+    background:white;
+    color:var(--primary);
+}
+
+/* PRODUCTS */
+
+.product-list{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.product-card{
+    background:white;
+    border-radius:18px;
+    padding:16px;
+    border:1px solid var(--border);
+    box-shadow:0 2px 8px rgba(0,0,0,0.03);
+    overflow:hidden;
+}
+
+.product-img{
+    width:100%;
+    height:140px;
+    object-fit:cover;
+    border-radius:12px;
+    margin-bottom:12px;
+    background:#e2e8f0;
+}
+
+.product-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.product-name{
+    font-size:16px;
+    font-weight:800;
+}
+
+.price{
+    font-size:18px;
+    font-weight:800;
+    color:var(--primary);
+}
+
+.row{
+    display:flex;
+    justify-content:space-between;
+    margin-top:8px;
+    font-size:12px;
+}
+
+.label{
+    color:var(--muted);
+}
+
+.value{
+    font-weight:700;
+}
+
+.buy-btn{
+    width:100%;
+    margin-top:14px;
+    border:none;
+    background:linear-gradient(135deg,var(--primary),var(--primary2));
+    color:white;
+    padding:12px;
+    border-radius:10px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+/* PORTFOLIO */
+
+.portfolio{
+    background:white;
+    border-radius:18px;
+    padding:16px;
+    border:1px solid var(--border);
+}
+
+.portfolio-title{
+    font-size:14px;
+    font-weight:800;
+    margin-bottom:12px;
+}
+
+.investment-card{
+    background:#f8fafc;
+    border-left:4px solid var(--primary);
+    border-radius:12px;
+    padding:12px;
+    margin-bottom:10px;
+}
+
+.claim-btn{
+    width:100%;
+    margin-top:10px;
+    border:none;
+    background:var(--success);
+    color:white;
+    padding:10px;
+    border-radius:8px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.claim-btn:disabled {
+    background: #cbd5e1;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
+
+.timer-text {
+    font-size: 12px;
+    color: var(--warning);
+    font-weight: 700;
+    margin-top: 6px;
+    text-align: left;
+}
+
+.no-data{
+    text-align:center;
+    padding:20px;
+    font-size:12px;
+    color:#64748b;
+}
+
+</style>
 </head>
+
 <body>
 
-<div class="container">
-    <div class="wallet-card">
-        <h3>Current Real-Time Balance</h3>
-        <!-- Firebase balance data mounts instantly here -->
-        <div class="balance-display"><span class="currency-symbol">₹</span><span id="wallet-balance">Loading...</span></div>
-        <div class="status-badge">● Engine Online</div>
-        <span class="user-path-tag" id="active-path-view">Targeting Node...</span>
-    </div>
+<!-- CUSTOM POPUP ALERT ELEMENT -->
+<div id="toastAlert" class="custom-alert">
+    <span id="toastMessage">Notification Message</span>
 </div>
 
-<!-- FIREBASE CONNECTION INTERFACE -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+<div class="container">
 
-    // Core Project Database Credentials
-    const firebaseConfig = {
-        apiKey: "AIzaSyC7apT-d-R9bpcb4LcpFk4P0cpw9sKxi-0",
-        authDomain: "dbt-online-earning.firebaseapp.com",
-        databaseURL: "https://dbt-online-earning-default-rtdb.firebaseio.com",
-        projectId: "dbt-online-earning",
-        storageBucket: "dbt-online-earning.firebasestorage.app",
-        messagingSenderId: "319083357519",
-        appId: "1:319083357519:web:62ccf6d8ce0dca3152513a",
-        measurementId: "G-7SLFPL3X1V"
+    <!-- BALANCE -->
+
+    <div class="wallet-card">
+
+        <div class="wallet-info">
+            <h3>Current Balance</h3>
+            <div class="balance">
+                ₹<span id="wallet-balance">0.00</span>
+            </div>
+        </div>
+
+        <div class="wallet-stats">
+            <div>
+                <p>Total Investment</p>
+                <div class="inv-amount">₹<span id="total-investment">0.00</span></div>
+            </div>
+            <div>
+                <p>Total Earnings</p>
+                <div class="earn-amount">₹<span id="active-investment">0.00</span></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- PORTFOLIO -->
+
+    <div class="portfolio">
+
+        <div class="portfolio-title">
+            💼 My Active Portfolio
+        </div>
+
+        <div id="portfolioContainer"></div>
+
+    </div>
+
+    <!-- TABS -->
+
+    <div class="tabs">
+
+        <button class="tab-btn active" id="tab-Daily">
+            Daily
+        </button>
+
+        <button class="tab-btn" id="tab-Weekly">
+            Weekly
+        </button>
+
+        <button class="tab-btn" id="tab-Long">
+            Long
+        </button>
+
+    </div>
+
+    <!-- PRODUCTS -->
+
+    <div class="product-list" id="productsContainer">
+
+        <div class="no-data">
+            Loading Products...
+        </div>
+
+    </div>
+
+</div>
+
+<script type="module">
+
+/* FIREBASE */
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+import {
+    getDatabase,
+    ref,
+    onValue,
+    update
+}
+from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+/* CONFIG */
+
+const firebaseConfig = {
+    apiKey: "AIzaSyC7apT-d-R9bpcb4LcpFk4P0cpw9sKxi-0",
+    authDomain: "dbt-online-earning.firebaseapp.com",
+    databaseURL: "https://dbt-online-earning-default-rtdb.firebaseio.com",
+    projectId: "dbt-online-earning",
+    storageBucket: "dbt-online-earning.firebasestorage.app",
+    messagingSenderId: "319083357519",
+    appId: "1:319083357519:web:62ccf6d8ce0dca3152513a",
+    measurementId: "G-7SLFPL3X1V"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getDatabase(app);
+
+/* USER */
+
+const userId =
+    localStorage.getItem("userPhone");
+
+/* DOM */
+
+const walletBalance =
+    document.getElementById("wallet-balance");
+
+const totalInvestment =
+    document.getElementById("total-investment");
+
+const activeInvestment =
+    document.getElementById("active-investment");
+
+const productsContainer =
+    document.getElementById("productsContainer");
+
+const portfolioContainer =
+    document.getElementById("portfolioContainer");
+
+/* CUSTOM NOTIFICATION ALERT TRIGGER */
+function showAlert(message, type = "success") {
+    const toast = document.getElementById("toastAlert");
+    const msgSpan = document.getElementById("toastMessage");
+    
+    msgSpan.innerText = message;
+    toast.className = "custom-alert show " + (type === "success" ? "alert-success" : "alert-error");
+    
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2500);
+}
+
+/* VARIABLES */
+
+let globalBalance = 0;
+
+let productsArray = [];
+
+let investmentsArray = [];
+
+let currentCategory = "Daily";
+
+let timerIntervals = [];
+
+/* REALTIME USER */
+
+const userRef =
+    ref(db, `users/${userId}`);
+
+onValue(userRef, (snapshot)=>{
+
+    const data = snapshot.val();
+
+    if(data){
+
+        /* WALLET BALANCE RESTORED WORKING */
+
+        globalBalance =
+            parseFloat(data.balance) || 0;
+
+        walletBalance.innerText =
+            globalBalance.toFixed(2);
+
+        /* INVESTMENTS ARRAY FETCH */
+
+        investmentsArray = data.investments 
+            ? Object.keys(data.investments).map(key => ({ id: key, ...data.investments[key] })) 
+            : [];
+
+        /* CALC TOTAL INVESTMENT (ONLY RUNNING ACTIVE PLANS) */
+        let totalInvSum = investmentsArray
+            .filter(i => i.status === "RUNNING")
+            .reduce((acc, curr) => acc + (parseFloat(curr.price) || 0), 0);
+        
+        totalInvestment.innerText = totalInvSum.toFixed(2);
+
+        /* TOTAL REALTIME EARNINGS SUM (ALL BOUGHT PLANS RETURN) */
+
+        let totalEarningsSum =
+            investmentsArray
+            .reduce((acc,curr)=>
+                acc + (parseFloat(curr.totalClaimed) || 0),0);
+
+        activeInvestment.innerText =
+            totalEarningsSum.toFixed(2);
+
+        renderPortfolio();
+
+    } else {
+        walletBalance.innerText = "0.00";
+        totalInvestment.innerText = "0.00";
+        activeInvestment.innerText = "0.00";
+        portfolioContainer.innerHTML = `<div class="no-data">No Active Investments</div>`;
+    }
+
+});
+
+/* REALTIME PRODUCTS */
+
+const productsRef =
+    ref(db, "products");
+
+onValue(productsRef, (snapshot)=>{
+
+    const data = snapshot.val();
+
+    productsArray = [];
+
+    if(data){
+
+        Object.keys(data).forEach((key)=>{
+
+            productsArray.push({
+
+                id:key,
+                ...data[key]
+
+            });
+
+        });
+
+    }
+
+    renderProducts();
+
+});
+
+/* RENDER PRODUCTS */
+
+function renderProducts(){
+
+    productsContainer.innerHTML = "";
+
+    let filtered =
+        productsArray.filter(
+            p => p.category === currentCategory
+        );
+
+    if(filtered.length === 0){
+
+        productsContainer.innerHTML =
+        `<div class="no-data">
+            No Products Found
+        </div>`;
+
+        return;
+
+    }
+
+    filtered.forEach(product=>{
+
+        let total =
+            parseFloat(product.dailyIncome) * parseFloat(product.revenue);
+
+        let imageUrl = product.imgUrl || "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=500&auto=format&fit=crop&q=60";
+
+        const card = `
+
+        <div class="product-card">
+
+            <img src="${imageUrl}" class="product-img" alt="Plan Image">
+
+            <div class="product-top">
+
+                <div class="product-name">
+                    ${product.heading}
+                </div>
+
+                <div class="price">
+                    ₹${product.price}
+                </div>
+
+            </div>
+
+            <div class="row">
+                <span class="label">
+                    Daily Income
+                </span>
+
+                <span class="value">
+                    ₹${product.dailyIncome}
+                </span>
+            </div>
+
+            <div class="row">
+                <span class="label">
+                    Duration
+                </span>
+
+                <span class="value">
+                    ${product.revenue} ${product.timeUnit}
+                </span>
+            </div>
+
+            <div class="row">
+                <span class="label">
+                    Total Return
+                </span>
+
+                <span class="value">
+                    ₹${total}
+                </span>
+            </div>
+
+            <button
+                class="buy-btn"
+                data-id="${product.id}">
+                Buy Now (₹${product.price})
+            </button>
+
+        </div>
+
+        `;
+
+        productsContainer.insertAdjacentHTML(
+            "beforeend",
+            card
+        );
+
+    });
+
+    document.querySelectorAll(".buy-btn")
+    .forEach(btn=>{
+
+        btn.addEventListener("click",(e)=>{
+
+            buyProduct(
+                e.target.dataset.id
+            );
+
+        });
+
+    });
+
+}
+
+/* BUY PRODUCT */
+
+function buyProduct(productId){
+
+    let product =
+        productsArray.find(
+            p => p.id === productId
+        );
+
+    if(!product) return;
+
+    let cost =
+        parseFloat(product.price);
+
+    /* LOW BALANCE CHECK */
+
+    if(globalBalance < cost){
+
+        showAlert("Insufficient Balance in Wallet!", "error");
+
+        return;
+
+    }
+
+    /* NEW BALANCE LOGIC */
+
+    let updatedBalance =
+        globalBalance - cost;
+
+    /* TRANSACTION ID */
+
+    let txnId =
+        "TXN-" + Date.now();
+
+    let currentTime = Date.now();
+
+    let investment = {
+
+        heading:product.heading,
+
+        price:product.price,
+
+        dailyIncome:
+            parseFloat(product.dailyIncome),
+
+        totalReturn:
+            parseFloat(product.dailyIncome) * parseFloat(product.revenue),
+
+        timeUnit: product.timeUnit || "Days",
+
+        revenue: parseFloat(product.revenue),
+
+        buyTime: currentTime,
+
+        lastClaimTime: currentTime,
+
+        totalClaimed: 0,
+
+        status:"RUNNING"
+
     };
 
-    // Firebase App & Database Instance boot up
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    const updates = {};
 
-    // Dynamic User Route Selector
-    // Dashboard storage se session user uthayega, nahi to fallback "USER_01" use karega
-    const activeSessionUser = localStorage.getItem('current_user_id') || "USER_01"; 
+    /* UPDATE BALANCE FOR NODE */
 
-    // Visual elements hooks
-    const balanceElement = document.getElementById('wallet-balance');
-    const pathViewElement = document.getElementById('active-path-view');
+    updates[`users/${userId}/balance`] =
+        updatedBalance;
 
-    // Display targeted route on screen for easy testing
-    pathViewElement.innerText = `Path: users / ${activeSessionUser} / balance`;
+    /* SAVE INVESTMENT DATA */
 
-    // --- PURE REAL-TIME DATA PIPELINE ---
-    // Seedhe designated user path se target key field ko access karega
-    const userBalanceDataRef = ref(db, `users/${activeSessionUser}/balance`);
-    
-    onValue(userBalanceDataRef, (snapshot) => {
-        const liveSnapshotValue = snapshot.val();
-        
-        if (liveSnapshotValue !== null && liveSnapshotValue !== undefined) {
-            // Numeric validation & standard float formatting 
-            let processedNumericValue = parseFloat(liveSnapshotValue);
-            balanceElement.innerText = processedNumericValue.toFixed(2);
-        } else {
-            // Null state recovery handler
-            balanceElement.innerText = "0.00";
-        }
-    }, (error) => {
-        console.error("Firebase Security Policy / Network Error: ", error);
-        balanceElement.innerText = "Sync Failed";
+    updates[`users/${userId}/investments/${txnId}`] =
+        investment;
+
+    update(ref(db), updates);
+
+    showAlert("Investment Plan Purchased Successfully!");
+
+}
+
+/* PORTFOLIO Layout */
+
+function renderPortfolio(){
+
+    timerIntervals.forEach(clearInterval);
+    timerIntervals = [];
+
+    portfolioContainer.innerHTML = "";
+
+    let running =
+        investmentsArray.filter(
+            i => i.status === "RUNNING"
+        );
+
+    if(running.length === 0){
+
+        portfolioContainer.innerHTML =
+        `<div class="no-data">
+            No Active Investments
+        </div>`;
+
+        return;
+
+    }
+
+    running.forEach(inv=>{
+
+        const card = `
+
+        <div class="investment-card">
+
+            <div class="product-top">
+
+                <div class="product-name">
+                    ${inv.heading}
+                </div>
+
+                <div class="price">
+                    ₹${inv.price}
+                </div>
+
+            </div>
+
+            <div class="row">
+                <span class="label">
+                    Total Return
+                </span>
+
+                <span class="value">
+                    ₹${inv.totalReturn}
+                </span>
+            </div>
+
+            <div class="row">
+                <span class="label">
+                    Total Claimed
+                </span>
+
+                <span class="value" style="color:var(--success);">
+                    ₹${parseFloat(inv.totalClaimed || 0).toFixed(2)}
+                </span>
+            </div>
+
+            <div class="timer-text" id="timer-${inv.id}">Next claim in: --:--</div>
+
+            <button
+                class="claim-btn"
+                id="btn-claim-${inv.id}"
+                data-id="${inv.id}"
+                disabled>
+                Claim Income
+            </button>
+
+        </div>
+
+        `;
+
+        portfolioContainer.insertAdjacentHTML(
+            "beforeend",
+            card
+        );
+
+        startClaimTimer(inv);
+
     });
+
+    document.querySelectorAll(".claim-btn")
+    .forEach(btn=>{
+
+        btn.replaceWith(btn.cloneNode(true));
+
+    });
+
+    document.querySelectorAll(".claim-btn")
+    .forEach(btn=>{
+
+        btn.addEventListener("click",(e)=>{
+
+            let id = e.target.dataset.id;
+            let inv = investmentsArray.find(i => i.id === id);
+            if(inv) claimIncome(inv);
+
+        });
+
+    });
+
+}
+
+/* TIMER SYSTEM LOGIC */
+function startClaimTimer(inv) {
+    const timerElement = document.getElementById(`timer-${inv.id}`);
+    const buttonElement = document.getElementById(`btn-claim-${inv.id}`);
+    
+    if(!timerElement || !buttonElement) return;
+
+    let claimIntervalMs = 24 * 60 * 60 * 1000; 
+    
+    if (inv.timeUnit === "1 Hours" || inv.timeUnit === "Hours") {
+        claimIntervalMs = 10 * 60 * 1000; 
+    } else if (inv.timeUnit === "Days" && parseFloat(inv.revenue) === 1) {
+        claimIntervalMs = 1 * 60 * 60 * 1000; 
+    }
+
+    function updateCountdown() {
+        let now = Date.now();
+        let lastClaim = inv.lastClaimTime || inv.buyTime;
+        let nextClaimTarget = lastClaim + claimIntervalMs;
+        let diff = nextClaimTarget - now;
+
+        if (diff <= 0) {
+            timerElement.innerText = "✨ Income is ready to claim!";
+            timerElement.style.color = "var(--success)";
+            buttonElement.removeAttribute("disabled");
+        } else {
+            buttonElement.setAttribute("disabled", "true");
+            
+            let seconds = Math.floor((diff / 1000) % 60);
+            let minutes = Math.floor((diff / (1000 * 60)) % 60);
+            let hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            
+            let timeString = "";
+            if (hours > 0) timeString += `${hours}h `;
+            timeString += `${minutes}m ${seconds}s`;
+            
+            timerElement.innerText = `Next claim in: ${timeString}`;
+            timerElement.style.color = "var(--warning)";
+        }
+    }
+
+    updateCountdown();
+    let intId = setInterval(updateCountdown, 1000);
+    timerIntervals.push(intId);
+}
+
+/* CLAIM SYSTEM */
+
+function claimIncome(inv){
+
+    let totalIncomeExpected = parseFloat(inv.totalReturn);
+    let totalClaimedTillNow = parseFloat(inv.totalClaimed) || 0;
+    let standardDailyIncome = parseFloat(inv.dailyIncome);
+    
+    let claimChunkAmount = standardDailyIncome;
+
+    if (inv.timeUnit === "1 Hours" || inv.timeUnit === "Hours") {
+        let totalChunks = parseFloat(inv.revenue) * 6;
+        claimChunkAmount = totalIncomeExpected / totalChunks;
+    } else if (inv.timeUnit === "Days" && parseFloat(inv.revenue) === 1) {
+        claimChunkAmount = totalIncomeExpected / 24;
+    }
+
+    if (totalClaimedTillNow + claimChunkAmount > totalIncomeExpected) {
+        claimChunkAmount = totalIncomeExpected - totalClaimedTillNow;
+    }
+
+    if(claimChunkAmount <= 0) {
+        showAlert("This plan is fully matured!", "error");
+        return;
+    }
+
+    let newClaimTotal = totalClaimedTillNow + claimChunkAmount;
+    let updatedBalance = globalBalance + claimChunkAmount;
+
+    const updates = {};
+
+    updates[`users/${userId}/balance`] = updatedBalance;
+    updates[`users/${userId}/investments/${inv.id}/lastClaimTime`] = Date.now();
+    updates[`users/${userId}/investments/${inv.id}/totalClaimed`] = newClaimTotal;
+
+    if (newClaimTotal >= totalIncomeExpected) {
+        updates[`users/${userId}/investments/${inv.id}/status`] = "SETTLED";
+    }
+
+    update(ref(db), updates);
+    showAlert(`₹${claimChunkAmount.toFixed(2)} Asset Income Claimed!`);
+
+}
+
+/* TABS TRIGGER */
+
+function switchCategory(cat){
+
+    currentCategory = cat;
+
+    document.querySelectorAll(".tab-btn")
+    .forEach(btn=>{
+
+        btn.classList.remove("active");
+
+    });
+
+    document
+    .getElementById(`tab-${cat}`)
+    .classList.add("active");
+
+    renderProducts();
+
+}
+
+document
+.getElementById("tab-Daily")
+.addEventListener("click",()=>{
+
+    switchCategory("Daily");
+
+});
+
+document
+.getElementById("tab-Weekly")
+.addEventListener("click",()=>{
+
+    switchCategory("Weekly");
+
+});
+
+document
+.getElementById("tab-Long")
+.addEventListener("click",()=>{
+
+    switchCategory("Long");
+
+});
+
 </script>
 
 </body>

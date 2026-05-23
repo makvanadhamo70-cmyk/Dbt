@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Online Service</title>
+    <!-- Core Framework Assets -->
+    <link rel="stylesheet" href="/public/v21/layui/css/layui.css">
+    <link rel="stylesheet" href="/public/v21/css/common.css">
+    <!-- Tailwind CSS for Layout Architecture -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap');
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f4f6f9;
+        }
+        /* Top Navigation Panel Style Inspired by 1000068429.jpg */
+        .chat-header {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+        .active-pulse {
+            width: 10px;
+            height: 10px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px #22c55e;
+        }
+        /* Custom scrollbar adjustments */
+        .chat-stream::-webkit-scrollbar {
+            width: 4px;
+        }
+        .chat-stream::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 99px;
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen overflow-hidden">
+
+    <!-- FIXED MAIN HEADER SYSTEM -->
+    <header class="chat-header text-white px-4 pt-4 pb-4 flex flex-col gap-3 z-50 flex-shrink-0">
+        <!-- Top Navigation Row -->
+        <div class="flex items-center justify-between w-full max-w-md mx-auto">
+            <a href="javascript:history.back(-1)" class="flex items-center justify-center w-9 h-9 rounded-full bg-white/10 active:scale-95 transition-transform">
+                <i class="layui-icon layui-icon-left text-lg font-bold"></i>
+            </a>
+            <h1 id="headerTitle" class="text-base font-bold tracking-wide">Online Support</h1>
+            
+            <!-- Language Switcher Option Matrix -->
+            <div class="relative inline-block text-left">
+                <select id="langSelect" onchange="toggleLanguage()" class="bg-white/20 text-white text-xs font-bold rounded-lg px-2 py-1 border border-white/20 focus:outline-none cursor-pointer">
+                    <option value="en" class="text-slate-900 font-semibold">English</option>
+                    <option value="hi" class="text-slate-900 font-semibold">हिन्दी (Hindi)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Employee Dynamic Profile Bar inspired by 1000068429.jpg layout -->
+        <div class="w-full max-w-md mx-auto flex items-center justify-between bg-white/10 p-3 rounded-2xl backdrop-blur-sm">
+            <div class="flex items-center gap-3">
+                <div class="relative w-12 h-12 rounded-full border-2 border-white/50 overflow-hidden bg-slate-800 shadow-inner">
+                    <img id="employeeAvatar" src="" class="w-full h-full object-cover" alt="Support Agent">
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span id="employeeName" class="font-extrabold text-sm tracking-wide">Contact Our Employee</span>
+                        <span class="active-pulse"></span>
+                    </div>
+                    <p id="workingHoursText" class="text-[11px] text-white/80 font-medium mt-0.5">Working hours: 08:00 - 11:00</p>
+                </div>
+            </div>
+            <!-- Interactive UI Icon indicator element -->
+            <div class="text-white/40">
+                <i class="layui-icon layui-icon-down text-lg"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- CHAT STREAM VIEWPORT CONTAINER -->
+    <main class="flex-1 overflow-y-auto p-4 space-y-4 chat-stream max-w-md w-full mx-auto" id="chatContainer">
+        <!-- Conversation nodes will be appended dynamically via JavaScript runtime engine -->
+    </main>
+
+    <!-- FIXED MESSAGING BOTTOM INPUT PANEL BAR -->
+    <footer class="bg-white border-t border-slate-100 p-3 flex-shrink-0 z-50">
+        <div class="max-w-md mx-auto flex items-center gap-2 bg-slate-50 border border-slate-200/80 rounded-2xl p-1 px-3 focus-within:border-blue-500 focus-within:bg-white transition-all">
+            <!-- Message Input Element field -->
+            <input type="text" id="userMsgInput" placeholder="Type a message..." 
+                   class="flex-1 bg-transparent py-2.5 text-xs font-semibold text-slate-800 placeholder-slate-400 focus:outline-none"
+                   onkeypress="handleKeyPress(event)">
+            
+            <!-- Utility Action Button triggers -->
+            <button onclick="dispatchMessage()" class="bg-blue-600 text-white w-9 h-9 rounded-xl flex items-center justify-center shadow-md active:scale-95 transition-all flex-shrink-0">
+                <i class="layui-icon layui-icon-release text-base font-bold"></i>
+            </button>
+        </div>
+        <!-- Brand footer identifier string signature setup -->
+        <p class="text-center text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-widest">Powered by Official Support</p>
+    </footer>
+
+    <!-- CORE MODULE SCRIPTS INTERACTION FRAMEWORK -->
+    <script src="/public/v21/layui/layui.js"></script>
+    <script>
+        let selectedLang = 'en';
+
+        // High Quality Managed Indian Enterprise Support Employee Directory
+        const supportCrew = [
+            { name: { en: "Aarav Sharma", hi: "आरव शर्मा" }, url: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=200&auto=format&fit=crop" },
+            { name: { en: "Priya Patel", hi: "प्रिया पटेल" }, url: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200&auto=format&fit=crop" },
+            { name: { en: "Rohan Verma", hi: "रोहन वर्मा" }, url: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200&auto=format&fit=crop" },
+            { name: { en: "Ananya Iyer", hi: "अनन्या अय्यर" }, url: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=200&auto=format&fit=crop" },
+            { name: { en: "Vikram Malhotra", hi: "विक्रम मल्होत्रा" }, url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop" }
+        ];
+
+        let activeAgent = supportCrew[0];
+
+        // Language Localization Framework Dictionary Matrix
+        const localizationPack = {
+            en: {
+                title: "Online Support",
+                hours: "Working hours: 08:00 - 11:00",
+                placeholder: "Type a message...",
+                greeting: "Hello Valued Partner! Welcome to our official customer help desk channel. We are highly dedicated to providing transparent transactional verification and seamless security updates for your ecosystem profile parameters today. Please share your operational queries below!",
+                fallback: "1. Thank you for notifying our desk group parameters.\n2. Your query string data has been logged into our audit stream logs.\n3. Please verify account transactions data summaries once again.\n4. Move directly into our manual channel desk for active overrides.",
+                tgLine: "Go to telegram support for more"
+            },
+            hi: {
+                title: "ऑनलाइन सहायता",
+                hours: "कार्य समय: 08:00 - 11:00",
+                placeholder: "अपना संदेश यहाँ टाइप करें...",
+                greeting: "नमस्ते सम्मानित पार्टनर! हमारे आधिकारिक ग्राहक सहायता डेस्क चैनल पर आपका स्वागत है। हम आज आपके इकोसिस्टम प्रोफ़ाइल मापदंडों के लिए पारदर्शी लेनदेन सत्यापन और सहज सुरक्षा अपडेट प्रदान करने के लिए पूरी तरह से समर्पित हैं। कृपया अपने परिचालन संबंधी प्रश्न नीचे साझा करें!",
+                fallback: "1. हमारे डेस्क समूह मापदंडों को सूचित करने के लिए धन्यवाद।\n2. आपके प्रश्न डेटा को हमारे ऑडिट स्ट्रीम लॉग में दर्ज कर लिया गया है।\n3. कृपया एक बार फिर खाता लेनदेन डेटा सारांश सत्यापित करें।\n4. सक्रिय समाधान के लिए सीधे हमारे मैन्युअल चैनल डेस्क पर जाएं।",
+                tgLine: "अधिक जानकारी के लिए टेलीग्राम सपोर्ट पर जाएं"
+            }
+        };
+
+        // Complete 12+ Specialized Multilingual Intent Core Logic Matrix
+        const coreIntentDatabase = [
+            {
+                keywords: ['deposit', 'recharge', 'payin', 'add money', 'पैसे', 'डिपॉजिट', 'रिचार्ज', 'जमा'],
+                en: "1. Check if the asset has properly cleared from your private processing bank.\n2. Make sure you pasted the exact 12-digit structural UTR code correctly onto fields.\n3. Network transaction updates take up to 10-15 minutes processing loops.\n4. If missing, save your clear transaction payment invoice screenshot document safely.",
+                hi: "1. जांचें कि क्या राशि आपके निजी प्रोसेसिंग बैंक से सही तरीके से कट गई है।\n2. सुनिश्चित करें कि आपने फ़ील्ड पर सटीक 12-अंकीय संरचनात्मक UTR कोड सही ढंग से पेस्ट किया है।\n3. नेटवर्क लेनदेन अपडेट में 10-15 मिनट तक का समय लग सकता है।\n4. यदि राशि नहीं जुड़ी है, तो अपने स्पष्ट भुगतान चालान स्क्रीनशॉट दस्तावेज़ को सुरक्षित रखें।"
+            },
+            {
+                keywords: ['withdraw', 'payout', 'bank transfer', 'निकासी', 'विथड्रॉ', 'पैसे निकालना'],
+                en: "1. Standard enterprise compliance checks take 1-3 working hours to complete layout routing.\n2. Re-verify your registered Destination Account configuration parameters and bank routing markers.\n3. Verify your limits clear active promotion turnover requirement thresholds safely.\n4. Return updates safely bounce funds back to your wallet balance parameters immediately.",
+                hi: "1. मानक अनुपालन जांच को पूरा करने में 1-3 कार्य घंटे का समय लगता है।\n2. अपने पंजीकृत गंतव्य खाता कॉन्फ़िगरेशन मापदंडों और बैंक विवरणों को दोबारा सत्यापित करें।\n3. सत्यापित करें कि आपके खाते की सीमाएं सक्रिय टर्नओवर आवश्यकताओं को पूरा करती हैं।\n4. विफल होने पर फंड तुरंत आपके वॉलेट बैलेंस में वापस भेज दिया जाता है।"
+            },
+            {
+                keywords: ['login', 'password', 'sign in', 'लॉक', 'पासवर्ड', 'लॉगिन', 'अकाउंट'],
+                en: "1. Carefully ensure no case formatting parameters or caps lock indicators disrupt verification.\n2. Erase browser cookies storage nodes completely or access your link from a private incognito session.\n3. Do not run excessive false validation attempts to prevent system safety freezes.",
+                hi: "1. सावधानीपूर्वक सुनिश्चित करें कि कोई केस फ़ॉर्मेटिंग पैरामीटर या कैप्स लॉक सत्यापन को बाधित न करे।\n2. ब्राउज़र कुकीज़ को पूरी तरह से साफ़ करें या निजी इनकॉग्निटो सत्र से लिंक खोलें।\n3. सिस्टम सुरक्षा फ़्रीज़ को रोकने के लिए अत्यधिक गलत लॉगिन प्रयासों से बचें।"
+            },
+            {
+                keywords: ['referral', 'invite', 'commission', 'टीम', 'रेफरल', 'कमीशन'],
+                en: "1. Confirm your downline completed user onboarding registration strictly leveraging your link element paths.\n2. Network matrix trees automatically evaluate parameters inside targeted hourly syncing loops.\n3. Commission tier levels scale dynamically alongside valid deployment volumes.",
+                hi: "1. पुष्टि करें कि आपके डाउनलाइन उपयोगकर्ता ने आपके लिंक एलिमेंट पाथ का उपयोग करके ही पंजीकरण पूरा किया है।\n2. नेटवर्क मैट्रिक्स ट्री लक्षित प्रति घंटा सिंकिंग लूप के भीतर मापदंडों का स्वचालित रूप से मूल्यांकन करते हैं।\n3. वैध परिनियोजन मात्रा के साथ कमीशन टियर स्तर गतिशील रूप से स्केल होते हैं।"
+            }
+        ];
+
+        // Page Core Lifecycle Initialization Process Hook
+        window.addEventListener('DOMContentLoaded', () => {
+            // Pick a completely random employee whenever the file initializes or returns back
+            const randomPickIndex = Math.floor(Math.random() * supportCrew.length);
+            activeAgent = supportCrew[randomPickIndex];
+            
+            // Sync View parameters
+            refreshAgentInterface();
+            
+            // Inject Initial Core Welcome Greeting message stream node
+            renderSystemBubble(localizationPack[selectedLang].greeting);
+        });
+
+        function refreshAgentInterface() {
+            document.getElementById('headerTitle').textContent = localizationPack[selectedLang].title;
+            document.getElementById('employeeAvatar').src = activeAgent.url;
+            document.getElementById('employeeName').textContent = activeAgent.name[selectedLang];
+            document.getElementById('workingHoursText').textContent = localizationPack[selectedLang].hours;
+            document.getElementById('userMsgInput').placeholder = localizationPack[selectedLang].placeholder;
+        }
+
+        function toggleLanguage() {
+            selectedLang = document.getElementById('langSelect').value;
+            refreshAgentInterface();
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') {
+                dispatchMessage();
+            }
+        }
+
+        function renderSystemBubble(textData) {
+            const container = document.getElementById('chatContainer');
+            // Core structural UI mimic of chat system bubble item layout node from 1000068429.jpg
+            const bubbleHtml = `
+                <div class="flex gap-2.5 items-start max-w-[88%] mr-auto animate-fade-in">
+                    <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-slate-200 border border-slate-300/40">
+                        <img src="${activeAgent.url}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="bg-white p-3.5 rounded-2xl rounded-tl-none shadow-sm border border-slate-200/60 space-y-2.5">
+                        <p class="text-slate-700 text-xs font-semibold leading-relaxed whitespace-pre-line">${textData}</p>
+                        
+                        <div class="pt-2.5 border-t border-slate-100 text-center">
+                            <a href="https://t.me/Dbtreliance_Support" target="_blank" class="inline-flex items-center gap-1.5 text-[11px] font-bold text-blue-600 hover:opacity-80 transition-opacity">
+                                ${localizationPack[selectedLang].tgLine} ➔
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', bubbleHtml);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function dispatchMessage() {
+            const inputField = document.getElementById('userMsgInput');
+            const cleanText = inputField.value.trim();
+            const normalizedSearchText = cleanText.toLowerCase();
+
+            if (!cleanText) return;
+
+            const container = document.getElementById('chatContainer');
+
+            // Render Outgoing User message Bubble
+            const userBubbleHtml = `
+                <div class="flex gap-2.5 items-start justify-end ml-auto max-w-[85%]">
+                    <div class="bg-blue-600 text-white p-3.5 rounded-2xl rounded-tr-none shadow-sm">
+                        <p class="text-xs font-semibold leading-relaxed">${cleanText}</p>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', userBubbleHtml);
+            inputField.value = ""; // Clear active textbox element
+            container.scrollTop = container.scrollHeight;
+
+            // Compute Intent Parsing Solutions matching algorithms
+            let localizedAnswer = "";
+            for (let targetIntent of coreIntentDatabase) {
+                let checkPresence = targetIntent.keywords.some(keywordToken => normalizedSearchText.includes(keywordToken));
+                if (checkPresence) {
+                    localizedAnswer = targetIntent[selectedLang];
+                    break;
+                }
+            }
+
+            if (!localizedAnswer) {
+                localizedAnswer = localizationPack[selectedLang].fallback;
+            }
+
+            // Simulate server network loading frame intervals for natural execution aesthetics
+            setTimeout(() => {
+                renderSystemBubble(localizedAnswer);
+            }, 350);
+        }
+    </script>
+</body>
+</html>
