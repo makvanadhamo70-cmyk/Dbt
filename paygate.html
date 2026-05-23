@@ -9,10 +9,10 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background: #f0f2f5; font-family: 'sans-serif'; }
-        .qr-box { background: white; border: 2px dashed #cbd5e1; padding: 15px; border-radius: 15px; min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .method-card { border: 1.5px solid #e2e8f0; border-radius: 12px; transition: 0.3s; cursor: pointer; background: white; }
-        .method-card.active { border-color: #2563eb; background: #eff6ff; transform: scale(1.05); }
+        body{ background:#f0f2f5; font-family:sans-serif; }
+        .qr-box{ background:white; border:2px dashed #cbd5e1; padding:15px; border-radius:15px; min-height:250px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+        .method-card{ border:1.5px solid #e2e8f0; border-radius:12px; transition:0.3s; cursor:pointer; background:white; }
+        .method-card.active{ border-color:#2563eb; background:#eff6ff; transform:scale(1.05); }
     </style>
 </head>
 <body class="p-4">
@@ -33,76 +33,149 @@
         </div>
     </div>
 
+    <!-- QR -->
     <div class="qr-box text-center mb-6">
         <p id="qr-instruction" class="text-[10px] text-gray-400 mb-2 font-bold uppercase tracking-widest">Select App to see QR</p>
         <img id="qr-display" src="" class="w-48 h-48 mx-auto mb-2 hidden" alt="QR">
-        <div id="qr-placeholder" class="text-gray-300"><i class="fas fa-qrcode text-6xl"></i></div>
+        <div id="qr-placeholder" class="text-gray-300">
+            <i class="fas fa-qrcode text-6xl"></i>
+        </div>
     </div>
 
+    <!-- APPS -->
     <div class="grid grid-cols-3 gap-3 mb-8">
-        <div class="method-card p-3 text-center app-btn" onclick="setQR('phonepe')">
+        <div class="method-card p-3 text-center app-btn" onclick="setQR('phonepe',event)">
             <img src="https://img.icons8.com/color/48/phone-pe.png" class="w-10 mx-auto">
             <p class="text-[10px] font-bold mt-1">PhonePe</p>
         </div>
-        <div class="method-card p-3 text-center app-btn" onclick="setQR('gpay')">
+        <div class="method-card p-3 text-center app-btn" onclick="setQR('gpay',event)">
             <img src="https://img.icons8.com/color/48/google-pay.png" class="w-10 mx-auto">
             <p class="text-[10px] font-bold mt-1">GPay</p>
         </div>
-        <div class="method-card p-3 text-center app-btn" onclick="setQR('paytm')">
+        <div class="method-card p-3 text-center app-btn" onclick="setQR('paytm',event)">
             <img src="https://img.icons8.com/color/48/paytm.png" class="w-10 mx-auto">
             <p class="text-[10px] font-bold mt-1">Paytm</p>
         </div>
     </div>
 
+    <!-- VERIFY -->
     <div class="bg-blue-900 rounded-2xl p-6 text-white">
-        <input type="number" id="utr-input" placeholder="Enter 12-Digit UTR" 
-            class="w-full bg-white/10 border border-white/20 rounded-xl py-4 px-4 text-white text-center text-lg font-bold outline-none mb-4">
-        <button onclick="verifyPayment()" class="w-full bg-yellow-500 text-blue-900 font-black py-4 rounded-xl">
-            Verify Payment
-        </button>
+        <input type="number" id="utr-input" placeholder="Enter 12-Digit UTR" class="w-full bg-white/10 border border-white/20 rounded-xl py-4 px-4 text-white text-center text-lg font-bold outline-none mb-4">
+        <button onclick="verifyPayment()" class="w-full bg-yellow-500 text-blue-900 font-black py-4 rounded-xl">Verify Payment</button>
     </div>
 </div>
 
-<script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const amount = urlParams.get('amount') || "300";
-    document.getElementById('display-amt').innerText = "₹" + amount;
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, push, set, get, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    function setQR(app) {
-        const qrImg = document.getElementById('qr-display');
-        qrImg.src = app === 'phonepe' ? 'ppqr1.png' : app === 'gpay' ? 'gpqr1.png' : 'pqr1.png';
-        qrImg.classList.remove('hidden');
-        document.getElementById('qr-placeholder').classList.add('hidden');
-        document.querySelectorAll('.method-card').forEach(m => m.classList.remove('active'));
-        event.currentTarget.classList.add('active');
+const firebaseConfig = {
+    apiKey: "AIzaSyC7apT-d-R9bpcb4LcpFk4P0cpw9sKxi-0",
+    authDomain: "dbt-online-earning.firebaseapp.com",
+    databaseURL: "https://dbt-online-earning-default-rtdb.firebaseio.com",
+    projectId: "dbt-online-earning",
+    storageBucket: "dbt-online-earning.firebasestorage.app",
+    messagingSenderId: "319083357519",
+    appId: "1:319083357519:web:62ccf6d8ce0dca3152513a",
+    measurementId: "G-7SLFPL3X1V"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const userPhone = localStorage.getItem("userPhone") || "testUser";
+const urlParams = new URLSearchParams(window.location.search);
+const amount = urlParams.get('amount') || "300";
+document.getElementById('display-amt').innerText = "₹" + amount;
+
+let selectedMethod = "";
+let selectedQR = "";
+
+window.setQR = function(app, event){
+    const qrImg = document.getElementById('qr-display');
+    if(app === 'phonepe'){
+        selectedMethod = "PhonePe";
+        selectedQR = "ppqr1";
+        qrImg.src = "ppqr1.png";
+    }
+    else if(app === 'gpay'){
+        selectedMethod = "GPay";
+        selectedQR = "gpqr1";
+        qrImg.src = "gpqr1.png";
+    }
+    else if(app === 'paytm'){
+        selectedMethod = "Paytm";
+        selectedQR = "pqr1";
+        qrImg.src = "pqr1.png";
+    }
+    qrImg.classList.remove('hidden');
+    document.getElementById('qr-placeholder').classList.add('hidden');
+    document.querySelectorAll('.method-card').forEach(m=>m.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+}
+
+let time = 300;
+setInterval(()=>{
+    let mins = Math.floor(time/60);
+    let secs = time%60;
+    document.getElementById('timer').innerText = `0${mins}:${secs<10?'0'+secs:secs}`;
+    if(time>0) time--;
+},1000);
+
+window.verifyPayment = async function(){
+    const utr = document.getElementById('utr-input').value;
+    if(!selectedMethod){
+        return Swal.fire('Select Payment App', 'Choose PhonePe/GPay/Paytm', 'warning');
+    }
+    if(utr.length !== 12){
+        return Swal.fire('Error', 'Enter 12 Digit UTR', 'error');
     }
 
-    let time = 300;
-    setInterval(() => {
-        let mins = Math.floor(time / 60);
-        let secs = time % 60;
-        document.getElementById('timer').innerText = `0${mins}:${secs < 10 ? '0'+secs : secs}`;
-        if (time > 0) time--;
-    }, 1000);
+    // Fetch user current balance & details
+    const userSnap = await get(ref(db, 'users/' + userPhone));
+    let userName = "Unknown";
+    let currentBalance = 0;
+    
+    if(userSnap.exists()){
+        userName = userSnap.val().name || "User";
+        currentBalance = parseFloat(userSnap.val().balance || 0);
+    }
 
-    function verifyPayment() {
-        const utr = document.getElementById('utr-input').value;
-        if (utr.length !== 12) return Swal.fire('Error', 'Enter 12-digit UTR', 'error');
+    Swal.fire({
+        title: 'Verifying...',
+        didOpen: () => { Swal.showLoading(); },
+        timer: 2000,
+        showConfirmButton: false
+    }).then(async () => {
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
 
-        Swal.fire({ title: 'Verifying...', didOpen: () => { Swal.showLoading() }, timer: 2000, showConfirmButton: false })
+        const depositAmt = parseFloat(amount);
+        const updates = {};
+        
+        // 1. User ka balance automatic instantly add ho raha hai
+        updates[`users/${userPhone}/balance`] = currentBalance + depositAmt;
+
+        // 2. Admin panel me success data ja raha hai
+        const depositRef = push(ref(db, 'deposits'));
+        updates[`deposits/${depositRef.key}`] = {
+            userName: userName,
+            userPhone: userPhone,
+            amount: amount,
+            utr: utr,
+            paymentMethod: selectedMethod,
+            qrUsed: selectedQR,
+            status: "SUCCESS",
+            date: new Date().toLocaleString()
+        };
+
+        await update(ref(db), updates);
+
+        Swal.fire('Success', `₹${amount} Added!`, 'success')
         .then(() => {
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-            
-            // SAVE TO HISTORY
-            const history = JSON.parse(localStorage.getItem('depositHistory') || '[]');
-            history.push({ amount: amount, date: new Date().toLocaleString() });
-            localStorage.setItem('depositHistory', JSON.stringify(history));
-
-            Swal.fire('Success', `₹${amount} Added!`, 'success').then(() => {
-                window.location.href = "recharge.html";
-            });
+            window.location.href = "recharge.html";
         });
-    }
+    });
+}
 </script>
 </body>
 </html>
