@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Investment Hub & Admin Console</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #104B91;
+            --primary-light: #e3f2fd;
+            --success: #2e7d32;
+            --success-light: #e8f5e9;
+            --warning: #ef6c00;
+            --danger: #c62828;
+            --danger-light: #ffebee;
+            --background: #f4f7fa;
+            --surface: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--background); color: var(--text-main); padding: 24px; }
+        .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 30px; }
+
+        @media (min-width: 992px) {
+            .dashboard-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+        }
+
+        /* --- PREMIUM WALLET & STATS BANNER --- */
+        .stats-banner {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;
+            background: linear-gradient(135deg, #0f172a, #1e3a8a); padding: 24px; border-radius: 20px; color: white;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.15);
+        }
+        .stat-box h3 { font-size: 14px; font-weight: 500; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-box .amount { font-size: 32px; font-weight: 800; margin-top: 8px; display: flex; align-items: center; gap: 5px; }
+        .stat-box .subtext { font-size: 12px; color: #cbd5e1; margin-top: 4px; }
+
+        /* --- ADMIN PANEL STYLE --- */
+        .admin-panel { background: var(--surface); border-radius: 20px; padding: 24px; border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
+        .section-title { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+        .form-group input, .form-group select { padding: 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; background: #f8fafc; transition: all 0.3s; }
+        .form-group input:focus { outline: none; border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(16,75,145,0.1); }
+        .btn-submit { background: var(--primary); color: white; border: none; padding: 14px; font-size: 14px; font-weight: 600; border-radius: 10px; cursor: pointer; width: 100%; transition: background 0.2s; }
+        .btn-submit:hover { background: #0d3d75; }
+
+        /* --- USER STORE FRONT (PRODUCTS) --- */
+        .product-grid { display: flex; flex-direction: column; gap: 20px; }
+        .product_card { background: var(--surface); border-radius: 20px; padding: 24px; position: relative; border: 1px solid var(--border); transition: all 0.3s; display: flex; flex-direction: column; justify-content: space-between; }
+        .product_card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .product_vip { position: absolute; top: 0; left: 0; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 11px; font-weight: 700; padding: 6px 14px; border-bottom-right-radius: 14px; text-transform: uppercase; }
+        .product_title { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-top: 15px; }
+        .product_info { flex: 1; }
+        .product_name { font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 14px; }
+        .product_item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border); font-size: 14px; }
+        .product_item .label { color: var(--text-muted); }
+        .product_item .value { font-weight: 600; }
+        .product_image img { width: 100px; height: 100px; object-fit: cover; border-radius: 14px; border: 1px solid var(--border); }
+        
+        .buy_card { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+        .price_tag { font-weight: 800; font-size: 22px; color: var(--primary); }
+        
+        /* --- ACTION BUTTONS CONFIG --- */
+        .action_buttons { display: flex; gap: 8px; }
+        .btn { padding: 10px 18px; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; border: none; transition: all 0.2s; display: flex; align-items: center; gap: 4px; }
+        .buy_btn { background: var(--primary); color: white; }
+        .buy_btn:hover { background: #0d3d75; }
+        .edit_btn { background: var(--primary-light); color: var(--primary); }
+        .delete_btn { background: var(--danger-light); color: var(--danger); }
+        .claim_btn { background: var(--success); color: white; animation: pulse 2s infinite; }
+        .claim_btn:disabled { background: var(--border); color: var(--text-muted); animation: none; cursor: not-allowed; }
+
+        /* --- ALTERNATE CONFIG FOR SYSTEM --- */
+        .product-grid .product_card:nth-child(even) .product_title { flex-direction: row-reverse; }
+
+        /* --- INVESTMENT SIDEBAR & HISTORY tabs --- */
+        .sidebar-card { background: var(--surface); border-radius: 20px; padding: 24px; border: 1px solid var(--border); height: max-content; }
+        .active-plan-item { background: #f8fafc; border-radius: 12px; padding: 16px; border-left: 4px solid var(--primary); margin-bottom: 16px; }
+        .active-plan-item h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+        .timer-box { font-size: 13px; font-weight: 700; color: var(--warning); background: #fff8e1; padding: 4px 8px; border-radius: 6px; display: inline-block; margin: 6px 0; }
+        
+        .tab-container { display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .tab { font-size: 13px; font-weight: 600; padding: 6px 12px; cursor: pointer; color: var(--text-muted); border-radius: 6px; }
+        .tab.active { background: var(--primary-light); color: var(--primary); }
+        .history-list { max-height: 350px; overflow-y: auto; }
+        .history-item { font-size: 12px; padding: 10px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(46, 125, 50, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(46, 125, 50, 0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- TOP LIVE STATS CONTROLLER -->
+    <div class="stats-banner">
+        <div class="stat-box">
+            <h3>Current Balance</h3>
+            <div class="amount">₹<span id="wallet-balance">0.00</span></div>
+            <div class="subtext">Withdrawable earnings ready</div>
+        </div>
+        <div class="stat-box">
+            <h3>My Total Investments</h3>
+            <div class="amount" style="color: #60a5fa;">₹<span id="active-investment">0.00</span></div>
+            <div class="subtext"><span id="active-count">0</span> Active Active Plans running</div>
+        </div>
+    </div>
+
+    <!-- MAIN INTERACTIVE LAYOUT -->
+    <div class="dashboard-layout">
+        
+        <!-- LEFT SIDE: ADMIN SYSTEM + CARD RENDER -->
+        <div>
+            <!-- ADMIN CONTROLS -->
+            <div class="admin-panel">
+                <div class="section-title" id="form-heading">⚙️ Admin Control Panel Engine</div>
+                <form id="productForm">
+                    <input type="hidden" id="editIndex" value="-1">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Plan Heading (Tier)</label>
+                            <input type="text" id="heading" placeholder="e.g. Purchase Upgrade to VIP1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Price (₹)</label>
+                            <input type="number" id="price" placeholder="Plan Price" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Daily Income (₹)</label>
+                            <input type="number" id="dailyIncome" placeholder="Daily Yield Amount" required oninput="calculateTotal()">
+                        </div>
+                        <div class="form-group">
+                            <label>Plan Lifetime Time</label>
+                            <input type="number" id="revenue" placeholder="Value duration" required oninput="calculateTotal()">
+                        </div>
+                        <div class="form-group">
+                            <label>Time Unit</label>
+                            <select id="timeUnit" oninput="calculateTotal()">
+                                <option value="Hours">Hours</option>
+                                <option value="Days" selected>Days</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Total Projected Income</label>
+                            <input type="number" id="totalEarning" placeholder="Automatic System *" readonly>
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Product Card Vector Image URL</label>
+                            <input type="url" id="imageUrl" placeholder="https://images.unsplash.com/..." required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit" id="submitBtn">Deploy / Update Asset Class</button>
+                </form>
+            </div>
+
+            <!-- STORE SYSTEM -->
+            <h3 style="margin: 30px 0 15px 0; color: var(--primary);">Available High-Yield Asset Markets</h3>
+            <div class="product-grid" id="productContainer">
+                <!-- Dynamic cards map directly here -->
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE: USER REALTIME TRACKING ENGINE -->
+        <div class="sidebar-card">
+            <div class="section-title">💼 Active Portfolio & Logs</div>
+            
+            <div class="tab-container">
+                <div class="tab active" id="tab-active" onclick="switchTab('active')">Running Plans</div>
+                <div class="tab" id="tab-history" onclick="switchTab('history')">History Logs</div>
+            </div>
+
+            <!-- LIVE TRACKING ENGINES -->
+            <div id="active-portfolio-section">
+                <div id="userActivePlansContainer">
+                    <!-- Live tracking timers populate dynamically -->
+                </div>
+            </div>
+
+            <div id="history-section" style="display: none;">
+                <div class="history-list" id="historyLogContainer">
+                    <!-- Audit logs list here -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // System State Engine Controls
+    let wallet = parseFloat(localStorage.getItem('wallet_bal')) || 500.00; 
+    let products = JSON.parse(localStorage.getItem('products')) || [
+        { heading: "Purchase Upgrade to VIP1", price: "1200", dailyIncome: "550", revenue: "35", timeUnit: "Days", totalEarning: "19250", imageUrl: "https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?w=200" },
+        { heading: "Purchase Upgrade to VIP2", price: "3500", dailyIncome: "1450", revenue: "45", timeUnit: "Days", totalEarning: "65250", imageUrl: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=200" }
+    ];
+    let userInvestments = JSON.parse(localStorage.getItem('user_investments')) || [];
+    let historyLogs = JSON.parse(localStorage.getItem('history_logs')) || [];
+
+    // DOM References
+    const productForm = document.getElementById('productForm');
+    const productContainer = document.getElementById('productContainer');
+    const userActivePlansContainer = document.getElementById('userActivePlansContainer');
+    const historyLogContainer = document.getElementById('historyLogContainer');
+    const walletDisplay = document.getElementById('wallet-balance');
+    const investmentDisplay = document.getElementById('active-investment');
+    const activeCountDisplay = document.getElementById('active-count');
+
+    function calculateTotal() {
+        const daily = parseFloat(document.getElementById('dailyIncome').value) || 0;
+        const timeline = parseFloat(document.getElementById('revenue').value) || 0;
+        document.getElementById('totalEarning').value = (daily * timeline).toFixed(2);
+    }
+
+    function updateWalletUI() {
+        walletDisplay.innerText = wallet.toFixed(2);
+        localStorage.setItem('wallet_bal', wallet);
+        
+        let totalInv = userInvestments.reduce((sum, inv) => sum + parseFloat(inv.price), 0);
+        investmentDisplay.innerText = totalInv.toFixed(2);
+        activeCountDisplay.innerText = userInvestments.filter(i => i.status === 'RUNNING').length;
+    }
+
+    // Dynamic Render Engine for Marketplace (Admin Controlled)
+    function renderMarketplace() {
+        productContainer.innerHTML = '';
+        if(products.length === 0) {
+            productContainer.innerHTML = `<p style="grid-column:1/-1; text-align:center; color:var(--text-muted); padding:30px;">Marketplace empty. Add products via admin module above.</p>`;
+            return;
+        }
+
+        products.forEach((product, index) => {
+            let vipTag = product.heading.match(/VIP\s*\d+/i) ? product.heading.match(/VIP\s*\d+/i)[0] : "Asset";
+            
+            const html = `
+                <div class="product_card">
+                    <div class="product_vip">${vipTag}</div>
+                    <div class="product_title">
+                        <div class="product_info">
+                            <div class="product_name">${product.heading}</div>
+                            <div class="product_item"><span class="label">Daily Yield Cycle:</span><span class="value" style="color:var(--success)">₹${product.dailyIncome} / ${product.timeUnit.slice(0,-1)}</span></div>
+                            <div class="product_item"><span class="label">Contract Lifetime:</span><span class="value">${product.revenue} ${product.timeUnit}</span></div>
+                            <div class="product_item"><span class="label">Total Return Matrix:</span><span class="value" style="color:var(--primary)">₹${product.totalEarning}</span></div>
+                        </div>
+                        <div class="product_image"><img src="${product.imageUrl}"></div>
+                    </div>
+                    <div class="buy_card">
+                        <div class="price_tag">₹${parseFloat(product.price).toLocaleString('en-IN')}</div>
+                        <div class="action_buttons">
+                            <button class="btn edit_btn" onclick="editProduct(${index})">✏️ Edit</button>
+                            <button class="btn delete_btn" onclick="deleteProduct(${index})">🗑️ Delete</button>
+                            <button class="btn buy_btn" onclick="purchasePlan(${index})">⚡ Buy Plan</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            productContainer.insertAdjacentHTML('beforeend', html);
+        });
+    }
+
+    // Handle Admin Post / Put
+    productForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const idx = parseInt(document.getElementById('editIndex').value);
+        
+        const data = {
+            heading: document.getElementById('heading').value,
+            price: document.getElementById('price').value,
+            dailyIncome: document.getElementById('dailyIncome').value,
+            revenue: document.getElementById('revenue').value,
+            timeUnit: document.getElementById('timeUnit').value,
+            totalEarning: document.getElementById('totalEarning').value,
+            imageUrl: document.getElementById('imageUrl').value
+        };
+
+        if(idx > -1) {
+            products[idx] = data;
+            document.getElementById('editIndex').value = "-1";
+            document.getElementById('submitBtn').innerText = "Deploy / Update Asset Class";
+            document.getElementById('form-heading').innerText = "⚙️ Admin Control Panel Engine";
+        } else {
+            products.push(data);
+        }
+
+        localStorage.setItem('products', JSON.stringify(products));
+        productForm.reset();
+        renderMarketplace();
+    });
+
+    function editProduct(index) {
+        const p = products[index];
+        document.getElementById('heading').value = p.heading;
+        document.getElementById('price').value = p.price;
+        document.getElementById('dailyIncome').value = p.dailyIncome;
+        document.getElementById('revenue').value = p.revenue;
+        document.getElementById('timeUnit').value = p.timeUnit || "Days";
+        document.getElementById('totalEarning').value = p.totalEarning;
+        document.getElementById('imageUrl').value = p.imageUrl;
+        
+        document.getElementById('editIndex').value = index;
+        document.getElementById('submitBtn').innerText = "🔄 Confirm Changes & Force Live Update";
+        document.getElementById('form-heading').innerText = "📝 Modifying Target Structure Asset Mode";
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    function deleteProduct(index) {
+        if(confirm("CRITICAL: Deleting this product will remove it from the market instantly. Continue?")) {
+            products.splice(index, 1);
+            localStorage.setItem('products', JSON.stringify(products));
+            renderMarketplace();
+        }
+    }
+
+    // Purchase Processing Logic
+    window.purchasePlan = function(index) {
+        const plan = products[index];
+        const price = parseFloat(plan.price);
+
+        if(wallet < price) {
+            alert("Transaction Denied: Insufficient current wallet balance.");
+            return;
+        }
+
+        wallet -= price;
+        
+        // Calculate durations mathematically
+        let durationMs = parseInt(plan.revenue) * (plan.timeUnit === "Hours" ? 60 * 60 * 1000 : 24 * 60 * 60 * 1000);
+        let now = Date.now();
+
+        const newInvestment = {
+            id: 'INV-' + Math.floor(Math.random() * 900000 + 100000),
+            heading: plan.heading,
+            price: plan.price,
+            dailyIncome: parseFloat(plan.dailyIncome),
+            totalEarning: parseFloat(plan.totalEarning),
+            timeUnit: plan.timeUnit,
+            startTimestamp: now,
+            endTimestamp: now + durationMs,
+            lastClaimTimestamp: now, 
+            earningsClaimed: 0,
+            status: "RUNNING"
+        };
+
+        userInvestments.push(newInvestment);
+        localStorage.setItem('user_investments', JSON.stringify(userInvestments));
+        
+        // Log transaction history
+        addLog(newInvestment.id, plan.heading, `Purchased for ₹${price}`, "RUNNING");
+        
+        updateWalletUI();
+        renderUserPortfolio();
+    };
+
+    function addLog(id, title, details, status) {
+        historyLogs.unshift({ id, title, details, status, date: new Date().toLocaleTimeString() });
+        localStorage.setItem('history_logs', JSON.stringify(historyLogs));
+        renderLogs();
+    }
+
+    // Realtime Core Loop & User Grid Renderer
+    function renderUserPortfolio() {
+        userActivePlansContainer.innerHTML = '';
+        const activePlans = userInvestments.filter(i => i.status === "RUNNING");
+
+        if(activePlans.length === 0) {
+            userActivePlansContainer.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding:20px; font-size:13px;">No running investments found.</p>`;
+            return;
+        }
+
+        activePlans.forEach((inv, index) => {
+            let now = Date.now();
+            let timeLeft = inv.endTimestamp - now;
+
+            // Engine Protection Logic: Check if system already reached terminal phase out dynamically
+            if(timeLeft <= 0) {
+                processAutomaticExpiration(inv);
+                return;
+            }
+
+            // Calculations for remaining timeline strings
+            let hoursLeft = Math.max(0, timeLeft / (1000 * 60 * 60));
+            let daysRemaining = (hoursLeft / 24).toFixed(1);
+            let timeString = inv.timeUnit === "Hours" ? `${Math.ceil(hoursLeft)} Hours Left` : `${daysRemaining} Days Left`;
+
+            // Yield metrics tracking calculation
+            let totalPossibleClaimCycles = inv.totalEarning / inv.dailyIncome;
+            let currentClaimableUnits = 0;
+
+            let timeDiffSinceLastClaim = now - inv.lastClaimTimestamp;
+            let limitCycle = inv.timeUnit === "Hours" ? 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
+
+            if(timeDiffSinceLastClaim >= limitCycle) {
+                currentClaimableUnits = Math.floor(timeDiffSinceLastClaim / limitCycle);
+            }
+
+            let claimableMoney = currentClaimableUnits * inv.dailyIncome;
+            let remainingEarningMatrix = inv.totalEarning - inv.earningsClaimed;
+
+            const html = `
+                <div class="active-plan-item">
+                    <h4>${inv.heading}</h4>
+                    <div style="font-size:12px; color:var(--text-muted)">Cost Base: <b>₹${inv.price}</b></div>
+                    <div class="timer-box">⏱️ ${timeString}</div>
+                    
+                    <div style="margin:8px 0; font-size:13px; display:flex; flex-direction:column; gap:4px;">
+                        <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted)">Remaining Yield:</span><b>₹${remainingEarningMatrix.toFixed(2)}</b></div>
+                        <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted)">Claimable Now:</span><b style="color:var(--success)">₹${claimableMoney.toFixed(2)}</b></div>
+                    </div>
+
+                    <button class="btn claim_btn" style="width:100%; justify-content:center; padding:6px;" 
+                        ${claimableMoney <= 0 ? 'disabled' : ''} onclick="claimYield('${inv.id}', ${claimableMoney}, ${limitCycle}, ${currentClaimableUnits})">
+                        💸 Claim Daily Yield
+                    </button>
+                </div>
+            `;
+            userActivePlansContainer.insertAdjacentHTML('beforeend', html);
+        });
+    }
+
+    // Dynamic Claim execution processing
+    window.claimYield = function(id, amount, limitCycle, units) {
+        let inv = userInvestments.find(i => i.id === id);
+        if(!inv) return;
+
+        wallet += amount;
+        inv.earningsClaimed += amount;
+        inv.lastClaimTimestamp = inv.lastClaimTimestamp + (units * limitCycle);
+
+        localStorage.setItem('user_investments', JSON.stringify(userInvestments));
+        addLog(inv.id, inv.heading, `Claimed Dividend: ₹${amount.toFixed(2)}`, "CLAIMED");
+        updateWalletUI();
+        renderUserPortfolio();
+    };
+
+    // Instant Force Expiration Optimization Block (Automatic Settlement Engine)
+    function processAutomaticExpiration(inv) {
+        inv.status = "EXPIRED";
+        
+        let remainingEarning = inv.totalEarning - inv.earningsClaimed;
+        if(remainingEarning > 0) {
+            wallet += remainingEarning; // Instant Auto Credit feature
+            inv.earningsClaimed = inv.totalEarning;
+        }
+
+        localStorage.setItem('user_investments', JSON.stringify(userInvestments));
+        addLog(inv.id, inv.heading, `Plan Settled Auto-Credited: ₹${remainingEarning.toFixed(2)}`, "EXPIRED");
+        updateWalletUI();
+        renderUserPortfolio();
+    }
+
+    function renderLogs() {
+        historyLogContainer.innerHTML = '';
+        if(historyLogs.length === 0) {
+            historyLogContainer.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding:10px; font-size:12px;">Logs empty.</p>`;
+            return;
+        }
+        historyLogs.forEach(log => {
+            let color = log.status === "RUNNING" ? 'var(--primary)' : log.status === "EXPIRED" ? 'var(--danger)' : 'var(--success)';
+            const html = `
+                <div class="history-item">
+                    <div>
+                        <b style="color:${color}">[${log.status}]</b> <b>${log.title}</b>
+                        <div style="color:var(--text-muted); margin-top:2px;">${log.details}</div>
+                    </div>
+                    <div style="color:var(--text-muted); font-size:11px;">${log.date}</div>
+                </div>
+            `;
+            historyLogContainer.insertAdjacentHTML('beforeend', html);
+        });
+    }
+
+    // Interactive Tab System Controller
+    window.switchTab = function(type) {
+        document.getElementById('tab-active').classList.toggle('active', type === 'active');
+        document.getElementById('tab-history').classList.toggle('active', type === 'history');
+        document.getElementById('active-portfolio-section').style.display = type === 'active' ? 'block' : 'none';
+        document.getElementById('history-section').style.display = type === 'history' ? 'block' : 'none';
+    };
+
+    // Global Infinite Dynamic Process Heartbeat Ticker Loop (Every 1 Second)
+    setInterval(() => {
+        renderUserPortfolio();
+    }, 1000);
+
+    // Initial Bootstrap initialization operations
+    updateWalletUI();
+    renderMarketplace();
+    renderLogs();
+</script>
+
+</body>
+</html>
