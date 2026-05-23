@@ -3,121 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investments - Realtime Firebase Marketplace</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Live Balance Monitor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary: #104B91;
-            --primary-gradient: linear-gradient(135deg, #104B91, #1e40af);
-            --success: #2e7d32;
-            --warning: #ef6c00;
             --background: #f8fafc;
-            --surface: #ffffff;
             --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: var(--background); color: var(--text-main); padding: 12px; -webkit-tap-highlight-color: transparent; }
-        .container { max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+        body { background-color: var(--background); color: var(--text-main); padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { width: 100%; max-width: 450px; }
 
-        /* --- REAL-TIME WALLET SUMMARY --- */
+        /* --- LIVE WALLET PANEL --- */
         .wallet-card {
             background: linear-gradient(135deg, #0b132b, #1c2541);
-            padding: 20px; border-radius: 20px; color: white;
-            box-shadow: 0 10px 25px rgba(11, 19, 43, 0.15);
-            display: flex; justify-content: space-between; align-items: center;
+            padding: 24px; border-radius: 24px; color: white;
+            box-shadow: 0 12px 30px rgba(11, 19, 43, 0.2);
+            text-align: center;
         }
-        .wallet-info h3 { font-size: 11px; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.5px; }
-        .wallet-info .balance { font-size: 28px; font-weight: 800; margin-top: 4px; }
-        .wallet-stats { text-align: right; }
-        .wallet-stats p { font-size: 11px; color: #cbd5e1; }
-        .wallet-stats .inv-amount { font-size: 16px; font-weight: 700; color: #38bdf8; margin-top: 2px; }
-
-        /* --- ACTIVE PORTFOLIO TRACKER --- */
-        .portfolio-highlight { background: var(--surface); border: 2px solid #e0f2fe; border-radius: 20px; padding: 16px; }
-        .highlight-title { font-size: 13px; font-weight: 800; color: #0369a1; margin-bottom: 12px; text-transform: uppercase; }
-        .active-plan-item { background: #f0f9ff; border-radius: 12px; padding: 12px; border-left: 4px solid var(--primary); margin-bottom: 10px; }
-        .active-plan-item h4 { font-size: 13px; font-weight: 700; }
-        .timer-box { font-size: 11px; font-weight: 700; color: var(--warning); background: #fff7ed; padding: 2px 6px; border-radius: 4px; display: inline-block; margin: 4px 0; }
-        .claim_btn { background: var(--success); color: white; border: none; padding: 8px; font-size: 12px; font-weight: 700; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 6px; }
-        .claim_btn:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; }
-
-        .expired-container { display: flex; gap: 6px; overflow-x: auto; padding: 4px 0; scrollbar-width: none; }
-        .expired-chip { background: #f1f5f9; border-radius: 8px; padding: 4px 10px; font-size: 11px; color: var(--text-muted); white-space: nowrap; border: 1px solid var(--border); }
-
-        /* --- CATEGORY TABS --- */
-        .category-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: #edf2f7; padding: 4px; border-radius: 10px; }
-        .tab-btn { background: transparent; border: none; padding: 8px 2px; font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; border-radius: 6px; text-align: center; }
-        .tab-btn.active { background: var(--surface); color: var(--primary); box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
-
-        .user-owned-header { background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 1px dashed var(--success); padding: 10px; border-radius: 12px; font-size: 12px; font-weight: 600; color: var(--success); }
-
-        /* --- PRODUCT MARKETPLACE --- */
-        .product-list { display: flex; flex-direction: column; gap: 12px; }
-        .product_card { background: var(--surface); border-radius: 16px; padding: 14px; position: relative; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
-        .product_title { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-        .product_info { flex: 1; display: flex; flex-direction: column; gap: 2px; }
-        .product_name { font-size: 14px; font-weight: 700; color: var(--text-main); }
-        .product_item { display: flex; justify-content: space-between; font-size: 11px; }
-        .product_item .label { color: var(--text-muted); }
-        .product_item .value { font-weight: 600; }
-        .product_image img { width: 65px; height: 65px; object-fit: cover; border-radius: 8px; }
+        .wallet-card h3 { font-size: 13px; text-transform: uppercase; color: #94a3b8; letter-spacing: 1px; margin-bottom: 8px; }
         
-        .buy_card { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; border-top: 1px solid #f1f5f9; }
-        .price_tag { font-weight: 800; font-size: 16px; color: var(--primary); }
-        .buy_btn { background: var(--primary-gradient); color: white; border: none; padding: 8px 16px; font-size: 12px; font-weight: 700; border-radius: 6px; cursor: pointer; }
+        .balance-display { font-size: 38px; font-weight: 800; color: #ffffff; letter-spacing: -0.5px; }
+        .currency-symbol { color: #38bdf8; margin-right: 2px; }
+        
+        .status-badge { display: inline-block; background: rgba(34, 197, 94, 0.1); color: #22c55e; font-size: 11px; padding: 4px 12px; border-radius: 50px; margin-top: 12px; font-weight: 700; }
+        .user-path-tag { font-size: 11px; color: #64748b; margin-top: 8px; font-weight: 600; display: block; }
     </style>
 </head>
 <body>
 
 <div class="container">
-
-    <!-- DASHBOARD REAL-TIME WALLET -->
     <div class="wallet-card">
-        <div class="wallet-info">
-            <h3>Current Balance</h3>
-            <div class="balance">₹<span id="wallet-balance">0.00</span></div>
-        </div>
-        <div class="wallet-stats">
-            <p>Active Running Assets</p>
-            <div class="inv-amount">₹<span id="active-investment">0.00</span></div>
-        </div>
+        <h3>Current Real-Time Balance</h3>
+        <!-- Firebase balance data mounts instantly here -->
+        <div class="balance-display"><span class="currency-symbol">₹</span><span id="wallet-balance">Loading...</span></div>
+        <div class="status-badge">● Engine Online</div>
+        <span class="user-path-tag" id="active-path-view">Targeting Node...</span>
     </div>
-
-    <!-- LIVE PORTFOLIO DISPATCHER -->
-    <div class="portfolio-highlight">
-        <div class="highlight-title">💼 My Active Portfolio</div>
-        <div id="activePortfolioContainer"></div>
-        <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); margin: 8px 0 4px 0;">Settled History Logs:</div>
-        <div class="expired-container" id="expiredChipsContainer"></div>
-    </div>
-
-    <!-- MAIN MARKET FILTER TABS -->
-    <div class="category-tabs">
-        <button class="tab-btn active" onclick="switchCategory('Daily', this)">Daily Plans</button>
-        <button class="tab-btn" onclick="switchCategory('Weekly', this)">Weekly Plans</button>
-        <button class="tab-btn" onclick="switchCategory('Long', this)">Long Term</button>
-    </div>
-
-    <!-- STATUS BANNER AREA -->
-    <div id="ownedHighlightArea"></div>
-
-    <!-- PRODUCTS DISPATCH LOOP -->
-    <div class="product-list" id="marketplaceContainer">
-        <p style="font-size:12px; text-align:center; color:var(--text-muted); padding:20px;">Connecting to secure real-time node...</p>
-    </div>
-
 </div>
 
-<!-- FIREBASE REAL-TIME CORE INTEGRATION MODULE -->
+<!-- FIREBASE CONNECTION INTERFACE -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Your production Web App's Firebase configuration
+    // Core Project Database Credentials
     const firebaseConfig = {
         apiKey: "AIzaSyC7apT-d-R9bpcb4LcpFk4P0cpw9sKxi-0",
         authDomain: "dbt-online-earning.firebaseapp.com",
@@ -129,257 +61,40 @@
         measurementId: "G-7SLFPL3X1V"
     };
 
-    // Initialization
+    // Firebase App & Database Instance boot up
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Global Fallback & Component Memory Buffers
-    // Dashboard balance directly fetched if firebase takes time to hand-shake
-    let backupLocalBalance = localStorage.getItem('mob_wallet') !== null ? parseFloat(localStorage.getItem('mob_wallet')) : 0.00;
-    let globalWalletBalance = backupLocalBalance; 
-    let productsArray = [];
-    let userInvestmentsArray = [];
-    let currentCategory = "Daily";
+    // Dynamic User Route Selector
+    // Dashboard storage se session user uthayega, nahi to fallback "USER_01" use karega
+    const activeSessionUser = localStorage.getItem('current_user_id') || "USER_01"; 
+
+    // Visual elements hooks
+    const balanceElement = document.getElementById('wallet-balance');
+    const pathViewElement = document.getElementById('active-path-view');
+
+    // Display targeted route on screen for easy testing
+    pathViewElement.innerText = `Path: users / ${activeSessionUser} / balance`;
+
+    // --- PURE REAL-TIME DATA PIPELINE ---
+    // Seedhe designated user path se target key field ko access karega
+    const userBalanceDataRef = ref(db, `users/${activeSessionUser}/balance`);
     
-    // Dynamic Session UID Targeter (Takes current dashboard user id or defaults to USER_01)
-    const userId = localStorage.getItem('current_user_id') || "USER_01"; 
-
-    // Visual Bind Hooks
-    const walletBal = document.getElementById('wallet-balance');
-    const activeInv = document.getElementById('active-investment');
-    const marketplaceContainer = document.getElementById('marketplaceContainer');
-    const activePortfolioContainer = document.getElementById('activePortfolioContainer');
-    const expiredChipsContainer = document.getElementById('expiredChipsContainer');
-    const ownedHighlightArea = document.getElementById('ownedHighlightArea');
-
-    // Bootstrap initial view with backup storage values instantly so screen doesn't stay 0.00
-    walletBal.innerText = globalWalletBalance.toFixed(2);
-
-    // --- 1. REAL-TIME ACCOUNT BALANCE SYNC ENGINE ---
-    const userRef = ref(db, 'users/' + userId);
-    onValue(userRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            globalWalletBalance = parseFloat(data.balance);
-            if (isNaN(globalWalletBalance)) globalWalletBalance = 0.00;
-            
-            userInvestmentsArray = data.investments ? Object.values(data.investments) : [];
-            
-            // Sync backward compatibility to dashboard local vars
-            localStorage.setItem('mob_wallet', globalWalletBalance);
-            walletBal.innerText = globalWalletBalance.toFixed(2);
-            calculateActiveInvestmentSum();
-            renderUserPortfolio();
+    onValue(userBalanceDataRef, (snapshot) => {
+        const liveSnapshotValue = snapshot.val();
+        
+        if (liveSnapshotValue !== null && liveSnapshotValue !== undefined) {
+            // Numeric validation & standard float formatting 
+            let processedNumericValue = parseFloat(liveSnapshotValue);
+            balanceElement.innerText = processedNumericValue.toFixed(2);
         } else {
-            // Auto initialization bucket if user node is missing in database tree
-            set(ref(db, 'users/' + userId), {
-                balance: backupLocalBalance,
-                investments: {}
-            });
+            // Null state recovery handler
+            balanceElement.innerText = "0.00";
         }
     }, (error) => {
-        console.log("Firebase direct block rules activated. Shifting to local view pipeline.", error);
+        console.error("Firebase Security Policy / Network Error: ", error);
+        balanceElement.innerText = "Sync Failed";
     });
-
-    // --- 2. LIVE DASHBOARD MARKETPLACE PRODUCTS FEEDER ---
-    const productsRef = ref(db, 'products');
-    onValue(productsRef, (snapshot) => {
-        const data = snapshot.val();
-        productsArray = [];
-        if (data) {
-            Object.keys(data).forEach(key => {
-                productsArray.push({ id: key, ...data[key] });
-            });
-        }
-        renderMarketplace();
-    }, (error) => {
-        marketplaceContainer.innerHTML = `<p style="font-size:12px; text-align:center; color:var(--text-muted); padding:20px;">Database configuration error or rule denial.</p>`;
-    });
-
-    function calculateActiveInvestmentSum() {
-        let activeSum = userInvestmentsArray
-            .filter(i => i.status === "RUNNING")
-            .reduce((acc, curr) => acc + parseFloat(curr.price), 0);
-        activeInv.innerText = activeSum.toFixed(2);
-        renderOwnedHeaderHighlight();
-    }
-
-    function renderOwnedHeaderHighlight() {
-        ownedHighlightArea.innerHTML = '';
-        let currentRunningPlans = userInvestmentsArray.filter(i => i.status === "RUNNING");
-        if (currentRunningPlans.length > 0) {
-            let lastPlan = currentRunningPlans[currentRunningPlans.length - 1];
-            ownedHighlightArea.innerHTML = `
-                <div class="user-owned-header">
-                    👑 <b>My Active Product:</b> ${lastPlan.heading} is active on server lines.
-                </div>
-            `;
-        }
-    }
-
-    window.switchCategory = function(cat, element) {
-        currentCategory = cat;
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        element.classList.add('active');
-        renderMarketplace();
-    }
-
-    // Dynamic Marketplace UI Parser
-    function renderMarketplace() {
-        marketplaceContainer.innerHTML = '';
-        let filtered = productsArray.filter(p => p.category === currentCategory);
-
-        if(filtered.length === 0) {
-            marketplaceContainer.innerHTML = `<p style="font-size:12px; text-align:center; color:var(--text-muted); padding:20px;">No products listed inside admin panel database node.</p>`;
-            return;
-        }
-
-        filtered.forEach(product => {
-            let totalCalc = parseFloat(product.dailyIncome) * parseFloat(product.revenue);
-            const card = `
-                <div class="product_card">
-                    <div class="product_title">
-                        <div class="product_info">
-                            <div class="product_name">${product.heading}</div>
-                            <div class="product_item"><span class="label">Profit Cycle:</span><span class="value" style="color:var(--success)">₹${product.dailyIncome} / ${product.timeUnit.slice(0,-1)}</span></div>
-                            <div class="product_item"><span class="label">Lifetime Term:</span><span class="value">${product.revenue} ${product.timeUnit}</span></div>
-                            <div class="product_item"><span class="label">Total Return:</span><span class="value" style="color:var(--primary)">₹${totalCalc}</span></div>
-                        </div>
-                        <div class="product_image"><img src="${product.imageUrl || 'https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?w=150'}"></div>
-                    </div>
-                    <div class="buy_card">
-                        <div class="price_tag">₹${product.price}</div>
-                        <button class="buy_btn" onclick="buyAsset('${product.id}')">Instant Buy</button>
-                    </div>
-                </div>
-            `;
-            marketplaceContainer.insertAdjacentHTML('beforeend', card);
-        });
-    }
-
-    // Transaction Engine
-    window.buyAsset = function(productId) {
-        let product = productsArray.find(p => p.id === productId);
-        if(!product) return;
-        
-        let cost = parseFloat(product.price);
-        if (globalWalletBalance < cost) {
-            alert("Transaction Blocked: Insufficient Balance.");
-            return;
-        }
-
-        let updatedBalance = globalWalletBalance - cost;
-        let timeMultiplier = product.timeUnit === "Hours" ? 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
-        let totalDurationMs = parseInt(product.revenue) * timeMultiplier;
-        let currentTime = Date.now();
-
-        let txnId = 'TXN-' + Math.floor(1000 + Math.random() * 9000);
-        let newOrder = {
-            id: txnId,
-            heading: product.heading,
-            price: product.price,
-            dailyIncome: parseFloat(product.dailyIncome),
-            totalEarning: parseFloat(product.dailyIncome) * parseFloat(product.revenue),
-            timeUnit: product.timeUnit,
-            endTime: currentTime + totalDurationMs,
-            lastClaim: currentTime,
-            claimedAmt: 0,
-            status: "RUNNING"
-        };
-
-        const updates = {};
-        updates['users/' + userId + '/balance'] = updatedBalance;
-        updates['users/' + userId + '/investments/' + txnId] = newOrder;
-        
-        update(ref(db), updates).then(() => {
-            alert("Investment asset successfully verified and synced!");
-        }).catch(err => alert("Database sync failure: " + err.message));
-    };
-
-    function renderUserPortfolio() {
-        activePortfolioContainer.innerHTML = '';
-        expiredChipsContainer.innerHTML = '';
-
-        let activeCount = 0;
-        let now = Date.now();
-
-        userInvestmentsArray.forEach(inv => {
-            if (inv.status === "RUNNING") {
-                let msLeft = inv.endTime - now;
-
-                if (msLeft <= 0) {
-                    let finalLeftover = inv.totalEarning - inv.claimedAmt;
-                    let finalBalance = globalWalletBalance + (finalLeftover > 0 ? finalLeftover : 0);
-                    
-                    const settleUpdates = {};
-                    settleUpdates['users/' + userId + '/balance'] = finalBalance;
-                    settleUpdates['users/' + userId + '/investments/' + inv.id + '/status'] = "SETTLED";
-                    settleUpdates['users/' + userId + '/investments/' + inv.id + '/claimedAmt'] = inv.totalEarning;
-                    update(ref(db), settleUpdates);
-                    return;
-                }
-
-                activeCount++;
-                let hrsRemaining = msLeft / (1000 * 60 * 60);
-                let timeLabel = inv.timeUnit === "Hours" 
-                    ? `${Math.ceil(hrsRemaining)} hours remaining` 
-                    : `${(hrsRemaining / 24).toFixed(1)} days remaining`;
-
-                let baseCycle = inv.timeUnit === "Hours" ? 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
-                let msSinceClaim = now - inv.lastClaim;
-                let collectableUnits = Math.floor(msSinceClaim / baseCycle);
-                let claimableCash = collectableUnits * inv.dailyIncome;
-                let totalRemainingEarnings = inv.totalEarning - inv.claimedAmt;
-
-                const activeNode = `
-                    <div class="active-plan-item">
-                        <h4>${inv.heading}</h4>
-                        <div class="timer-box">⏳ ${timeLabel}</div>
-                        <div style="display:flex; flex-direction:column; gap:2px; font-size:11px; margin:4px 0;">
-                            <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted)">Remaining Future Profit:</span><b>₹${totalRemainingEarnings.toFixed(2)}</b></div>
-                            <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted)">Available Claim Pool:</span><span style="color:var(--success); font-weight:700;">₹${claimableCash.toFixed(2)}</span></div>
-                        </div>
-                        <button class="claim_btn" ${claimableCash <= 0 ? 'disabled' : ''} 
-                            onclick="executePortfolioClaim('${inv.id}', ${claimableCash}, ${collectableUnits}, ${baseCycle})">
-                            Claim Earnings
-                        </button>
-                    </div>
-                `;
-                activePortfolioContainer.insertAdjacentHTML('beforeend', activeNode);
-            } else {
-                const chip = `<div class="expired-chip">🛑 ${inv.heading} (Settled)</div>`;
-                expiredChipsContainer.insertAdjacentHTML('beforeend', chip);
-            }
-        });
-
-        if (activeCount === 0) {
-            activePortfolioContainer.innerHTML = `<p style="font-size:11px; text-align:center; color:var(--text-muted); padding:8px;">No active investments found.</p>`;
-        }
-        if (expiredChipsContainer.children.length === 0) {
-            expiredChipsContainer.innerHTML = `<div class="expired-chip">No historic entries.</div>`;
-        }
-    }
-
-    window.executePortfolioClaim = function(id, cash, units, cycleDuration) {
-        let order = userInvestmentsArray.find(i => i.id === id);
-        if (!order) return;
-
-        let finalWallet = globalWalletBalance + cash;
-        let finalClaimed = order.claimedAmt + cash;
-        let finalLastClaim = order.lastClaim + (units * cycleDuration);
-
-        const claimUpdates = {};
-        claimUpdates['users/' + userId + '/balance'] = finalWallet;
-        claimUpdates['users/' + userId + '/investments/' + id + '/claimedAmt'] = finalClaimed;
-        claimUpdates['users/' + userId + '/investments/' + id + '/lastClaim'] = finalLastClaim;
-
-        update(ref(db), claimUpdates);
-    };
-
-    // Fast interval clock to track precision updates on screen interface
-    setInterval(() => {
-        renderUserPortfolio();
-    }, 1000);
 </script>
 
 </body>
