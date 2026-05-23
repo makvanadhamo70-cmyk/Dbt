@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Mobile Investment Hub</title>
+    <title>Dynamic Realtime Fintech Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --primary: #104B91;
             --primary-gradient: linear-gradient(135deg, #104B91, #1e40af);
-            --accent: #ff9d00;
             --success: #2e7d32;
-            --success-light: #e8f5e9;
             --warning: #ef6c00;
             --danger: #c62828;
+            --danger-light: #ffebee;
             --background: #f8fafc;
             --surface: #ffffff;
             --text-main: #0f172a;
@@ -23,250 +22,179 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        
-        body { 
-            background-color: var(--background); 
-            color: var(--text-main); 
-            padding: 12px;
-            -webkit-tap-highlight-color: transparent;
-        }
+        body { background-color: var(--background); color: var(--text-main); padding: 12px; -webkit-tap-highlight-color: transparent; }
+        .container { max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
 
-        .container { 
-            max-width: 500px; 
-            margin: 0 auto; 
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        /* --- TOP WALLET CONFIG --- */
+        /* --- WALLET SUMMARY CONTAINER --- */
         .wallet-card {
             background: linear-gradient(135deg, #0b132b, #1c2541);
-            padding: 20px;
-            border-radius: 20px;
-            color: white;
+            padding: 20px; border-radius: 20px; color: white;
             box-shadow: 0 10px 25px rgba(11, 19, 43, 0.15);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: flex; justify-content: space-between; align-items: center;
         }
-        .wallet-info h3 { font-size: 12px; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.5px; }
+        .wallet-info h3 { font-size: 11px; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.5px; }
         .wallet-info .balance { font-size: 28px; font-weight: 800; margin-top: 4px; }
         .wallet-stats { text-align: right; }
         .wallet-stats p { font-size: 11px; color: #cbd5e1; }
         .wallet-stats .inv-amount { font-size: 16px; font-weight: 700; color: #38bdf8; margin-top: 2px; }
 
-        /* --- DYNAMIC INVESTMENTS HIGHLIGHT PANEL --- */
-        .portfolio-highlight {
-            background: var(--surface);
-            border: 2px solid #e0f2fe;
-            border-radius: 20px;
-            padding: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-        }
-        .highlight-title {
-            font-size: 14px;
-            font-weight: 800;
-            color: #0369a1;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            text-transform: uppercase;
-        }
-        
-        .active-plan-item {
-            background: #f0f9ff;
-            border-radius: 14px;
-            padding: 12px 14px;
-            border-left: 4px solid var(--primary);
-            margin-bottom: 10px;
-        }
-        .active-plan-item:last-child { margin-bottom: 0; }
-        .active-plan-item h4 { font-size: 13px; font-weight: 700; color: var(--text-main); }
-        
+        /* --- ADMIN ENGINE PANEL --- */
+        .admin-panel { background: var(--surface); border-radius: 20px; padding: 16px; border: 1px solid var(--border); }
+        .admin-title { font-size: 14px; font-weight: 800; color: var(--primary); margin-bottom: 12px; text-transform: uppercase; }
+        .form-grid { display: flex; flex-direction: column; gap: 10px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .form-group { display: flex; flex-direction: column; gap: 4px; }
+        .form-group label { font-size: 11px; font-weight: 700; color: var(--text-muted); }
+        .form-group input, .form-group select { padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; background: #f8fafc; }
+        .btn-submit { background: var(--primary-gradient); color: white; border: none; padding: 12px; font-size: 13px; font-weight: 700; border-radius: 8px; cursor: pointer; margin-top: 6px; }
+
+        /* --- MY INVESTMENT PORTFOLIO HIGHLIGHT --- */
+        .portfolio-highlight { background: var(--surface); border: 2px solid #e0f2fe; border-radius: 20px; padding: 16px; }
+        .highlight-title { font-size: 13px; font-weight: 800; color: #0369a1; margin-bottom: 12px; text-transform: uppercase; }
+        .active-plan-item { background: #f0f9ff; border-radius: 12px; padding: 12px; border-left: 4px solid var(--primary); margin-bottom: 10px; }
+        .active-plan-item h4 { font-size: 13px; font-weight: 700; }
         .timer-box { font-size: 11px; font-weight: 700; color: var(--warning); background: #fff7ed; padding: 2px 6px; border-radius: 4px; display: inline-block; margin: 4px 0; }
-        .claim_btn {
-            background: var(--success); color: white; border: none; padding: 8px 12px; font-size: 12px; font-weight: 700;
-            border-radius: 8px; cursor: pointer; width: 100%; margin-top: 6px; transition: all 0.2s;
-        }
+        .claim_btn { background: var(--success); color: white; border: none; padding: 8px; font-size: 12px; font-weight: 700; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 6px; }
         .claim_btn:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; }
 
-        /* --- STICKY EXPIRED HISTORY CHIPS --- */
-        .expired-container {
-            display: flex; gap: 8px; overflow-x: auto; padding: 4px 0; scrollbar-width: none;
-        }
-        .expired-container::-webkit-scrollbar { display: none; }
-        .expired-chip {
-            background: #f1f5f9; border-radius: 10px; padding: 6px 12px; font-size: 11px; color: var(--text-muted);
-            white-space: nowrap; border: 1px solid var(--border);
-        }
+        .expired-container { display: flex; gap: 6px; overflow-x: auto; padding: 4px 0; scrollbar-width: none; }
+        .expired-chip { background: #f1f5f9; border-radius: 8px; padding: 4px 10px; font-size: 11px; color: var(--text-muted); white-space: nowrap; border: 1px solid var(--border); }
 
-        /* --- CATEGORY TIMELINE FILTER TABS --- */
-        .category-tabs {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            background: #edf2f7;
-            padding: 4px;
-            border-radius: 12px;
-        }
-        .tab-btn {
-            background: transparent;
-            border: none;
-            padding: 10px 4px;
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text-muted);
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.2s;
-            text-align: center;
-        }
-        .tab-btn.active {
-            background: var(--surface);
-            color: var(--primary);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
+        /* --- CATEGORY TABS --- */
+        .category-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: #edf2f7; padding: 4px; border-radius: 10px; }
+        .tab-btn { background: transparent; border: none; padding: 8px 2px; font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; border-radius: 6px; text-align: center; }
+        .tab-btn.active { background: var(--surface); color: var(--primary); box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
 
-        /* --- STORE FRONT: USER TOP OVERVIEW PRODUCT HIGHLIGHT --- */
-        .user-owned-header {
-            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
-            border: 1px dashed var(--success);
-            padding: 12px;
-            border-radius: 14px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--success);
-            margin-bottom: 4px;
-        }
+        /* --- STICKY MY PRODUCT OVERVIEW --- */
+        .user-owned-header { background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 1px dashed var(--success); padding: 10px; border-radius: 12px; font-size: 12px; font-weight: 600; color: var(--success); }
 
-        /* --- STORE PRODUCT CARDS --- */
-        .product-list { display: flex; flex-direction: column; gap: 14px; }
-        .product_card {
-            background: var(--surface);
-            border-radius: 16px;
-            padding: 16px;
-            position: relative;
-            border: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            overflow: hidden;
-        }
-        .product_vip {
-            position: absolute;
-            top: 0;
-            left: 0;
-            background: linear-gradient(135deg, #ff9d00, #ff6a00);
-            color: white;
-            font-size: 10px;
-            font-weight: 800;
-            padding: 4px 10px;
-            border-bottom-right-radius: 10px;
-            text-transform: uppercase;
-        }
-
-        .product_title { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; }
-        .product_info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-        .product_name { font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
-        
-        .product_item { display: flex; justify-content: space-between; font-size: 12px; padding: 2px 0; }
+        /* --- PRODUCT STORE MARKET --- */
+        .product-list { display: flex; flex-direction: column; gap: 12px; }
+        .product_card { background: var(--surface); border-radius: 16px; padding: 14px; position: relative; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
+        .product_title { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .product_info { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+        .product_name { font-size: 14px; font-weight: 700; color: var(--text-main); }
+        .product_item { display: flex; justify-content: space-between; font-size: 11px; }
         .product_item .label { color: var(--text-muted); }
         .product_item .value { font-weight: 600; }
+        .product_image img { width: 65px; height: 65px; object-fit: cover; border-radius: 8px; }
         
-        .product_image img { width: 75px; height: 75px; object-fit: cover; border-radius: 10px; border: 1px solid var(--border); }
-        
-        /* --- CARD FOOTER ACTION --- */
-        .buy_card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-top: 10px;
-            border-top: 1px solid #f1f5f9;
-        }
-        .price_tag { font-weight: 800; font-size: 18px; color: var(--primary); }
-        .buy_btn {
-            background: var(--primary-gradient); color: white; border: none; padding: 8px 16px;
-            font-size: 12px; font-weight: 700; border-radius: 8px; cursor: pointer;
-        }
-
-        /* --- CSS ALTERNATE ENGINE FOR MOBILE VIEW --- */
-        .product-list .product_card:nth-child(even) .product_title { flex-direction: row-reverse; }
+        .buy_card { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; border-top: 1px solid #f1f5f9; }
+        .price_tag { font-weight: 800; font-size: 16px; color: var(--primary); }
+        .btn-group { display: flex; gap: 4px; }
+        .buy_btn { background: var(--primary-gradient); color: white; border: none; padding: 6px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; cursor: pointer; }
+        .del_btn { background: var(--danger-light); color: var(--danger); border: none; padding: 6px 10px; font-size: 11px; font-weight: 700; border-radius: 6px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
 
-    <!-- WALLET DISPLAY BANNER -->
+    <!-- REALTIME WALLET HUD -->
     <div class="wallet-card">
         <div class="wallet-info">
-            <h3>Available Balance</h3>
-            <div class="balance">₹<span id="wallet-balance">0.00</span></div>
+            <h3>Current Balance</h3>
+            <!-- Idhar text placeholder blank rkha h taaki script load hote hi actual value print kare -->
+            <div class="balance">₹<span id="wallet-balance"></span></div>
         </div>
         <div class="wallet-stats">
-            <p>Active Portfolio Value</p>
+            <p>My Total Investments</p>
             <div class="inv-amount">₹<span id="active-investment">0.00</span></div>
         </div>
     </div>
 
-    <!-- MAIN PORTFOLIO TRACKING HIGHLIGHT -->
+    <!-- LIVE PORTFOLIO MANAGEMENT CONSOLE -->
     <div class="portfolio-highlight">
-        <div class="highlight-title">💎 My Investment Portfolio</div>
-        
-        <!-- Active Live Timers Section -->
-        <div id="activePortfolioContainer" style="margin-bottom: 12px;">
-            <!-- Live Timers Feed Here -->
-        </div>
-
-        <!-- Horizontal Scrollable Expired Chip History -->
-        <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">Settled Assets History:</div>
-        <div class="expired-container" id="expiredChipsContainer">
-            <!-- Settled items print dynamically -->
-        </div>
+        <div class="highlight-title">💼 My Active Portfolio</div>
+        <div id="activePortfolioContainer"></div>
+        <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); margin: 8px 0 4px 0;">Settled Contracts History:</div>
+        <div class="expired-container" id="expiredChipsContainer"></div>
     </div>
 
-    <!-- PLAN CATEGORIES NAVIGATION BUTTONS -->
+    <!-- DYNAMIC CONTROLLER ADMIN PANEL -->
+    <div class="admin-panel">
+        <div class="admin-title">⚙️ Admin Deployment Panel</div>
+        <form id="adminForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Plan Name / Heading</label>
+                    <input type="text" id="pName" placeholder="e.g. VIP Gold Tier" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Price (₹)</label>
+                        <input type="number" id="pPrice" placeholder="Cost" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Daily Income (₹)</label>
+                        <input type="number" id="pIncome" placeholder="Yield" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Duration Time</label>
+                        <input type="number" id="pDuration" placeholder="Value" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Time Unit</label>
+                        <select id="pUnit">
+                            <option value="Hours">Hours</option>
+                            <option value="Days" selected>Days</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Plan Group Tab</label>
+                        <select id="pCategory">
+                            <option value="Daily">Daily Plans</option>
+                            <option value="Weekly">Weekly Plans</option>
+                            <option value="Long">Long Term Plans</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Image Vector URL</label>
+                        <input type="url" id="pImg" value="https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?w=150" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit">Deploy To Marketplace</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- TARGET FILTER ENGINE NAVIGATION TABS -->
     <div class="category-tabs">
         <button class="tab-btn active" onclick="switchCategory('Daily', this)">Daily Plans</button>
         <button class="tab-btn" onclick="switchCategory('Weekly', this)">Weekly Plans</button>
         <button class="tab-btn" onclick="switchCategory('Long', this)">Long Term</button>
     </div>
 
-    <!-- DYNAMIC HIGHLIGHT OWNED PRODUCT STATE BOX -->
+    <!-- STICKY ACTIVE OWNED PROJECT MONITOR -->
     <div id="ownedHighlightArea"></div>
 
-    <!-- PRODUCT PLANS MARKETPLACE LIST -->
-    <div class="product-list" id="marketplaceContainer">
-        <!-- Static filtered items load here -->
-    </div>
+    <!-- REALTIME MARKET STORAGE CONTAINER -->
+    <div class="product-list" id="marketplaceContainer"></div>
 
 </div>
 
 <script>
-    // Local Injected Core Dataset
-    let wallet = parseFloat(localStorage.getItem('mob_wallet')) || 2500.00;
-    
-    // Core marketplace configuration items with category tagging
-    const productsData = [
-        { id: "p1", heading: "Purchase Upgrade to VIP1", price: "1200", dailyIncome: "150", revenue: "24", timeUnit: "Hours", category: "Daily", imageUrl: "https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?w=150" },
-        { id: "p2", heading: "Purchase Upgrade to VIP2", price: "3000", dailyIncome: "450", revenue: "7", timeUnit: "Days", category: "Weekly", imageUrl: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=150" },
-        { id: "p3", heading: "Purchase Upgrade to VIP3", price: "7500", dailyIncome: "800", revenue: "30", timeUnit: "Days", category: "Long", imageUrl: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=150" }
-    ];
-
-    let userInvestments = JSON.parse(localStorage.getItem('mob_investments')) || [];
+    // Agar local storage me purana balance h toh wahi uthayega, nhi h toh hi first time 2500 set karega
+    let wallet = localStorage.getItem('mob_wallet') !== null ? parseFloat(localStorage.getItem('mob_wallet')) : 2500.00;
+    let products = JSON.parse(localStorage.getItem('admin_products')) || [];
+    let userInvestments = JSON.parse(localStorage.getItem('user_investments_v2')) || [];
     let currentCategory = "Daily";
 
-    // Global DOM Hooks
+    // Hooks
     const walletBal = document.getElementById('wallet-balance');
     const activeInv = document.getElementById('active-investment');
+    const adminForm = document.getElementById('adminForm');
+    const marketplaceContainer = document.getElementById('marketplaceContainer');
     const activePortfolioContainer = document.getElementById('activePortfolioContainer');
     const expiredChipsContainer = document.getElementById('expiredChipsContainer');
-    const marketplaceContainer = document.getElementById('marketplaceContainer');
     const ownedHighlightArea = document.getElementById('ownedHighlightArea');
 
     function syncStateUI() {
+        // Direct real-time variable input values bind ho rhi h render hone se pehle
         walletBal.innerText = wallet.toFixed(2);
         localStorage.setItem('mob_wallet', wallet);
 
@@ -275,27 +203,54 @@
             .reduce((acc, curr) => acc + parseFloat(curr.price), 0);
         
         activeInv.innerText = activeSum.toFixed(2);
-        localStorage.setItem('mob_investments', JSON.stringify(userInvestments));
+        localStorage.setItem('admin_products', JSON.stringify(products));
+        localStorage.setItem('user_investments_v2', JSON.stringify(userInvestments));
         
         renderOwnedHeaderHighlight();
     }
 
-    // Displays dynamic sticky alert if user has bought products
     function renderOwnedHeaderHighlight() {
         ownedHighlightArea.innerHTML = '';
         let currentRunningPlans = userInvestments.filter(i => i.status === "RUNNING");
-        
         if (currentRunningPlans.length > 0) {
             let lastPlan = currentRunningPlans[currentRunningPlans.length - 1];
             ownedHighlightArea.innerHTML = `
                 <div class="user-owned-header">
-                    👑 <b>My Active Plan:</b> ${lastPlan.heading} is currently mining. Check claims inside your portfolio panel above!
+                    👑 <b>My Active Product:</b> ${lastPlan.heading} is live! Collect profits from your portfolio section.
                 </div>
             `;
         }
     }
 
-    // Store Filter Control Engine
+    // Admin Connection Handler
+    adminForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        let newProd = {
+            id: 'PROD-' + Date.now(),
+            heading: document.getElementById('pName').value,
+            price: document.getElementById('pPrice').value,
+            dailyIncome: document.getElementById('pIncome').value,
+            revenue: document.getElementById('pDuration').value,
+            timeUnit: document.getElementById('pUnit').value,
+            category: document.getElementById('pCategory').value,
+            imageUrl: document.getElementById('pImg').value
+        };
+
+        products.push(newProd);
+        adminForm.reset();
+        document.getElementById('pImg').value = "https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?w=150";
+        syncStateUI();
+        renderMarketplace();
+    });
+
+    window.deleteProduct = function(id) {
+        if(confirm("Are you sure you want to delete this product from the admin engine?")) {
+            products = products.filter(p => p.id !== id);
+            syncStateUI();
+            renderMarketplace();
+        }
+    };
+
     function switchCategory(cat, element) {
         currentCategory = cat;
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -303,30 +258,34 @@
         renderMarketplace();
     }
 
-    // Safe Filter Render Marketplace loop
     function renderMarketplace() {
         marketplaceContainer.innerHTML = '';
-        let filtered = productsData.filter(p => p.category === currentCategory);
+        let filtered = products.filter(p => p.category === currentCategory);
+
+        if(filtered.length === 0) {
+            marketplaceContainer.innerHTML = `<p style="font-size:12px; text-align:center; color:var(--text-muted); padding:20px;">No plans listed in this category by admin panel yet.</p>`;
+            return;
+        }
 
         filtered.forEach(product => {
-            let vipTag = product.heading.match(/VIP\s*\d+/i) ? product.heading.match(/VIP\s*\d+/i)[0] : "Asset";
             let totalCalc = parseFloat(product.dailyIncome) * parseFloat(product.revenue);
-
             const card = `
                 <div class="product_card">
-                    <div class="product_vip">${vipTag}</div>
                     <div class="product_title">
                         <div class="product_info">
                             <div class="product_name">${product.heading}</div>
-                            <div class="product_item"><span class="label">Daily Profit:</span><span class="value" style="color:var(--success)">₹${product.dailyIncome}</span></div>
-                            <div class="product_item"><span class="label">Term Duration:</span><span class="value">${product.revenue} ${product.timeUnit}</span></div>
-                            <div class="product_item"><span class="label">Total Return:</span><span class="value" style="color:var(--primary)">₹${totalCalc}</span></div>
+                            <div class="product_item"><span class="label">Profit Cycle:</span><span class="value" style="color:var(--success)">₹${product.dailyIncome} / ${product.timeUnit.slice(0,-1)}</span></div>
+                            <div class="product_item"><span class="label">Lifetime Term:</span><span class="value">${product.revenue} ${product.timeUnit}</span></div>
+                            <div class="product_item"><span class="label">Total Earning:</span><span class="value" style="color:var(--primary)">₹${totalCalc}</span></div>
                         </div>
                         <div class="product_image"><img src="${product.imageUrl}"></div>
                     </div>
                     <div class="buy_card">
                         <div class="price_tag">₹${product.price}</div>
-                        <button class="buy_btn" onclick="buyAsset('${product.id}')">Instant Buy</button>
+                        <div class="btn-group">
+                            <button class="del_btn" onclick="deleteProduct('${product.id}')">🗑️ Delete</button>
+                            <button class="buy_btn" onclick="buyAsset('${product.id}')">Instant Buy</button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -334,13 +293,13 @@
         });
     }
 
-    // Core Purchase Architecture Routine
     window.buyAsset = function(productId) {
-        let product = productsData.find(p => p.id === productId);
+        let product = products.find(p => p.id === productId);
+        if(!product) return;
+        
         let cost = parseFloat(product.price);
-
         if (wallet < cost) {
-            alert("Error: Insufficient balance to initialize contract.");
+            alert("Transaction Blocked: Insufficient Balance.");
             return;
         }
 
@@ -367,7 +326,6 @@
         renderUserPortfolio();
     };
 
-    // Core Interactive Realtime Engine Loops
     function renderUserPortfolio() {
         activePortfolioContainer.innerHTML = '';
         expiredChipsContainer.innerHTML = '';
@@ -379,7 +337,6 @@
             if (inv.status === "RUNNING") {
                 let msLeft = inv.endTime - now;
 
-                // Automatic Immediate Settlement Catch Block
                 if (msLeft <= 0) {
                     inv.status = "SETTLED";
                     let finalLeftover = inv.totalEarning - inv.claimedAmt;
@@ -394,48 +351,44 @@
                 activeCount++;
                 let hrsRemaining = msLeft / (1000 * 60 * 60);
                 let timeLabel = inv.timeUnit === "Hours" 
-                    ? `${Math.ceil(hrsRemaining)} hrs left` 
-                    : `${(hrsRemaining / 24).toFixed(1)} days left`;
+                    ? `${Math.ceil(hrsRemaining)} hours remaining` 
+                    : `${(hrsRemaining / 24).toFixed(1)} days remaining`;
 
-                // Calculate current structural accumulation cycles
                 let baseCycle = inv.timeUnit === "Hours" ? 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
                 let msSinceClaim = now - inv.lastClaim;
                 let collectableUnits = Math.floor(msSinceClaim / baseCycle);
                 let claimableCash = collectableUnits * inv.dailyIncome;
+                let totalRemainingEarnings = inv.totalEarning - inv.claimedAmt;
 
                 const activeNode = `
                     <div class="active-plan-item">
-                        <div style="display:flex; justify-content:between; align-items:center;">
-                            <h4>${inv.heading}</h4>
-                        </div>
+                        <h4>${inv.heading}</h4>
                         <div class="timer-box">⏳ ${timeLabel}</div>
-                        <div style="display:flex; justify-content:space-between; font-size:12px; margin-top:2px;">
-                            <span style="color:var(--text-muted)">Unclaimed Pool:</span>
-                            <span style="color:var(--success); font-weight:700;">₹${claimableCash.toFixed(2)}</span>
+                        <div style="display:flex; flex-direction:column; gap:2px; font-size:11px; margin:4px 0;">
+                            <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted)">Remaining Future Profit:</span><b>₹${totalRemainingEarnings.toFixed(2)}</b></div>
+                            <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted)">Available Claim Pool:</span><span style="color:var(--success); font-weight:700;">₹${claimableCash.toFixed(2)}</span></div>
                         </div>
                         <button class="claim_btn" ${claimableCash <= 0 ? 'disabled' : ''} 
                             onclick="executePortfolioClaim('${inv.id}', ${claimableCash}, ${collectableUnits}, ${baseCycle})">
-                            Claim Yield
+                            Claim Today's Income
                         </button>
                     </div>
                 `;
                 activePortfolioContainer.insertAdjacentHTML('beforeend', activeNode);
             } else {
-                // Render flat landscape chips for historical logs
                 const chip = `<div class="expired-chip">🛑 ${inv.heading} (Settled)</div>`;
                 expiredChipsContainer.insertAdjacentHTML('beforeend', chip);
             }
         });
 
         if (activeCount === 0) {
-            activePortfolioContainer.innerHTML = `<p style="font-size:12px; text-align:center; color:var(--text-muted); padding:8px;">No current active positions running.</p>`;
+            activePortfolioContainer.innerHTML = `<p style="font-size:11px; text-align:center; color:var(--text-muted); padding:8px;">No live running assets at present.</p>`;
         }
         if (expiredChipsContainer.children.length === 0) {
-            expiredChipsContainer.innerHTML = `<div class="expired-chip">No historical data logs.</div>`;
+            expiredChipsContainer.innerHTML = `<div class="expired-chip">No expired logs found.</div>`;
         }
     }
 
-    // Process Safe Claims inside User Portfolio Frame
     window.executePortfolioClaim = function(id, cash, units, cycleDuration) {
         let order = userInvestments.find(i => i.id === id);
         if (!order) return;
@@ -448,12 +401,12 @@
         renderUserPortfolio();
     };
 
-    // Ticker Heartbeat Interface Loop (1-Sec Processing interval)
+    // Global refresh engine loop every 1 second
     setInterval(() => {
         renderUserPortfolio();
     }, 1000);
 
-    // Bootstrap init sequences
+    // Initial load sync values instantly
     syncStateUI();
     renderMarketplace();
     renderUserPortfolio();
