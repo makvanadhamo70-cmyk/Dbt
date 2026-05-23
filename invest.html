@@ -79,7 +79,7 @@
     <div class="wallet-card">
         <div class="wallet-info">
             <h3>Current Balance</h3>
-            <!-- No default value here, completely dependent on your database -->
+            <!-- No hardcoding, text completely managed by Firebase hook -->
             <div class="balance">₹<span id="wallet-balance">0.00</span></div>
         </div>
         <div class="wallet-stats">
@@ -108,41 +108,42 @@
 
     <!-- PRODUCTS DISPATCH LOOP -->
     <div class="product-list" id="marketplaceContainer">
-        <p style="font-size:12px; text-align:center; color:var(--text-muted); padding:20px;">Connecting to real-time database...</p>
+        <p style="font-size:12px; text-align:center; color:var(--text-muted); padding:20px;">Connecting to secure real-time node...</p>
     </div>
 
 </div>
 
-<!-- FIREBASE SDK INJECTION (ES MODULES) -->
+<!-- FIREBASE REAL-TIME CORE INTEGRATION MODULE -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // ⚠️ REPLACE THIS CONFIG WITH YOUR ACTUAL FIREBASE PROJECT CONFIG
+    // Your production Web App's Firebase configuration injected successfully
     const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_AUTH_DOMAIN",
-        databaseURL: "YOUR_DATABASE_URL",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_STORAGE_BUCKET",
-        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-        appId: "YOUR_APP_ID"
+        apiKey: "AIzaSyC7apT-d-R9bpcb4LcpFk4P0cpw9sKxi-0",
+        authDomain: "dbt-online-earning.firebaseapp.com",
+        databaseURL: "https://dbt-online-earning-default-rtdb.firebaseio.com",
+        projectId: "dbt-online-earning",
+        storageBucket: "dbt-online-earning.firebasestorage.app",
+        messagingSenderId: "319083357519",
+        appId: "1:319083357519:web:62ccf6d8ce0dca3152513a",
+        measurementId: "G-7SLFPL3X1V"
     };
 
-    // Initialize Firebase
+    // Initialization
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Dynamic Variables
+    // Global Component Memory Buffers
     let globalWalletBalance = 0.00;
     let productsArray = [];
     let userInvestmentsArray = [];
     let currentCategory = "Daily";
     
-    // User Session ID (Aap yahan user ki unique ID login system/localStorage se catch kar sakte hain)
+    // Dynamic Session UID Targeter (Takes user session key or defaults to template node)
     const userId = localStorage.getItem('current_user_id') || "USER_01"; 
 
-    // DOM Target Hooks
+    // Visual Bind Hooks
     const walletBal = document.getElementById('wallet-balance');
     const activeInv = document.getElementById('active-investment');
     const marketplaceContainer = document.getElementById('marketplaceContainer');
@@ -150,7 +151,7 @@
     const expiredChipsContainer = document.getElementById('expiredChipsContainer');
     const ownedHighlightArea = document.getElementById('ownedHighlightArea');
 
-    // --- 1. REAL-TIME BALANCES & INVESTMENTS SYNC ---
+    // --- 1. REAL-TIME ACCOUNT BALANCE SYNC ENGINE ---
     const userRef = ref(db, 'users/' + userId);
     onValue(userRef, (snapshot) => {
         const data = snapshot.val();
@@ -158,24 +159,21 @@
             globalWalletBalance = parseFloat(data.balance) || 0.00;
             userInvestmentsArray = data.investments ? Object.values(data.investments) : [];
             
-            // Instantly update layout
+            // Render back values to user layout without delays or local caching glitches
             walletBal.innerText = globalWalletBalance.toFixed(2);
             calculateActiveInvestmentSum();
             renderUserPortfolio();
         } else {
-            // Safe fallback if user node doesn't exist
             walletBal.innerText = "0.00";
         }
     });
 
-    // --- 2. REAL-TIME MARKETPLACE PRODUCTS SYNC ---
-    // Dashboard se product add, edit ya delete hote hi yeh automatically update hoga
+    // --- 2. LIVE DASHBOARD MARKETPLACE PRODUCTS FEEDER ---
     const productsRef = ref(db, 'products');
     onValue(productsRef, (snapshot) => {
         const data = snapshot.val();
         productsArray = [];
         if (data) {
-            // Firebase object to array parsing
             Object.keys(data).forEach(key => {
                 productsArray.push({ id: key, ...data[key] });
             });
@@ -198,13 +196,12 @@
             let lastPlan = currentRunningPlans[currentRunningPlans.length - 1];
             ownedHighlightArea.innerHTML = `
                 <div class="user-owned-header">
-                    👑 <b>My Active Product:</b> ${lastPlan.heading} is actively generating revenue cycles.
+                    👑 <b>My Active Product:</b> ${lastPlan.heading} is live and linked to your session.
                 </div>
             `;
         }
     }
 
-    // Category Swapping
     window.switchCategory = function(cat, element) {
         currentCategory = cat;
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -212,13 +209,13 @@
         renderMarketplace();
     }
 
-    // Render Marketplace UI
+    // Dynamic Marketplace UI Parser
     function renderMarketplace() {
         marketplaceContainer.innerHTML = '';
         let filtered = productsArray.filter(p => p.category === currentCategory);
 
         if(filtered.length === 0) {
-            marketplaceContainer.innerHTML = `<p style="font-size:12px; text-align:center; color:var(--text-muted); padding:20px;">No plans listed in this category on the dashboard.</p>`;
+            marketplaceContainer.innerHTML = `<p style="font-size:12px; text-align:center; color:var(--text-muted); padding:20px;">No listed products found matching this filter tier.</p>`;
             return;
         }
 
@@ -245,14 +242,14 @@
         });
     }
 
-    // Buy Action Connected with Firebase
+    // Transaction Engine
     window.buyAsset = function(productId) {
         let product = productsArray.find(p => p.id === productId);
         if(!product) return;
         
         let cost = parseFloat(product.price);
         if (globalWalletBalance < cost) {
-            alert("Transaction Blocked: Insufficient Balance.");
+            alert("Transaction Blocked: Insufficient Balance inside live node account.");
             return;
         }
 
@@ -275,17 +272,15 @@
             status: "RUNNING"
         };
 
-        // Sync structure changes direct to Firebase references
         const updates = {};
         updates['users/' + userId + '/balance'] = updatedBalance;
         updates['users/' + userId + '/investments/' + txnId] = newOrder;
         
         update(ref(db), updates).then(() => {
-            alert("Investment Successful!");
-        }).catch(err => alert("Transaction failed: " + err.message));
+            alert("Investment asset successfully verified and synced!");
+        }).catch(err => alert("Database sync failure: " + err.message));
     };
 
-    // Render Portfolio Realtime
     function renderUserPortfolio() {
         activePortfolioContainer.innerHTML = '';
         expiredChipsContainer.innerHTML = '';
@@ -298,7 +293,6 @@
                 let msLeft = inv.endTime - now;
 
                 if (msLeft <= 0) {
-                    // Automatically settle contract inside DB
                     let finalLeftover = inv.totalEarning - inv.claimedAmt;
                     let finalBalance = globalWalletBalance + (finalLeftover > 0 ? finalLeftover : 0);
                     
@@ -344,14 +338,13 @@
         });
 
         if (activeCount === 0) {
-            activePortfolioContainer.innerHTML = `<p style="font-size:11px; text-align:center; color:var(--text-muted); padding:8px;">No active data arrays stream found.</p>`;
+            activePortfolioContainer.innerHTML = `<p style="font-size:11px; text-align:center; color:var(--text-muted); padding:8px;">No dynamic ledger active stream found.</p>`;
         }
         if (expiredChipsContainer.children.length === 0) {
             expiredChipsContainer.innerHTML = `<div class="expired-chip">No historic entries.</div>`;
         }
     }
 
-    // Claim Management Database Writer
     window.executePortfolioClaim = function(id, cash, units, cycleDuration) {
         let order = userInvestmentsArray.find(i => i.id === id);
         if (!order) return;
@@ -368,7 +361,6 @@
         update(ref(db), claimUpdates);
     };
 
-    // Global refresh engine loop every 1 second for dynamic timers
     setInterval(() => {
         renderUserPortfolio();
     }, 1000);
