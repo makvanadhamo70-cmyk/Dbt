@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investments - Realtime Marketplace</title>
+    <title>Investments - Realtime Firebase Marketplace</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
@@ -79,8 +79,8 @@
     <div class="wallet-card">
         <div class="wallet-info">
             <h3>Current Balance</h3>
-            <!-- Balance space left empty so it grabs live value directly from database on load -->
-            <div class="balance">₹<span id="wallet-balance"></span></div>
+            <!-- No default value here, completely dependent on your database -->
+            <div class="balance">₹<span id="wallet-balance">0.00</span></div>
         </div>
         <div class="wallet-stats">
             <p>Active Running Assets</p>
@@ -108,25 +108,41 @@
 
     <!-- PRODUCTS DISPATCH LOOP -->
     <div class="product-list" id="marketplaceContainer">
-        <!-- Products will sync here in real-time from your external Firebase/Admin system -->
+        <p style="font-size:12px; text-align:center; color:var(--text-muted); padding:20px;">Connecting to real-time database...</p>
     </div>
 
 </div>
 
-<!-- 
-  NOTE: Put your standard Firebase App SDK scripts here to handle 
-  the dynamic synchronization directly with your main external project db!
--->
+<!-- FIREBASE SDK INJECTION (ES MODULES) -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-<script>
-    // --- INTEGRATION CHANNELS (DATABASE AND WALLET COUPLING) ---
-    // Change or connect these targets directly to your main Firebase Realtime Database references.
-    let wallet = localStorage.getItem('mob_wallet') !== null ? parseFloat(localStorage.getItem('mob_wallet')) : 0.00;
-    let products = JSON.parse(localStorage.getItem('admin_products')) || []; 
-    let userInvestments = JSON.parse(localStorage.getItem('user_investments_v2')) || [];
+    // ⚠️ REPLACE THIS CONFIG WITH YOUR ACTUAL FIREBASE PROJECT CONFIG
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        databaseURL: "YOUR_DATABASE_URL",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Dynamic Variables
+    let globalWalletBalance = 0.00;
+    let productsArray = [];
+    let userInvestmentsArray = [];
     let currentCategory = "Daily";
+    
+    // User Session ID (Aap yahan user ki unique ID login system/localStorage se catch kar sakte hain)
+    const userId = localStorage.getItem('current_user_id') || "USER_01"; 
 
-    // Hooks
+    // DOM Target Hooks
     const walletBal = document.getElementById('wallet-balance');
     const activeInv = document.getElementById('active-investment');
     const marketplaceContainer = document.getElementById('marketplaceContainer');
@@ -134,24 +150,50 @@
     const expiredChipsContainer = document.getElementById('expiredChipsContainer');
     const ownedHighlightArea = document.getElementById('ownedHighlightArea');
 
-    function syncStateUI() {
-        walletBal.innerText = wallet.toFixed(2);
-        localStorage.setItem('mob_wallet', wallet);
+    // --- 1. REAL-TIME BALANCES & INVESTMENTS SYNC ---
+    const userRef = ref(db, 'users/' + userId);
+    onValue(userRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            globalWalletBalance = parseFloat(data.balance) || 0.00;
+            userInvestmentsArray = data.investments ? Object.values(data.investments) : [];
+            
+            // Instantly update layout
+            walletBal.innerText = globalWalletBalance.toFixed(2);
+            calculateActiveInvestmentSum();
+            renderUserPortfolio();
+        } else {
+            // Safe fallback if user node doesn't exist
+            walletBal.innerText = "0.00";
+        }
+    });
 
-        let activeSum = userInvestments
+    // --- 2. REAL-TIME MARKETPLACE PRODUCTS SYNC ---
+    // Dashboard se product add, edit ya delete hote hi yeh automatically update hoga
+    const productsRef = ref(db, 'products');
+    onValue(productsRef, (snapshot) => {
+        const data = snapshot.val();
+        productsArray = [];
+        if (data) {
+            // Firebase object to array parsing
+            Object.keys(data).forEach(key => {
+                productsArray.push({ id: key, ...data[key] });
+            });
+        }
+        renderMarketplace();
+    });
+
+    function calculateActiveInvestmentSum() {
+        let activeSum = userInvestmentsArray
             .filter(i => i.status === "RUNNING")
             .reduce((acc, curr) => acc + parseFloat(curr.price), 0);
-        
         activeInv.innerText = activeSum.toFixed(2);
-        localStorage.setItem('admin_products', JSON.stringify(products));
-        localStorage.setItem('user_investments_v2', JSON.stringify(userInvestments));
-        
         renderOwnedHeaderHighlight();
     }
 
     function renderOwnedHeaderHighlight() {
         ownedHighlightArea.innerHTML = '';
-        let currentRunningPlans = userInvestments.filter(i => i.status === "RUNNING");
+        let currentRunningPlans = userInvestmentsArray.filter(i => i.status === "RUNNING");
         if (currentRunningPlans.length > 0) {
             let lastPlan = currentRunningPlans[currentRunningPlans.length - 1];
             ownedHighlightArea.innerHTML = `
@@ -162,20 +204,21 @@
         }
     }
 
-    function switchCategory(cat, element) {
+    // Category Swapping
+    window.switchCategory = function(cat, element) {
         currentCategory = cat;
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         element.classList.add('active');
         renderMarketplace();
     }
 
-    // --- REALTIME READ/RENDER SYNC FROM YOUR EXTERNAL PANEL ---
+    // Render Marketplace UI
     function renderMarketplace() {
         marketplaceContainer.innerHTML = '';
-        let filtered = products.filter(p => p.category === currentCategory);
+        let filtered = productsArray.filter(p => p.category === currentCategory);
 
         if(filtered.length === 0) {
-            marketplaceContainer.innerHTML = `<p style="font-size:12px; text-align:center; color:var(--text-muted); padding:20px;">No plans listed in this category on the database.</p>`;
+            marketplaceContainer.innerHTML = `<p style="font-size:12px; text-align:center; color:var(--text-muted); padding:20px;">No plans listed in this category on the dashboard.</p>`;
             return;
         }
 
@@ -190,7 +233,7 @@
                             <div class="product_item"><span class="label">Lifetime Term:</span><span class="value">${product.revenue} ${product.timeUnit}</span></div>
                             <div class="product_item"><span class="label">Total Return:</span><span class="value" style="color:var(--primary)">₹${totalCalc}</span></div>
                         </div>
-                        <div class="product_image"><img src="${product.imageUrl}"></div>
+                        <div class="product_image"><img src="${product.imageUrl || 'https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?w=150'}"></div>
                     </div>
                     <div class="buy_card">
                         <div class="price_tag">₹${product.price}</div>
@@ -202,23 +245,25 @@
         });
     }
 
+    // Buy Action Connected with Firebase
     window.buyAsset = function(productId) {
-        let product = products.find(p => p.id === productId);
+        let product = productsArray.find(p => p.id === productId);
         if(!product) return;
         
         let cost = parseFloat(product.price);
-        if (wallet < cost) {
+        if (globalWalletBalance < cost) {
             alert("Transaction Blocked: Insufficient Balance.");
             return;
         }
 
-        wallet -= cost;
+        let updatedBalance = globalWalletBalance - cost;
         let timeMultiplier = product.timeUnit === "Hours" ? 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
         let totalDurationMs = parseInt(product.revenue) * timeMultiplier;
         let currentTime = Date.now();
 
+        let txnId = 'TXN-' + Math.floor(1000 + Math.random() * 9000);
         let newOrder = {
-            id: 'TXN-' + Math.floor(1000 + Math.random() * 9000),
+            id: txnId,
             heading: product.heading,
             price: product.price,
             dailyIncome: parseFloat(product.dailyIncome),
@@ -230,11 +275,17 @@
             status: "RUNNING"
         };
 
-        userInvestments.push(newOrder);
-        syncStateUI();
-        renderUserPortfolio();
+        // Sync structure changes direct to Firebase references
+        const updates = {};
+        updates['users/' + userId + '/balance'] = updatedBalance;
+        updates['users/' + userId + '/investments/' + txnId] = newOrder;
+        
+        update(ref(db), updates).then(() => {
+            alert("Investment Successful!");
+        }).catch(err => alert("Transaction failed: " + err.message));
     };
 
+    // Render Portfolio Realtime
     function renderUserPortfolio() {
         activePortfolioContainer.innerHTML = '';
         expiredChipsContainer.innerHTML = '';
@@ -242,18 +293,20 @@
         let activeCount = 0;
         let now = Date.now();
 
-        userInvestments.forEach(inv => {
+        userInvestmentsArray.forEach(inv => {
             if (inv.status === "RUNNING") {
                 let msLeft = inv.endTime - now;
 
                 if (msLeft <= 0) {
-                    inv.status = "SETTLED";
+                    // Automatically settle contract inside DB
                     let finalLeftover = inv.totalEarning - inv.claimedAmt;
-                    if (finalLeftover > 0) {
-                        wallet += finalLeftover;
-                        inv.claimedAmt = inv.totalEarning;
-                    }
-                    syncStateUI();
+                    let finalBalance = globalWalletBalance + (finalLeftover > 0 ? finalLeftover : 0);
+                    
+                    const settleUpdates = {};
+                    settleUpdates['users/' + userId + '/balance'] = finalBalance;
+                    settleUpdates['users/' + userId + '/investments/' + inv.id + '/status'] = "SETTLED";
+                    settleUpdates['users/' + userId + '/investments/' + inv.id + '/claimedAmt'] = inv.totalEarning;
+                    update(ref(db), settleUpdates);
                     return;
                 }
 
@@ -298,27 +351,27 @@
         }
     }
 
+    // Claim Management Database Writer
     window.executePortfolioClaim = function(id, cash, units, cycleDuration) {
-        let order = userInvestments.find(i => i.id === id);
+        let order = userInvestmentsArray.find(i => i.id === id);
         if (!order) return;
 
-        wallet += cash;
-        order.claimedAmt += cash;
-        order.lastClaim = order.lastClaim + (units * cycleDuration);
+        let finalWallet = globalWalletBalance + cash;
+        let finalClaimed = order.claimedAmt + cash;
+        let finalLastClaim = order.lastClaim + (units * cycleDuration);
 
-        syncStateUI();
-        renderUserPortfolio();
+        const claimUpdates = {};
+        claimUpdates['users/' + userId + '/balance'] = finalWallet;
+        claimUpdates['users/' + userId + '/investments/' + id + '/claimedAmt'] = finalClaimed;
+        claimUpdates['users/' + userId + '/investments/' + id + '/lastClaim'] = finalLastClaim;
+
+        update(ref(db), claimUpdates);
     };
 
-    // Firebase Background Live Engine Sync Loop
+    // Global refresh engine loop every 1 second for dynamic timers
     setInterval(() => {
         renderUserPortfolio();
     }, 1000);
-
-    // Initial Bootstrap
-    syncStateUI();
-    renderMarketplace();
-    renderUserPortfolio();
 </script>
 
 </body>
