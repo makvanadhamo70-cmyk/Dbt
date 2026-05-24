@@ -3,13 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Investment Plans</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-
 <style>
-
 :root{
     --primary:#104B91;
     --primary2:#1e40af;
@@ -21,21 +17,18 @@
     --muted:#64748b;
     --border:#e2e8f0;
 }
-
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
     font-family:'Plus Jakarta Sans',sans-serif;
 }
-
 body{
     background:var(--bg);
     padding:12px;
     color:var(--text);
     padding-bottom:100px;
 }
-
 .container{
     max-width:500px;
     margin:auto;
@@ -43,9 +36,7 @@ body{
     flex-direction:column;
     gap:16px;
 }
-
 /* BALANCE CARD */
-
 .wallet-card{
     background:linear-gradient(135deg,#0b132b,#1c2541);
     color:white;
@@ -56,44 +47,37 @@ body{
     align-items:center;
     box-shadow:0 10px 25px rgba(0,0,0,0.15);
 }
-
 .wallet-info h3{
     font-size:11px;
     color:#94a3b8;
     text-transform:uppercase;
 }
-
 .balance{
     font-size:30px;
     font-weight:800;
     margin-top:5px;
 }
-
 .wallet-stats{
     text-align:right;
     display:flex;
     flex-direction:column;
     gap:8px;
 }
-
 .wallet-stats p{
     font-size:11px;
     color:#cbd5e1;
     margin:0;
 }
-
 .inv-amount{
     font-size:16px;
     font-weight:800;
     color:#38bdf8;
 }
-
 .earn-amount{
     font-size:16px;
     font-weight:800;
     color:#34d399;
 }
-
 /* CUSTOM ALERT DESIGN */
 .custom-alert {
     position: fixed;
@@ -120,8 +104,7 @@ body{
 .custom-alert.alert-success { border-left-color: var(--success); }
 .custom-alert.alert-error { border-left-color: #ef4444; }
 
-/* CATEGORY */
-
+/* TABS */
 .tabs{
     display:grid;
     grid-template-columns:repeat(3,1fr);
@@ -130,7 +113,6 @@ body{
     padding:4px;
     border-radius:12px;
 }
-
 .tab-btn{
     border:none;
     padding:10px;
@@ -140,20 +122,16 @@ body{
     background:transparent;
     color:#475569;
 }
-
 .tab-btn.active{
     background:white;
     color:var(--primary);
 }
-
 /* PRODUCTS */
-
 .product-list{
     display:flex;
     flex-direction:column;
     gap:14px;
 }
-
 .product-card{
     background:white;
     border-radius:18px;
@@ -162,7 +140,6 @@ body{
     box-shadow:0 2px 8px rgba(0,0,0,0.03);
     overflow:hidden;
 }
-
 .product-img{
     width:100%;
     height:140px;
@@ -171,39 +148,32 @@ body{
     margin-bottom:12px;
     background:#e2e8f0;
 }
-
 .product-top{
     display:flex;
     justify-content:space-between;
     align-items:center;
 }
-
 .product-name{
     font-size:16px;
     font-weight:800;
 }
-
 .price{
     font-size:18px;
     font-weight:800;
     color:var(--primary);
 }
-
 .row{
     display:flex;
     justify-content:space-between;
     margin-top:8px;
     font-size:12px;
 }
-
 .label{
     color:var(--muted);
 }
-
 .value{
     font-weight:700;
 }
-
 .buy-btn{
     width:100%;
     margin-top:14px;
@@ -215,22 +185,18 @@ body{
     font-weight:800;
     cursor:pointer;
 }
-
 /* PORTFOLIO */
-
 .portfolio{
     background:white;
     border-radius:18px;
     padding:16px;
     border:1px solid var(--border);
 }
-
 .portfolio-title{
     font-size:14px;
     font-weight:800;
     margin-bottom:12px;
 }
-
 .investment-card{
     background:#f8fafc;
     border-left:4px solid var(--primary);
@@ -238,7 +204,6 @@ body{
     padding:12px;
     margin-bottom:10px;
 }
-
 .claim-btn{
     width:100%;
     margin-top:10px;
@@ -250,13 +215,11 @@ body{
     font-weight:700;
     cursor:pointer;
 }
-
 .claim-btn:disabled {
     background: #cbd5e1;
     color: #94a3b8;
     cursor: not-allowed;
 }
-
 .timer-text {
     font-size: 12px;
     color: var(--warning);
@@ -264,37 +227,38 @@ body{
     margin-top: 6px;
     text-align: left;
 }
-
+.unclaimed-box {
+    margin-top: 6px;
+    background: #f1f5f9;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px dashed #cbd5e1;
+}
 .no-data{
     text-align:center;
     padding:20px;
     font-size:12px;
     color:#64748b;
 }
-
 </style>
 </head>
-
 <body>
 
-<!-- CUSTOM POPUP ALERT ELEMENT -->
 <div id="toastAlert" class="custom-alert">
     <span id="toastMessage">Notification Message</span>
 </div>
 
 <div class="container">
-
     <!-- BALANCE -->
-
     <div class="wallet-card">
-
         <div class="wallet-info">
             <h3>Current Balance</h3>
-            <div class="balance">
-                ₹<span id="wallet-balance">0.00</span>
-            </div>
+            <div class="balance">₹<span id="wallet-balance">0.00</span></div>
         </div>
-
         <div class="wallet-stats">
             <div>
                 <p>Total Investment</p>
@@ -305,67 +269,30 @@ body{
                 <div class="earn-amount">₹<span id="active-investment">0.00</span></div>
             </div>
         </div>
-
     </div>
 
     <!-- PORTFOLIO -->
-
     <div class="portfolio">
-
-        <div class="portfolio-title">
-            💼 My Active Portfolio
-        </div>
-
+        <div class="portfolio-title">💼 My Active Portfolio</div>
         <div id="portfolioContainer"></div>
-
     </div>
 
     <!-- TABS -->
-
     <div class="tabs">
-
-        <button class="tab-btn active" id="tab-Daily">
-            Daily
-        </button>
-
-        <button class="tab-btn" id="tab-Weekly">
-            Weekly
-        </button>
-
-        <button class="tab-btn" id="tab-Long">
-            Long
-        </button>
-
+        <button class="tab-btn active" id="tab-Daily">Daily</button>
+        <button class="tab-btn" id="tab-Weekly">Weekly</button>
+        <button class="tab-btn" id="tab-Long">Long</button>
     </div>
 
     <!-- PRODUCTS -->
-
     <div class="product-list" id="productsContainer">
-
-        <div class="no-data">
-            Loading Products...
-        </div>
-
+        <div class="no-data">Loading Products...</div>
     </div>
-
 </div>
 
 <script type="module">
-
-/* FIREBASE */
-
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-
-import {
-    getDatabase,
-    ref,
-    onValue,
-    update
-}
-from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-/* CONFIG */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyC7apT-d-R9bpcb4LcpFk4P0cpw9sKxi-0",
@@ -379,464 +306,246 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-
 const db = getDatabase(app);
+const userId = localStorage.getItem("userPhone");
 
-/* USER */
+const walletBalance = document.getElementById("wallet-balance");
+const totalInvestment = document.getElementById("total-investment");
+const activeInvestment = document.getElementById("active-investment");
+const productsContainer = document.getElementById("productsContainer");
+const portfolioContainer = document.getElementById("portfolioContainer");
 
-const userId =
-    localStorage.getItem("userPhone");
-
-/* DOM */
-
-const walletBalance =
-    document.getElementById("wallet-balance");
-
-const totalInvestment =
-    document.getElementById("total-investment");
-
-const activeInvestment =
-    document.getElementById("active-investment");
-
-const productsContainer =
-    document.getElementById("productsContainer");
-
-const portfolioContainer =
-    document.getElementById("portfolioContainer");
-
-/* CUSTOM NOTIFICATION ALERT TRIGGER */
 function showAlert(message, type = "success") {
     const toast = document.getElementById("toastAlert");
     const msgSpan = document.getElementById("toastMessage");
-    
     msgSpan.innerText = message;
     toast.className = "custom-alert show " + (type === "success" ? "alert-success" : "alert-error");
-    
-    setTimeout(() => {
-        toast.classList.remove("show");
-    }, 2500);
+    setTimeout(() => { toast.classList.remove("show"); }, 2500);
 }
 
-/* VARIABLES */
-
 let globalBalance = 0;
-
 let productsArray = [];
-
 let investmentsArray = [];
-
 let currentCategory = "Daily";
-
 let timerIntervals = [];
 
-/* REALTIME USER */
-
-const userRef =
-    ref(db, `users/${userId}`);
-
+/* REALTIME USER GATEWAY */
+const userRef = ref(db, `users/${userId}`);
 onValue(userRef, (snapshot)=>{
-
     const data = snapshot.val();
-
     if(data){
-
-        /* WALLET BALANCE RESTORED WORKING */
-
-        globalBalance =
-            parseFloat(data.balance) || 0;
-
-        walletBalance.innerText =
-            globalBalance.toFixed(2);
-
-        /* INVESTMENTS ARRAY FETCH */
+        globalBalance = parseFloat(data.balance) || 0;
+        walletBalance.innerText = globalBalance.toFixed(2);
 
         investmentsArray = data.investments 
             ? Object.keys(data.investments).map(key => ({ id: key, ...data.investments[key] })) 
             : [];
 
-        /* CALC TOTAL INVESTMENT (ONLY RUNNING ACTIVE PLANS) */
         let totalInvSum = investmentsArray
             .filter(i => i.status === "RUNNING")
             .reduce((acc, curr) => acc + (parseFloat(curr.price) || 0), 0);
-        
         totalInvestment.innerText = totalInvSum.toFixed(2);
 
-        /* TOTAL REALTIME EARNINGS SUM (ALL BOUGHT PLANS RETURN) */
-
-        let totalEarningsSum =
-            investmentsArray
-            .reduce((acc,curr)=>
-                acc + (parseFloat(curr.totalClaimed) || 0),0);
-
-        activeInvestment.innerText =
-            totalEarningsSum.toFixed(2);
+        let totalEarningsSum = investmentsArray.reduce((acc,curr)=> acc + (parseFloat(curr.totalClaimed) || 0),0);
+        activeInvestment.innerText = totalEarningsSum.toFixed(2);
 
         renderPortfolio();
-
     } else {
         walletBalance.innerText = "0.00";
         totalInvestment.innerText = "0.00";
         activeInvestment.innerText = "0.00";
         portfolioContainer.innerHTML = `<div class="no-data">No Active Investments</div>`;
     }
-
 });
 
 /* REALTIME PRODUCTS */
-
-const productsRef =
-    ref(db, "products");
-
+const productsRef = ref(db, "products");
 onValue(productsRef, (snapshot)=>{
-
     const data = snapshot.val();
-
     productsArray = [];
-
     if(data){
-
         Object.keys(data).forEach((key)=>{
-
-            productsArray.push({
-
-                id:key,
-                ...data[key]
-
-            });
-
+            productsArray.push({ id:key, ...data[key] });
         });
-
     }
-
     renderProducts();
-
 });
 
-/* RENDER PRODUCTS */
-
 function renderProducts(){
-
     productsContainer.innerHTML = "";
-
-    let filtered =
-        productsArray.filter(
-            p => p.category === currentCategory
-        );
-
+    let filtered = productsArray.filter(p => p.category === currentCategory);
     if(filtered.length === 0){
-
-        productsContainer.innerHTML =
-        `<div class="no-data">
-            No Products Found
-        </div>`;
-
+        productsContainer.innerHTML = `<div class="no-data">No Products Found</div>`;
         return;
-
     }
 
     filtered.forEach(product=>{
-
-        let total =
-            parseFloat(product.dailyIncome) * parseFloat(product.revenue);
-
+        let total = parseFloat(product.dailyIncome) * parseFloat(product.revenue);
         let imageUrl = product.imgUrl || "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=500&auto=format&fit=crop&q=60";
 
         const card = `
-
         <div class="product-card">
-
             <img src="${imageUrl}" class="product-img" alt="Plan Image">
-
             <div class="product-top">
-
-                <div class="product-name">
-                    ${product.heading}
-                </div>
-
-                <div class="price">
-                    ₹${product.price}
-                </div>
-
+                <div class="product-name">${product.heading}</div>
+                <div class="price">₹${product.price}</div>
             </div>
-
-            <div class="row">
-                <span class="label">
-                    Daily Income
-                </span>
-
-                <span class="value">
-                    ₹${product.dailyIncome}
-                </span>
-            </div>
-
-            <div class="row">
-                <span class="label">
-                    Duration
-                </span>
-
-                <span class="value">
-                    ${product.revenue} ${product.timeUnit}
-                </span>
-            </div>
-
-            <div class="row">
-                <span class="label">
-                    Total Return
-                </span>
-
-                <span class="value">
-                    ₹${total}
-                </span>
-            </div>
-
-            <button
-                class="buy-btn"
-                data-id="${product.id}">
-                Buy Now (₹${product.price})
-            </button>
-
-        </div>
-
-        `;
-
-        productsContainer.insertAdjacentHTML(
-            "beforeend",
-            card
-        );
-
+            <div class="row"><span class="label">Daily Income</span><span class="value">₹${product.dailyIncome}</span></div>
+            <div class="row"><span class="label">Duration</span><span class="value">${product.revenue} ${product.timeUnit}</span></div>
+            <div class="row"><span class="label">Total Return</span><span class="value">₹${total}</span></div>
+            <button class="buy-btn" data-id="${product.id}">Buy Now (₹${product.price})</button>
+        </div>`;
+        productsContainer.insertAdjacentHTML("beforeend", card);
     });
 
-    document.querySelectorAll(".buy-btn")
-    .forEach(btn=>{
-
-        btn.addEventListener("click",(e)=>{
-
-            buyProduct(
-                e.target.dataset.id
-            );
-
-        });
-
+    document.querySelectorAll(".buy-btn").forEach(btn=>{
+        btn.addEventListener("click",(e)=>{ buyProduct(e.target.dataset.id); });
     });
-
 }
 
-/* BUY PRODUCT */
-
 function buyProduct(productId){
-
-    let product =
-        productsArray.find(
-            p => p.id === productId
-        );
-
+    let product = productsArray.find(p => p.id === productId);
     if(!product) return;
-
-    let cost =
-        parseFloat(product.price);
-
-    /* LOW BALANCE CHECK */
+    let cost = parseFloat(product.price);
 
     if(globalBalance < cost){
-
         showAlert("Insufficient Balance in Wallet!", "error");
-
         return;
-
     }
 
-    /* NEW BALANCE LOGIC */
-
-    let updatedBalance =
-        globalBalance - cost;
-
-    /* TRANSACTION ID */
-
-    let txnId =
-        "TXN-" + Date.now();
-
+    let updatedBalance = globalBalance - cost;
+    let txnId = "TXN-" + Date.now();
     let currentTime = Date.now();
 
     let investment = {
-
-        heading:product.heading,
-
-        price:product.price,
-
-        dailyIncome:
-            parseFloat(product.dailyIncome),
-
-        totalReturn:
-            parseFloat(product.dailyIncome) * parseFloat(product.revenue),
-
+        heading: product.heading,
+        price: product.price,
+        dailyIncome: parseFloat(product.dailyIncome),
+        totalReturn: parseFloat(product.dailyIncome) * parseFloat(product.revenue),
         timeUnit: product.timeUnit || "Days",
-
         revenue: parseFloat(product.revenue),
-
         buyTime: currentTime,
-
         lastClaimTime: currentTime,
-
         totalClaimed: 0,
-
-        status:"RUNNING"
-
+        status: "RUNNING"
     };
 
     const updates = {};
-
-    /* UPDATE BALANCE FOR NODE */
-
-    updates[`users/${userId}/balance`] =
-        updatedBalance;
-
-    /* SAVE INVESTMENT DATA */
-
-    updates[`users/${userId}/investments/${txnId}`] =
-        investment;
-
+    updates[`users/${userId}/balance`] = updatedBalance;
+    updates[`users/${userId}/investments/${txnId}`] = investment;
     update(ref(db), updates);
-
     showAlert("Investment Plan Purchased Successfully!");
-
 }
 
-/* PORTFOLIO Layout */
-
 function renderPortfolio(){
-
     timerIntervals.forEach(clearInterval);
     timerIntervals = [];
-
     portfolioContainer.innerHTML = "";
 
-    let running =
-        investmentsArray.filter(
-            i => i.status === "RUNNING"
-        );
-
+    let running = investmentsArray.filter(i => i.status === "RUNNING");
     if(running.length === 0){
-
-        portfolioContainer.innerHTML =
-        `<div class="no-data">
-            No Active Investments
-        </div>`;
-
+        portfolioContainer.innerHTML = `<div class="no-data">No Active Investments</div>`;
         return;
-
     }
 
     running.forEach(inv=>{
-
         const card = `
-
         <div class="investment-card">
-
             <div class="product-top">
-
-                <div class="product-name">
-                    ${inv.heading}
-                </div>
-
-                <div class="price">
-                    ₹${inv.price}
-                </div>
-
+                <div class="product-name">${inv.heading}</div>
+                <div class="price">₹${inv.price}</div>
             </div>
-
-            <div class="row">
-                <span class="label">
-                    Total Return
-                </span>
-
-                <span class="value">
-                    ₹${inv.totalReturn}
-                </span>
-            </div>
-
-            <div class="row">
-                <span class="label">
-                    Total Claimed
-                </span>
-
-                <span class="value" style="color:var(--success);">
-                    ₹${parseFloat(inv.totalClaimed || 0).toFixed(2)}
-                </span>
+            <div class="row"><span class="label">Total Return</span><span class="value">₹${inv.totalReturn}</span></div>
+            <div class="row"><span class="label">Total Claimed</span><span class="value" style="color:var(--success);">₹${parseFloat(inv.totalClaimed || 0).toFixed(2)}</span></div>
+            
+            <!-- 🌟 NYA UNCLAIMED TRACKER ELEMENT BOX -->
+            <div class="unclaimed-box">
+                <span style="color:var(--muted); font-weight:600;">Unclaimed Income:</span>
+                <span id="unclaimed-amt-${inv.id}" style="color:var(--primary2); font-weight:800;">₹0.00</span>
             </div>
 
             <div class="timer-text" id="timer-${inv.id}">Next claim in: --:--</div>
+            <button class="claim-btn" id="btn-claim-${inv.id}" data-id="${inv.id}" disabled>Claim Income</button>
+        </div>`;
 
-            <button
-                class="claim-btn"
-                id="btn-claim-${inv.id}"
-                data-id="${inv.id}"
-                disabled>
-                Claim Income
-            </button>
-
-        </div>
-
-        `;
-
-        portfolioContainer.insertAdjacentHTML(
-            "beforeend",
-            card
-        );
-
+        portfolioContainer.insertAdjacentHTML("beforeend", card);
         startClaimTimer(inv);
-
     });
 
-    document.querySelectorAll(".claim-btn")
-    .forEach(btn=>{
-
+    document.querySelectorAll(".claim-btn").forEach(btn=>{
         btn.replaceWith(btn.cloneNode(true));
-
     });
 
-    document.querySelectorAll(".claim-btn")
-    .forEach(btn=>{
-
+    document.querySelectorAll(".claim-btn").forEach(btn=>{
         btn.addEventListener("click",(e)=>{
-
             let id = e.target.dataset.id;
             let inv = investmentsArray.find(i => i.id === id);
             if(inv) claimIncome(inv);
-
         });
-
     });
-
 }
 
-/* TIMER SYSTEM LOGIC */
+/* 🌟 UPDATED AUTO OVERWRITE COUNTER ENGINE */
 function startClaimTimer(inv) {
     const timerElement = document.getElementById(`timer-${inv.id}`);
     const buttonElement = document.getElementById(`btn-claim-${inv.id}`);
+    const unclaimedElement = document.getElementById(`unclaimed-amt-${inv.id}`);
     
-    if(!timerElement || !buttonElement) return;
+    if(!timerElement || !buttonElement || !unclaimedElement) return;
 
-    let claimIntervalMs = 24 * 60 * 60 * 1000; 
+    let claimIntervalMs = 24 * 60 * 60 * 1000; // Default: 1 Day
     
     if (inv.timeUnit === "1 Hours" || inv.timeUnit === "Hours") {
-        claimIntervalMs = 10 * 60 * 1000; 
+        claimIntervalMs = 10 * 60 * 1000; // 10 Min chunks
     } else if (inv.timeUnit === "Days" && parseFloat(inv.revenue) === 1) {
-        claimIntervalMs = 1 * 60 * 60 * 1000; 
+        claimIntervalMs = 1 * 60 * 60 * 1000; // 1 Hour chunks
+    }
+
+    let totalExpected = parseFloat(inv.totalReturn);
+    let totalIncomeClaimed = parseFloat(inv.totalClaimed) || 0;
+    
+    // Dynamic single chunk calculation
+    let standardDaily = parseFloat(inv.dailyIncome);
+    let singleChunkAmount = standardDaily;
+    if (inv.timeUnit === "1 Hours" || inv.timeUnit === "Hours") {
+        singleChunkAmount = totalExpected / (parseFloat(inv.revenue) * 6);
+    } else if (inv.timeUnit === "Days" && parseFloat(inv.revenue) === 1) {
+        singleChunkAmount = totalExpected / 24;
     }
 
     function updateCountdown() {
         let now = Date.now();
         let lastClaim = inv.lastClaimTime || inv.buyTime;
-        let nextClaimTarget = lastClaim + claimIntervalMs;
-        let diff = nextClaimTarget - now;
+        
+        // Math Engine: Buy/Last claim time se lekar abhi tak kitne intervals bit chuke hain background mein
+        let timePassedSinceLastClaim = now - lastClaim;
+        let intervalsPassed = Math.floor(timePassedSinceLastClaim / claimIntervalMs);
 
-        if (diff <= 0) {
-            timerElement.innerText = "✨ Income is ready to claim!";
-            timerElement.style.color = "var(--success)";
+        // Jitne bhi intervals bitenge, continuous accumulate hote rahenge bina purana collect kiye
+        let currentUnclaimedAccumulated = intervalsPassed * singleChunkAmount;
+
+        // Safety Barrier: Max return validation check
+        if (totalIncomeClaimed + currentUnclaimedAccumulated > totalExpected) {
+            currentUnclaimedAccumulated = totalExpected - totalIncomeClaimed;
+        }
+
+        unclaimedElement.innerText = `₹${currentUnclaimedAccumulated.toFixed(2)}`;
+
+        // UI Button state trigger logic
+        if (currentUnclaimedAccumulated > 0) {
             buttonElement.removeAttribute("disabled");
         } else {
             buttonElement.setAttribute("disabled", "true");
-            
+        }
+
+        // Timer Calculation next target sequence ke liye
+        let nextClaimTarget = lastClaim + ((intervalsPassed + 1) * claimIntervalMs);
+        let diff = nextClaimTarget - now;
+
+        if (totalIncomeClaimed + currentUnclaimedAccumulated >= totalExpected) {
+            timerElement.innerText = "✨ Plan fully matured!";
+            timerElement.style.color = "var(--success)";
+        } else {
             let seconds = Math.floor((diff / 1000) % 60);
             let minutes = Math.floor((diff / (1000 * 60)) % 60);
             let hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
@@ -845,7 +554,7 @@ function startClaimTimer(inv) {
             if (hours > 0) timeString += `${hours}h `;
             timeString += `${minutes}m ${seconds}s`;
             
-            timerElement.innerText = `Next claim in: ${timeString}`;
+            timerElement.innerText = `Next tick addition in: ${timeString}`;
             timerElement.style.color = "var(--warning)";
         }
     }
@@ -855,96 +564,71 @@ function startClaimTimer(inv) {
     timerIntervals.push(intId);
 }
 
-/* CLAIM SYSTEM */
-
+/* 🌟 FULL COLLECT LOGIC */
 function claimIncome(inv){
+    let now = Date.now();
+    let lastClaim = inv.lastClaimTime || inv.buyTime;
 
-    let totalIncomeExpected = parseFloat(inv.totalReturn);
-    let totalClaimedTillNow = parseFloat(inv.totalClaimed) || 0;
-    let standardDailyIncome = parseFloat(inv.dailyIncome);
-    
-    let claimChunkAmount = standardDailyIncome;
-
+    let claimIntervalMs = 24 * 60 * 60 * 1000;
     if (inv.timeUnit === "1 Hours" || inv.timeUnit === "Hours") {
-        let totalChunks = parseFloat(inv.revenue) * 6;
-        claimChunkAmount = totalIncomeExpected / totalChunks;
+        claimIntervalMs = 10 * 60 * 1000;
     } else if (inv.timeUnit === "Days" && parseFloat(inv.revenue) === 1) {
-        claimChunkAmount = totalIncomeExpected / 24;
+        claimIntervalMs = 1 * 60 * 60 * 1000;
     }
 
-    if (totalClaimedTillNow + claimChunkAmount > totalIncomeExpected) {
-        claimChunkAmount = totalIncomeExpected - totalClaimedTillNow;
+    let totalExpected = parseFloat(inv.totalReturn);
+    let totalIncomeClaimed = parseFloat(inv.totalClaimed) || 0;
+    
+    let standardDaily = parseFloat(inv.dailyIncome);
+    let singleChunkAmount = standardDaily;
+    if (inv.timeUnit === "1 Hours" || inv.timeUnit === "Hours") {
+        singleChunkAmount = totalExpected / (parseFloat(inv.revenue) * 6);
+    } else if (inv.timeUnit === "Days" && parseFloat(inv.revenue) === 1) {
+        singleChunkAmount = totalExpected / 24;
     }
 
-    if(claimChunkAmount <= 0) {
-        showAlert("This plan is fully matured!", "error");
+    let intervalsPassed = Math.floor((now - lastClaim) / claimIntervalMs);
+    let totalUnclaimedToExtract = intervalsPassed * singleChunkAmount;
+
+    if (totalIncomeClaimed + totalUnclaimedToExtract > totalExpected) {
+        totalUnclaimedToExtract = totalExpected - totalIncomeClaimed;
+    }
+
+    if(totalUnclaimedToExtract <= 0) {
+        showAlert("No income accumulated yet!", "error");
         return;
     }
 
-    let newClaimTotal = totalClaimedTillNow + claimChunkAmount;
-    let updatedBalance = globalBalance + claimChunkAmount;
+    let newClaimTotal = totalIncomeClaimed + totalUnclaimedToExtract;
+    let updatedBalance = globalBalance + totalUnclaimedToExtract;
+
+    // Shift structural node timestamp mapping ahead perfectly
+    let exactTimeConsumed = intervalsPassed * claimIntervalMs;
+    let updatedLastClaimTime = lastClaim + exactTimeConsumed;
 
     const updates = {};
-
     updates[`users/${userId}/balance`] = updatedBalance;
-    updates[`users/${userId}/investments/${inv.id}/lastClaimTime`] = Date.now();
+    updates[`users/${userId}/investments/${inv.id}/lastClaimTime`] = updatedLastClaimTime;
     updates[`users/${userId}/investments/${inv.id}/totalClaimed`] = newClaimTotal;
 
-    if (newClaimTotal >= totalIncomeExpected) {
+    if (newClaimTotal >= totalExpected) {
         updates[`users/${userId}/investments/${inv.id}/status`] = "SETTLED";
     }
 
     update(ref(db), updates);
-    showAlert(`₹${claimChunkAmount.toFixed(2)} Asset Income Claimed!`);
-
+    showAlert(`₹${totalUnclaimedToExtract.toFixed(2)} Accumulated Income Claimed!`);
 }
-
-/* TABS TRIGGER */
 
 function switchCategory(cat){
-
     currentCategory = cat;
-
-    document.querySelectorAll(".tab-btn")
-    .forEach(btn=>{
-
-        btn.classList.remove("active");
-
-    });
-
-    document
-    .getElementById(`tab-${cat}`)
-    .classList.add("active");
-
+    document.querySelectorAll(".tab-btn").forEach(btn=>{ btn.classList.remove("active"); });
+    document.getElementById(`tab-${cat}`).classList.add("active");
     renderProducts();
-
 }
 
-document
-.getElementById("tab-Daily")
-.addEventListener("click",()=>{
-
-    switchCategory("Daily");
-
-});
-
-document
-.getElementById("tab-Weekly")
-.addEventListener("click",()=>{
-
-    switchCategory("Weekly");
-
-});
-
-document
-.getElementById("tab-Long")
-.addEventListener("click",()=>{
-
-    switchCategory("Long");
-
-});
-
+document.getElementById("tab-Daily").addEventListener("click",()=>{ switchCategory("Daily"); });
+document.getElementById("tab-Weekly").addEventListener("click",()=>{ switchCategory("Weekly"); });
+document.getElementById("tab-Long").addEventListener("click",()=>{ switchCategory("Long"); });
 </script>
-
 </body>
 </html>
