@@ -206,22 +206,37 @@
         }
     };
 
-    window.processWithdrawal = function() {
-        const amt = parseFloat(document.getElementById('withdrawAmt').value);
-        if(!amt || amt < 100) return Swal.fire('Limit', 'Minimum withdrawal is ₹100', 'info');
-        if(amt > currentBalance) return Swal.fire('Insufficient Funds', 'You don\'t have enough balance', 'error');
+    window.processWithdrawal = async function() {
+    const amt = parseFloat(document.getElementById('withdrawAmt').value);
 
+    if(!amt || amt < 100) {
+        return Swal.fire('Limit', 'Minimum withdrawal is ₹100', 'info');
+    }
+
+    if(amt > currentBalance) {
+        return Swal.fire('Insufficient Funds', 'You don\'t have enough balance', 'error');
+    }
+
+    try {
+        // Withdraw request save
         const requestRef = push(ref(db, 'withdrawals/' + userPhone));
-        set(requestRef, {
+
+        await set(requestRef, {
             amount: amt,
             status: 'Pending',
             time: new Date().toLocaleString()
-        }).then(() => {
-            Swal.fire('Submitted!', 'Withdrawal request sent to admin.', 'success');
-            document.getElementById('withdrawAmt').value = '';
         });
-    };
 
-</script>
-</body>
-</html>
+        // Balance cut
+        const newBalance = currentBalance - amt;
+
+        await set(ref(db, 'users/' + userPhone + '/balance'), newBalance);
+
+        Swal.fire('Submitted!', 'Withdrawal request sent to admin.', 'success');
+
+        document.getElementById('withdrawAmt').value = '';
+
+    } catch (error) {
+        Swal.fire('Error', 'Something went wrong!', 'error');
+    }
+};
