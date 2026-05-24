@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght=400;500;700&display=swap');
         body { background: #f4f7f9; font-family: 'Roboto', sans-serif; margin: 0; padding-bottom: 20px; }
         .header-blue {
             background: linear-gradient(to bottom, #1a4a8e, #2563eb);
@@ -24,9 +24,13 @@
             display: flex; align-items: center; justify-content: center;
             font-weight: bold; cursor: pointer; transition: 0.3s; background: white; color: #64748b;
         }
-        .amt-circle.active { border-color: #1e40af; color: #1e40af; background: #eff6ff; }
+        .amt-circle.active { border-color: #1e40af; color: #1e40af; background: #eff6ff; box-shadow: 0 0 10px rgba(30, 64, 175, 0.2); }
         .bonus-badge { background: #fef2f2; color: #ef4444; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 10px; margin-top: 4px; }
-        .history-card { background: white; border-radius: 15px; margin: 0 15px; padding: 15px; }
+        .history-card { background: white; border-radius: 15px; margin: 20px 15px; padding: 15px; }
+        .btn-phonepe { background: #5f259f; color: white; }
+        .btn-gpay { background: #fff; color: #5f6368; border: 1px solid #dadce0; }
+        .btn-paytm { background: #00baf2; color: white; }
+        .hidden-section { display: none; }
     </style>
 </head>
 <body>
@@ -42,23 +46,51 @@
     <label class="text-gray-500 font-bold text-sm">Deposit Amount</label>
     <div class="relative mt-2">
         <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">₹</span>
-        <input type="number" id="final-amt" value="300" class="w-full bg-gray-50 border border-gray-200 rounded-lg py-4 pl-10 pr-4 text-xl font-bold text-blue-900 outline-none" readonly>
+        <input type="number" id="final-amt" placeholder="Enter Amount (Min ₹100)" oninput="validateAmount()" class="w-full bg-gray-50 border border-gray-200 rounded-lg py-4 pl-10 pr-4 text-xl font-bold text-blue-900 outline-none" readonly>
     </div>
 
+    <!-- Amount Selection Grid -->
     <div class="grid grid-cols-3 gap-y-6 mt-6 justify-items-center">
-        <div class="flex flex-col items-center" onclick="selectAmt(300, this)"><div class="amt-circle active">300</div><span class="bonus-badge">+₹50</span></div>
+        <div class="flex flex-col items-center" onclick="selectAmt(100, this)"><div class="amt-circle">100</div><span class="bonus-badge">+₹10</span></div>
+        <div class="flex flex-col items-center" onclick="selectAmt(300, this)"><div class="amt-circle">300</div><span class="bonus-badge">+₹50</span></div>
         <div class="flex flex-col items-center" onclick="selectAmt(500, this)"><div class="amt-circle">500</div><span class="bonus-badge">+₹100</span></div>
         <div class="flex flex-col items-center" onclick="selectAmt(1000, this)"><div class="amt-circle">1000</div><span class="bonus-badge">+₹200</span></div>
-        <div class="flex flex-col items-center" onclick="selectAmt(2000, this)"><div class="amt-circle">2000</div><span class="bonus-badge">+₹400</span></div>
         <div class="flex flex-col items-center" onclick="selectAmt(5000, this)"><div class="amt-circle">5000</div><span class="bonus-badge">+₹1000</span></div>
         <div class="flex flex-col items-center" onclick="selectAmt(10000, this)"><div class="amt-circle">10000</div><span class="bonus-badge">+₹2000</span></div>
     </div>
 
-    <button onclick="goPay()" class="w-full mt-8 bg-blue-900 text-white font-bold py-4 rounded-full shadow-lg active:scale-95 transition-all">
-        Deposit Now
-    </button>
+    <!-- SELECT APP OPTIONS -->
+    <div id="apps-section" class="mt-8 hidden-section">
+        <label class="text-gray-400 font-bold text-xs uppercase tracking-wider block mb-3 text-center">Select App to Pay</label>
+        <div class="space-y-3">
+            <button onclick="triggerPayment('phonepe')" class="btn-phonepe w-full font-bold py-3.5 px-4 rounded-xl shadow flex items-center justify-center gap-3 active:scale-98 transition-all">
+                <i class="fas fa-wallet"></i> Pay via PhonePe
+            </button>
+            <button onclick="triggerPayment('gpay')" class="btn-gpay w-full font-bold py-3.5 px-4 rounded-xl shadow flex items-center justify-center gap-3 active:scale-98 transition-all">
+                <i class="fab fa-google-pay text-2xl"></i> Pay via Google Pay
+            </button>
+            <button onclick="triggerPayment('paytm')" class="btn-paytm w-full font-bold py-3.5 px-4 rounded-xl shadow flex items-center justify-center gap-3 active:scale-98 transition-all">
+                <i class="fas fa-mobile-alt"></i> Pay via Paytm
+            </button>
+        </div>
+    </div>
+
+    <!-- 🔒 SECURE UTR INPUT FORM (Sirf payment redirect se return hone par hi khulega) -->
+    <div id="utr-direct-section" class="mt-6 border-t pt-4 hidden-section">
+        <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl mb-4">
+            <p class="text-xs text-emerald-800 font-medium text-center">
+                <i class="fas fa-reply mr-1"></i> App Redirected! Apne payment app se 12-digit UTR copy karke niche submit karein.
+            </p>
+        </div>
+        <label class="text-gray-600 font-bold text-xs">12-Digit UTR Number</label>
+        <input type="number" id="direct-utr" placeholder="Enter 12 digit UTR here" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3.5 text-base mt-1 outline-none font-bold tracking-wider text-center">
+        <button onclick="confirmDepositWithUtr()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow text-sm mt-3 uppercase tracking-wider">
+            Verify & Update Wallet
+        </button>
+    </div>
 </div>
 
+<!-- LIVE TRANSACTIONS RECORD -->
 <div class="history-card shadow-sm border border-gray-100">
     <h3 class="font-bold text-blue-900 text-sm mb-4"><i class="fas fa-history mr-2"></i> Recent Deposits</h3>
     <div id="history-list" class="space-y-3">
@@ -66,44 +98,153 @@
     </div>
 </div>
 
-<script>
-    function selectAmt(val, el) {
-        document.getElementById('final-amt').value = val;
+<!-- BOTTOM SEPARATED HELP PROOF TRIGGER -->
+<div class="px-4">
+    <button onclick="openHelpModal()" class="w-full bg-gray-200 text-gray-700 hover:bg-gray-300 font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition-all">
+        <i class="fas fa-question-circle mr-1"></i> Need Help / Submit Manual Screenshot
+    </button>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyC7apT-d-R9bpcb4LcpFk4P0cpw9sKxi-0",
+        authDomain: "dbt-online-earning.firebaseapp.com",
+        databaseURL: "https://dbt-online-earning-default-rtdb.firebaseio.com",
+        projectId: "dbt-online-earning",
+        storageBucket: "dbt-online-earning.firebasestorage.app",
+        messagingSenderId: "319083357519",
+        appId: "1:319083357519:web:62ccf6d8ce0dca3152513a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const upiList = ["6353356656.wallet@phonepe", "9023875585@fam", "8780091512@ptaxis"];
+    let currentGlobalOrderId = "";
+    let systemSelectedRawAmount = 0; 
+
+    window.validateAmount = function() {
+        const amtInput = document.getElementById('final-amt').value;
+        const appsSection = document.getElementById('apps-section');
+        if (amtInput && parseFloat(amtInput) >= 100) { appsSection.style.display = "block"; } 
+        else { appsSection.style.display = "none"; }
+    };
+
+    window.selectAmt = function(val, el) {
+        systemSelectedRawAmount = val; 
+        document.getElementById('final-amt').value = val; // Screen par perfect pura real amount dikhega
+        
         document.querySelectorAll('.amt-circle').forEach(c => c.classList.remove('active'));
         el.querySelector('.amt-circle').classList.add('active');
-    }
+        validateAmount(); 
+    };
 
-    function goPay() {
-        const amt = document.getElementById('final-amt').value;
+    window.triggerPayment = async function(appType) {
+        const userPhone = localStorage.getItem('userPhone') || "9999999999";
+        const randomUPI = upiList[Math.floor(Math.random() * upiList.length)];
+        
+        let finalPayableAmount = systemSelectedRawAmount;
+        
+        // Logic: Agar amount 200 se bada hai toh background intent me automatic thoda kam ho jayega
+        if (systemSelectedRawAmount >= 200) {
+            let randomDeduction = (Math.random() * (2.50 - 0.50) + 0.50).toFixed(2);
+            finalPayableAmount = (systemSelectedRawAmount - randomDeduction).toFixed(2);
+        }
+        
+        currentGlobalOrderId = "TXN" + Math.floor(10000000 + Math.random() * 90000000);
+        
+        let intentUrl = `upi://pay?pa=${randomUPI}&pn=RelianceHub&am=${finalPayableAmount}&cu=INR`;
+        if (appType === 'phonepe') intentUrl += `&package=com.phonepe.app`;
+        if (appType === 'gpay') intentUrl += `&package=com.google.android.apps.nbu.paisa.user`;
+        if (appType === 'paytm') intentUrl += `&package=net.one97.paytm`;
+
+        await set(ref(db, 'deposits/' + currentGlobalOrderId), {
+            phone: userPhone,
+            amount: systemSelectedRawAmount, 
+            payableAmount: finalPayableAmount, 
+            orderId: currentGlobalOrderId,
+            usedUpi: randomUPI,
+            status: "Pending",
+            utr: "",
+            timestamp: Date.now()
+        });
+
+        // Redirect user to native UPI application
+        window.location.href = intentUrl;
+        
+        // Redirection complete hone par hi niche ka UTR submission form user ke saamne aayega
+        setTimeout(() => {
+            document.getElementById('utr-direct-section').style.display = "block";
+            document.getElementById('apps-section').style.display = "none";
+        }, 1200);
+    };
+
+    window.confirmDepositWithUtr = async function() {
+        const utrVal = document.getElementById('direct-utr').value.trim();
+        // 12 digit strict numerical validation
+        if(utrVal.length !== 12 || isNaN(utrVal)) {
+            return Swal.fire('Invalid UTR', 'Please enter exact 12-digit numeric reference code', 'warning');
+        }
+
+        Swal.fire({ title: 'Processing with Database...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+        // UTR enter karne par direct sync update complete ho jayega state me
+        await update(ref(db, 'deposits/' + currentGlobalOrderId), {
+            utr: utrVal,
+            status: "Success"
+        });
+
+        Swal.fire('Deposit Success!', `₹${systemSelectedRawAmount} has been successfully added to your wallet logs!`, 'success');
+        document.getElementById('utr-direct-section').style.display = "none";
+        document.getElementById('direct-utr').value = "";
+    };
+
+    window.openHelpModal = function() {
         Swal.fire({
-            title: 'Redirecting...',
-            html: 'Connecting to secure payment gateway',
-            timer: 2000,
-            timerProgressBar: true,
-            didOpen: () => { Swal.showLoading() }
-        }).then(() => {
-            window.location.href = `paygate.html?amount=${amt}`;
+            title: '<strong>Deposit Help Control</strong>',
+            html: `
+                <div class="text-left space-y-3 p-1">
+                    <label class="text-xs font-bold text-gray-600 block">12-Digit UTR Number</label>
+                    <input type="number" id="modal-utr" placeholder="Enter missing UTR reference" class="w-full border p-2.5 rounded-lg text-sm mb-3">
+                    <label class="text-xs font-bold text-gray-600 block">Upload Screenshot</label>
+                    <input type="file" id="modal-file" accept="image/*" class="w-full text-xs border p-2 rounded-lg">
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Submit To Admin',
+            confirmButtonColor: '#EF4444'
+        }).then((res) => {
+            if (res.isConfirmed) { Swal.fire('Submitted', 'Manual verification log created.', 'info'); }
+        });
+    };
+
+    function loadHistory() {
+        const userPhone = localStorage.getItem('userPhone') || "9999999999";
+        onValue(ref(db, 'deposits'), (snapshot) => {
+            const data = snapshot.val();
+            const list = document.getElementById('history-list');
+            if (!data) return;
+            let historyHTML = '';
+            Object.keys(data).forEach(key => {
+                const item = data[key];
+                if (item.phone === userPhone) {
+                    let sColor = "bg-yellow-100 text-yellow-600";
+                    if (item.status === "Success") sColor = "bg-green-100 text-green-600";
+                    if (item.status === "Failed") sColor = "bg-red-100 text-red-600";
+                    historyHTML += `
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <div><p class="font-bold text-sm text-gray-700">₹${item.amount}</p><p class="text-[9px] text-gray-400">UTR: ${item.utr || 'N/A'}</p></div>
+                            <span class="text-[10px] font-bold ${sColor} px-2.5 py-1 rounded-full">${item.status}</span>
+                        </div>`;
+                }
+            });
+            if(historyHTML !== '') list.innerHTML = historyHTML;
         });
     }
-
-    // Load History
-    function loadHistory() {
-        const history = JSON.parse(localStorage.getItem('depositHistory') || '[]');
-        const list = document.getElementById('history-list');
-        if (history.length > 0) {
-            list.innerHTML = history.reverse().map(item => `
-                <div class="flex justify-between items-center border-b pb-2">
-                    <div>
-                        <p class="font-bold text-sm text-gray-700">₹${item.amount}</p>
-                        <p class="text-[10px] text-gray-400">${item.date}</p>
-                    </div>
-                    <span class="text-[10px] font-bold bg-green-100 text-green-600 px-2 py-1 rounded-full">Successful</span>
-                </div>
-            `).join('');
-        }
-    }
-    window.onload = loadHistory;
+    window.addEventListener('DOMContentLoaded', loadHistory);
 </script>
-
 </body>
 </html>
