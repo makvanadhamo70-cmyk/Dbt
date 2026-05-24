@@ -208,7 +208,7 @@
 
     window.processWithdrawal = function() {
         const amt = parseFloat(document.getElementById('withdrawAmt').value);
-        if(!amt || amt < 200) return Swal.fire('Limit', 'Minimum withdrawal is ₹200', 'info');
+        if(!amt || amt < 100) return Swal.fire('Limit', 'Minimum withdrawal is ₹100', 'info');
         if(amt > currentBalance) return Swal.fire('Insufficient Funds', 'You don\'t have enough balance', 'error');
 
         const requestRef = push(ref(db, 'withdrawals/' + userPhone));
