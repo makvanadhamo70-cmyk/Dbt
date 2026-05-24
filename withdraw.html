@@ -4,84 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Withdrawal | Reliance Hub</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
-
-        body {
-            background: #f4f7f9;
-            font-family: 'Roboto', sans-serif;
-            padding-bottom: 30px;
-        }
-
-        .header-nav {
-            background: #1a2a5e;
-            color: white;
-            padding: 20px;
-            border-radius: 0 0 25px 25px;
-        }
-
-        .form-card,
-        .bank-card {
-            background: white;
-            border-radius: 20px;
-            margin: -20px 15px 20px;
-            padding: 25px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-        }
-
-        .input-box {
-            width: 100%;
-            background: #f8fafc;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 12px 15px;
-            margin-top: 5px;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        .input-box:focus {
-            border-color: #3b82f6;
-            background: #fff;
-        }
-
-        .bank-display-card {
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-            color: white;
-            border-radius: 15px;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 8px 20px rgba(30, 58, 138, 0.3);
-        }
-
-        .withdraw-btn {
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-            width: 100%;
-            color: white;
-            font-weight: 800;
-            padding: 15px;
-            border-radius: 50px;
-            margin-top: 20px;
-        }
-
-        .history-item {
-            background: #ffffff;
-            border-radius: 15px;
-            padding: 12px;
-            margin-bottom: 10px;
-            border: 1px solid #edf2f7;
-        }
+        body { background: #f4f7f9; font-family: 'Roboto', sans-serif; padding-bottom: 30px; }
+        .header-nav { background: #1a2a5e; color: white; padding: 20px; border-radius: 0 0 25px 25px; }
+        .form-card, .bank-card { background: white; border-radius: 20px; margin: -20px 15px 20px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .input-box { width: 100%; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 12px 15px; margin-top: 5px; outline: none; transition: 0.3s; }
+        .input-box:focus { border-color: #3b82f6; background: #fff; }
+        .bank-display-card { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; border-radius: 15px; padding: 20px; position: relative; overflow: hidden; box-shadow: 0 8px 20px rgba(30, 58, 138, 0.3); }
+        .withdraw-btn { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); width: 100%; color: white; font-weight: 800; padding: 15px; border-radius: 50px; margin-top: 20px; }
+        .history-item { background: #ffffff; border-radius: 15px; padding: 12px; margin-bottom: 10px; border: 1px solid #edf2f7; }
     </style>
 </head>
-
 <body>
 
 <div class="header-nav flex justify-between items-center">
@@ -89,502 +26,214 @@
         <i class="fas fa-arrow-left text-xl" onclick="history.back()"></i>
         <h1 class="text-xl font-bold">Withdrawal</h1>
     </div>
-
     <div class="bg-white/20 px-4 py-1 rounded-full border border-white/30">
-        <span class="text-xs font-bold">
-            Balance: ₹<span id="top-bal">0.00</span>
-        </span>
+        <span class="text-xs font-bold">Balance: ₹<span id="top-bal">0.00</span></span>
     </div>
 </div>
 
 <div id="bank-section">
-    <div class="p-10 text-center text-gray-400">
-        <i class="fas fa-spinner fa-spin mr-2"></i>
-        Loading...
-    </div>
+    <div class="p-10 text-center text-gray-400"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
 </div>
 
 <div class="form-card" id="amt-section" style="display: none;">
-    <h2 class="text-gray-800 font-bold mb-4 text-xs uppercase tracking-widest text-center">
-        <i class="fas fa-hand-holding-usd mr-2 text-green-600"></i>
-        Withdrawal Amount
-    </h2>
-
-    <input
-        type="number"
-        id="withdrawAmt"
-        placeholder="Minimum 100"
-        class="input-box text-center text-2xl font-bold text-blue-900"
-    >
-
-    <p class="text-[10px] text-gray-400 mt-2 text-center">
-        Admin Fee: 5% | Processing: 1-24h
-    </p>
-
-    <button
-        onclick="processWithdrawal()"
-        class="withdraw-btn shadow-lg shadow-blue-100"
-    >
-        Request Withdrawal
-    </button>
+    <h2 class="text-gray-800 font-bold mb-4 text-xs uppercase tracking-widest text-center"><i class="fas fa-hand-holding-usd mr-2 text-green-600"></i>Withdrawal Amount</h2>
+    <input type="number" id="withdrawAmt" placeholder="Minimum 100" class="input-box text-center text-2xl font-bold text-blue-900">
+    <p class="text-[10px] text-gray-400 mt-2 text-center">Admin Fee: 5% | Processing: 1-24h</p>
+    <button onclick="processWithdrawal()" class="withdraw-btn shadow-lg shadow-blue-100">Request Withdrawal</button>
 </div>
 
 <div class="mx-[15px] mt-2">
-
-    <h2 class="text-gray-500 font-bold mb-3 text-[10px] uppercase tracking-widest ml-2">
-        Recent Transactions
-    </h2>
-
-    <div id="history-list" class="space-y-2"></div>
-
+    <h2 class="text-gray-500 font-bold mb-3 text-[10px] uppercase tracking-widest ml-2">Recent Transactions</h2>
+    <div id="history-list" class="space-y-2">
+        </div>
 </div>
 
 <script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-
-import {
-    getDatabase,
-    ref,
-    set,
-    get,
-    onValue,
-    remove,
-    push
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyC7apT-d-R9bpcb4LcpFk4P0cpw9sKxi-0",
-    authDomain: "dbt-online-earning.firebaseapp.com",
-    databaseURL: "https://dbt-online-earning-default-rtdb.firebaseio.com",
-    projectId: "dbt-online-earning",
-    storageBucket: "dbt-online-earning.firebasestorage.app",
-    messagingSenderId: "319083357519",
-    appId: "1:319083357519:web:62ccf6d8ce0dca3152513a"
-};
-
-const app = initializeApp(firebaseConfig);
-
-const db = getDatabase(app);
-
-const userPhone = localStorage.getItem('userPhone');
-
-let currentBalance = 0;
-
-if (userPhone) {
-
-    // REAL TIME BALANCE
-    onValue(ref(db, 'users/' + userPhone + '/balance'), (snap) => {
-
-        currentBalance = snap.val() || 0;
-
-        document.getElementById('top-bal').innerText =
-            currentBalance.toFixed(2);
-
-    });
-
-    // BANK UI
-    onValue(ref(db, 'users/' + userPhone + '/bankDetails'), (snap) => {
-
-        const section = document.getElementById('bank-section');
-
-        const amtSection = document.getElementById('amt-section');
-
-        if (snap.exists()) {
-
-            const data = snap.val();
-
-            const maskedAcc =
-                data.accNum.substring(0,2) +
-                "********" +
-                data.accNum.slice(-2);
-
-            const bankLogo =
-                `https://logo.clearbit.com/${data.bankName.toLowerCase().replace(/\s/g, '')}.com?size=100`;
-
-            section.innerHTML = `
-            <div class="bank-card">
-
-                <div class="bank-display-card">
-
-                    <div class="flex justify-between items-start mb-6">
-
-                        <div class="bg-white/90 p-2 rounded-lg shadow-inner">
-                            <img
-                                src="${bankLogo}"
-                                onerror="this.src='https://img.icons8.com/fluency/48/bank.png'"
-                                class="w-7"
-                            >
-                        </div>
-
-                        <button
-                            onclick="unlinkBank()"
-                            class="bg-white/10 hover:bg-red-500 px-3 py-1 rounded-full text-[10px] font-bold transition border border-white/20"
-                        >
-                            Unlink Account
-                        </button>
-
-                    </div>
-
-                    <div class="space-y-1">
-
-                        <p class="text-[10px] opacity-60 uppercase tracking-widest">
-                            Account Holder
-                        </p>
-
-                        <p class="font-bold text-lg uppercase">
-                            ${data.accHolder}
-                        </p>
-
-                    </div>
-
-                    <div class="mt-5 flex justify-between items-end">
-
-                        <div>
-
-                            <p class="text-[9px] opacity-60 uppercase tracking-tighter">
-                                Bank Account Number
-                            </p>
-
-                            <p class="font-mono text-lg tracking-wider">
-                                ${maskedAcc}
-                            </p>
-
-                        </div>
-
-                        <div class="text-right">
-
-                            <p class="text-[9px] opacity-60 uppercase">
-                                IFSC
-                            </p>
-
-                            <p class="font-bold text-xs">
-                                ${data.ifsc}
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                    <i class="fas fa-university absolute -right-4 -bottom-4 text-8xl opacity-10 rotate-12"></i>
-
-                </div>
-
-            </div>
-            `;
-
-            amtSection.style.display = 'block';
-
-        } else {
-
-            section.innerHTML = `
-            <div class="form-card animate-fadeIn">
-
-                <h2 class="font-bold text-blue-900 mb-4 border-b pb-2">
-                    <i class="fas fa-link mr-2"></i>
-                    Link Bank Account
-                </h2>
-
-                <select id="bankName" class="input-box mb-3">
-
-                    <option value="SBI">State Bank of India</option>
-                    <option value="HDFC">HDFC Bank</option>
-                    <option value="ICICI">ICICI Bank</option>
-                    <option value="Axis">Axis Bank</option>
-                    <option value="Paytm">Paytm Payments Bank</option>
-                    <option value="Airtel">Airtel Payments Bank</option>
-                    <option value="PNB">PNB Bank</option>
-
-                </select>
-
-                <input
-                    type="text"
-                    id="accHolder"
-                    placeholder="Holder Name"
-                    class="input-box mb-3"
-                >
-
-                <input
-                    type="number"
-                    id="accNum"
-                    placeholder="A/C Number (9-18 digits)"
-                    class="input-box mb-3"
-                >
-
-                <input
-                    type="text"
-                    id="ifsc"
-                    placeholder="IFSC Code (SBIN000XXXX)"
-                    class="input-box mb-5 uppercase"
-                    maxlength="11"
-                >
-
-                <button
-                    onclick="saveBankDetails()"
-                    class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-blue-100"
-                >
-                    Save & Link Account
-                </button>
-
-            </div>
-            `;
-
-            amtSection.style.display = 'none';
-        }
-
-    });
-
-    // WITHDRAWAL HISTORY
-    onValue(ref(db, 'withdrawals/' + userPhone), (snap) => {
-
-        const list = document.getElementById('history-list');
-
-        list.innerHTML = "";
-
-        if (snap.exists()) {
-
-            Object.values(snap.val()).reverse().forEach(r => {
-
-                const statusClass =
-                    r.status === 'Pending'
-                    ? 'text-orange-500 bg-orange-50'
-                    : 'text-green-600 bg-green-50';
-
-                list.innerHTML += `
-                <div class="history-item flex justify-between items-center">
-
-                    <div class="flex items-center gap-3">
-
-                        <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
-                            <i class="fas fa-arrow-up-right-from-square text-sm"></i>
-                        </div>
-
-                        <div>
-
-                            <p class="font-bold text-gray-800">
-                                ₹${r.amount}
-                            </p>
-
-                            <p class="text-[9px] text-gray-400">
-                                ${r.time}
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                    <div class="px-3 py-1 rounded-full text-[10px] font-bold ${statusClass}">
-                        ${r.status}
-                    </div>
-
-                </div>
-                `;
-
-            });
-
-        } else {
-
-            list.innerHTML = `
-            <div class="text-center py-10 text-gray-300 text-xs italic">
-                No history found.
-            </div>
-            `;
-        }
-
-    });
-
-}
-
-// SAVE BANK
-window.saveBankDetails = function() {
-
-    const bankName =
-        document.getElementById('bankName').value;
-
-    const accHolder =
-        document.getElementById('accHolder').value;
-
-    const accNum =
-        document.getElementById('accNum').value;
-
-    const ifsc =
-        document.getElementById('ifsc').value.toUpperCase();
-
-    if (!accHolder || !accNum || !ifsc) {
-
-        return Swal.fire(
-            'Error',
-            'Please fill all details!',
-            'error'
-        );
-    }
-
-    if (accNum.length < 9 || accNum.length > 18) {
-
-        return Swal.fire(
-            'Invalid A/C',
-            'Account number must be 9-18 digits!',
-            'warning'
-        );
-    }
-
-    const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
-
-    if (!ifscRegex.test(ifsc)) {
-
-        return Swal.fire(
-            'Invalid IFSC',
-            'Format: 4 letters, 0, then 6 chars.',
-            'warning'
-        );
-    }
-
-    set(
-        ref(db, 'users/' + userPhone + '/bankDetails'),
-        {
-            bankName,
-            accHolder,
-            accNum,
-            ifsc
-        }
-    )
-    .then(() => {
-
-        Swal.fire(
-            'Linked!',
-            'Bank account added successfully',
-            'success'
-        );
-
-    });
-
-};
-
-// UNLINK BANK
-window.unlinkBank = async function() {
-
-    const { value: password } = await Swal.fire({
-
-        title: 'Security Check',
-
-        text: "Enter login password to unlink bank",
-
-        input: 'password',
-
-        inputPlaceholder: 'Password',
-
-        showCancelButton: true,
-
-        confirmButtonColor: '#d33'
-
-    });
-
-    if (password) {
-
-        const userSnap =
-            await get(ref(db, 'users/' + userPhone));
-
-        if (
-            userSnap.exists() &&
-            userSnap.val().password === password
-        ) {
-
-            remove(
-                ref(db, 'users/' + userPhone + '/bankDetails')
-            )
-            .then(() => {
-
-                Swal.fire(
-                    'Deleted',
-                    'Bank account unlinked',
-                    'success'
-                );
-
-            });
-
-        } else {
-
-            Swal.fire(
-                'Error',
-                'Incorrect Password!',
-                'error'
-            );
-
-        }
-
-    }
-
-};
-
-// WITHDRAWAL FUNCTION
-window.processWithdrawal = async function() {
-
-    const amt =
-        parseFloat(document.getElementById('withdrawAmt').value);
-
-    if (!amt || amt < 100) {
-
-        return Swal.fire(
-            'Limit',
-            'Minimum withdrawal is ₹100',
-            'info'
-        );
-    }
-
-    if (amt > currentBalance) {
-
-        return Swal.fire(
-            'Insufficient Funds',
-            'You don\\'t have enough balance',
-            'error'
-        );
-    }
-
-    try {
-
-        // SAVE WITHDRAWAL REQUEST
-        const requestRef =
-            push(ref(db, 'withdrawals/' + userPhone));
-
-        await set(requestRef, {
-
-            amount: amt,
-
-            status: 'Pending',
-
-            time: new Date().toLocaleString()
-
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, set, get, onValue, remove, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyC7apT-d-R9bpcb4LcpFk4P0cpw9sKxi-0",
+        authDomain: "dbt-online-earning.firebaseapp.com",
+        databaseURL: "https://dbt-online-earning-default-rtdb.firebaseio.com",
+        projectId: "dbt-online-earning",
+        storageBucket: "dbt-online-earning.firebasestorage.app",
+        messagingSenderId: "319083357519",
+        appId: "1:319083357519:web:62ccf6d8ce0dca3152513a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const userPhone = localStorage.getItem('userPhone');
+
+    let currentBalance = 0;
+
+    if (userPhone) {
+        // 1. REAL-TIME BALANCE
+        onValue(ref(db, 'users/' + userPhone + '/balance'), (snap) => {
+            currentBalance = snap.val() || 0;
+            document.getElementById('top-bal').innerText = currentBalance.toFixed(2);
         });
 
-        // CUT BALANCE
-        const newBalance = currentBalance - amt;
+        // 2. DYNAMIC BANK UI (CARD vs FORM)
+        onValue(ref(db, 'users/' + userPhone + '/bankDetails'), (snap) => {
+            const section = document.getElementById('bank-section');
+            const amtSection = document.getElementById('amt-section');
 
-        await set(
-            ref(db, 'users/' + userPhone + '/balance'),
-            newBalance
-        );
+            if (snap.exists()) {
+                const data = snap.val();
+                const maskedAcc = data.accNum.substring(0,2) + "********" + data.accNum.slice(-2);
+                const bankLogo = `https://logo.clearbit.com/${data.bankName.toLowerCase().replace(/\s/g, '')}.com?size=100`;
 
-        Swal.fire(
-            'Submitted!',
-            'Withdrawal request sent to admin.',
-            'success'
-        );
+                section.innerHTML = `
+                <div class="bank-card">
+                    <div class="bank-display-card">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="bg-white/90 p-2 rounded-lg shadow-inner">
+                                <img src="${bankLogo}" onerror="this.src='https://img.icons8.com/fluency/48/bank.png'" class="w-7">
+                            </div>
+                            <button onclick="unlinkBank()" class="bg-white/10 hover:bg-red-500 px-3 py-1 rounded-full text-[10px] font-bold transition border border-white/20">Unlink Account</button>
+                        </div>
+                        <div class="space-y-1">
+                            <p class="text-[10px] opacity-60 uppercase tracking-widest">Account Holder</p>
+                            <p class="font-bold text-lg uppercase">${data.accHolder}</p>
+                        </div>
+                        <div class="mt-5 flex justify-between items-end">
+                            <div>
+                                <p class="text-[9px] opacity-60 uppercase tracking-tighter">Bank Account Number</p>
+                                <p class="font-mono text-lg tracking-wider">${maskedAcc}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[9px] opacity-60 uppercase">IFSC</p>
+                                <p class="font-bold text-xs">${data.ifsc}</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-university absolute -right-4 -bottom-4 text-8xl opacity-10 rotate-12"></i>
+                    </div>
+                </div>`;
+                amtSection.style.display = 'block';
+            } else {
+                section.innerHTML = `
+                <div class="form-card animate-fadeIn">
+                    <h2 class="font-bold text-blue-900 mb-4 border-b pb-2"><i class="fas fa-link mr-2"></i>Link Bank Account</h2>
+                    <select id="bankName" class="input-box mb-3">
+                        <option value="SBI">State Bank of India</option>
+                        <option value="HDFC">HDFC Bank</option>
+                        <option value="ICICI">ICICI Bank</option>
+                        <option value="Axis">Axis Bank</option>
+                        <option value="Paytm">Paytm Payments Bank</option>
+                        <option value="Airtel">Airtel Payments Bank</option>
+                        <option value="PNB">PNB Bank</option>
+                    </select>
+                    <input type="text" id="accHolder" placeholder="Holder Name" class="input-box mb-3">
+                    <input type="number" id="accNum" placeholder="A/C Number (9-18 digits)" class="input-box mb-3">
+                    <input type="text" id="ifsc" placeholder="IFSC Code (SBIN000XXXX)" class="input-box mb-5 uppercase" maxlength="11">
+                    <button onclick="saveBankDetails()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-blue-100">Save & Link Account</button>
+                </div>`;
+                amtSection.style.display = 'none';
+            }
+        });
 
-        document.getElementById('withdrawAmt').value = '';
-
-    } catch (error) {
-
-        Swal.fire(
-            'Error',
-            'Something went wrong!',
-            'error'
-        );
-
+        // 3. WITHDRAWAL HISTORY
+        onValue(ref(db, 'withdrawals/' + userPhone), (snap) => {
+            const list = document.getElementById('history-list');
+            list.innerHTML = "";
+            if (snap.exists()) {
+                Object.values(snap.val()).reverse().forEach(r => {
+                    const statusClass = r.status === 'Pending' ? 'text-orange-500 bg-orange-50' : 'text-green-600 bg-green-50';
+                    list.innerHTML += `
+                    <div class="history-item flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
+                                <i class="fas fa-arrow-up-right-from-square text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-gray-800">₹${r.amount}</p>
+                                <p class="text-[9px] text-gray-400">${r.time}</p>
+                            </div>
+                        </div>
+                        <div class="px-3 py-1 rounded-full text-[10px] font-bold ${statusClass}">${r.status}</div>
+                    </div>`;
+                });
+            } else {
+                list.innerHTML = '<div class="text-center py-10 text-gray-300 text-xs italic">No history found.</div>';
+            }
+        });
     }
 
-};
+    // --- CORE FUNCTIONS ---
+
+    window.saveBankDetails = function() {
+        const bankName = document.getElementById('bankName').value;
+        const accHolder = document.getElementById('accHolder').value;
+        const accNum = document.getElementById('accNum').value;
+        const ifsc = document.getElementById('ifsc').value.toUpperCase();
+
+        // STRICT VALIDATIONS
+        if(!accHolder || !accNum || !ifsc) return Swal.fire('Error', 'Please fill all details!', 'error');
+        
+        if(accNum.length < 9 || accNum.length > 18) {
+            return Swal.fire('Invalid A/C', 'Account number must be 9-18 digits!', 'warning');
+        }
+
+        const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+        if(!ifscRegex.test(ifsc)) {
+            return Swal.fire('Invalid IFSC', 'Format: 4 letters, 0, then 6 chars.', 'warning');
+        }
+
+        set(ref(db, 'users/' + userPhone + '/bankDetails'), { bankName, accHolder, accNum, ifsc })
+        .then(() => Swal.fire('Linked!', 'Bank account added successfully', 'success'));
+    };
+
+    window.unlinkBank = async function() {
+        const { value: password } = await Swal.fire({
+            title: 'Security Check',
+            text: "Enter login password to unlink bank",
+            input: 'password',
+            inputPlaceholder: 'Password',
+            showCancelButton: true,
+            confirmButtonColor: '#d33'
+        });
+
+        if (password) {
+            const userSnap = await get(ref(db, 'users/' + userPhone));
+            if (userSnap.exists() && userSnap.val().password === password) {
+                remove(ref(db, 'users/' + userPhone + '/bankDetails'))
+                .then(() => Swal.fire('Deleted', 'Bank account unlinked', 'success'));
+            } else {
+                Swal.fire('Error', 'Incorrect Password!', 'error');
+            }
+        }
+    };
+
+        window.processWithdrawal = function() {
+        const amt = parseFloat(document.getElementById('withdrawAmt').value);
+        if(!amt || amt < 100) return Swal.fire('Limit', 'Minimum withdrawal is ₹100', 'info');
+        if(amt > currentBalance) return Swal.fire('Insufficient Funds', 'You don\'t have enough balance', 'error');
+
+        // 1. Withdrawal request ko history me add karein
+        const requestRef = push(ref(db, 'withdrawals/' + userPhone));
+        set(requestRef, {
+            amount: amt,
+            status: 'Pending',
+            time: new Date().toLocaleString()
+        }).then(() => {
+            // 2. Naya balance calculate karein
+            const updatedBalance = currentBalance - amt;
+
+            // 3. Database me user ka balance update karein
+            set(ref(db, 'users/' + userPhone + '/balance'), updatedBalance)
+            .then(() => {
+                Swal.fire('Submitted!', 'Withdrawal request sent & balance updated.', 'success');
+                document.getElementById('withdrawAmt').value = '';
+            })
+            .catch((err) => {
+                Swal.fire('Error', 'Balance update karne me dikkat aayi!', 'error');
+            });
+        });
+    };
+    
 
 </script>
-
 </body>
 </html>
