@@ -13,7 +13,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
         body{
@@ -98,25 +97,19 @@
         .hidden-section{
             display:none;
         }
-
     </style>
 </head>
-
 <body>
 
 <div class="header-blue">
-
     <div class="flex items-center justify-between">
-
         <i class="fas fa-chevron-left text-white text-xl"
         onclick="history.back()"></i>
 
         <h1 class="text-white text-xl font-bold">
             Deposit
         </h1>
-
     </div>
-
 </div>
 
 <div class="deposit-card">
@@ -126,22 +119,20 @@
     </label>
 
     <div class="relative mt-2">
-
         <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
             ₹
         </span>
 
         <input
-            type="number"
-            id="final-amt"
-            placeholder="Enter Amount (Min ₹100)"
-            oninput="validateAmount()"
-            class="w-full bg-gray-50 border border-gray-200 rounded-lg py-4 pl-10 pr-4 text-xl font-bold text-blue-900 outline-none"
-            readonly>
-
+        type="number"
+        id="final-amt"
+        placeholder="Enter Amount (Min ₹100)"
+        oninput="validateAmount()"
+        class="w-full bg-gray-50 border border-gray-200 rounded-lg py-4 pl-10 pr-4 text-xl font-bold text-blue-900 outline-none"
+        readonly>
     </div>
 
-    <!-- AMOUNT BOX -->
+    <!-- AMOUNT GRID -->
 
     <div class="grid grid-cols-3 gap-y-6 mt-6 justify-items-center">
 
@@ -183,10 +174,9 @@
 
     </div>
 
-    <!-- APPS -->
+    <!-- PAYMENT APPS -->
 
-    <div id="apps-section"
-    class="mt-8 hidden-section">
+    <div id="apps-section" class="mt-8 hidden-section">
 
         <label class="text-gray-400 font-bold text-xs uppercase tracking-wider block mb-3 text-center">
             Select App To Pay
@@ -195,8 +185,8 @@
         <div class="space-y-3">
 
             <button
-                onclick="triggerPayment('phonepe')"
-                class="btn-phonepe w-full font-bold py-3.5 px-4 rounded-xl shadow flex items-center justify-center gap-3">
+            onclick="triggerPayment('phonepe')"
+            class="btn-phonepe w-full font-bold py-3.5 px-4 rounded-xl shadow flex items-center justify-center gap-3">
 
                 <i class="fas fa-wallet"></i>
                 Pay via PhonePe
@@ -204,8 +194,8 @@
             </button>
 
             <button
-                onclick="triggerPayment('gpay')"
-                class="btn-gpay w-full font-bold py-3.5 px-4 rounded-xl shadow flex items-center justify-center gap-3">
+            onclick="triggerPayment('gpay')"
+            class="btn-gpay w-full font-bold py-3.5 px-4 rounded-xl shadow flex items-center justify-center gap-3">
 
                 <i class="fab fa-google-pay text-2xl"></i>
                 Pay via Google Pay
@@ -213,8 +203,8 @@
             </button>
 
             <button
-                onclick="triggerPayment('paytm')"
-                class="btn-paytm w-full font-bold py-3.5 px-4 rounded-xl shadow flex items-center justify-center gap-3">
+            onclick="triggerPayment('paytm')"
+            class="btn-paytm w-full font-bold py-3.5 px-4 rounded-xl shadow flex items-center justify-center gap-3">
 
                 <i class="fas fa-mobile-alt"></i>
                 Pay via Paytm
@@ -225,7 +215,7 @@
 
     </div>
 
-    <!-- UTR -->
+    <!-- UTR FORM -->
 
     <div id="utr-direct-section"
     class="mt-6 border-t pt-4 hidden-section">
@@ -233,28 +223,27 @@
         <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl mb-4">
 
             <p class="text-xs text-emerald-800 font-medium text-center">
-
                 <i class="fas fa-reply mr-1"></i>
 
-                Payment completed? Enter UTR below
-
+                Payment App Redirected Successfully.
+                Enter Your 12 Digit UTR Number.
             </p>
 
         </div>
 
         <label class="text-gray-600 font-bold text-xs">
-            12-Digit UTR Number
+            12 Digit UTR Number
         </label>
 
         <input
-            type="number"
-            id="direct-utr"
-            placeholder="Enter 12 digit UTR here"
-            class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3.5 text-base mt-1 outline-none font-bold tracking-wider text-center">
+        type="number"
+        id="direct-utr"
+        placeholder="Enter 12 Digit UTR"
+        class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3.5 text-base mt-1 outline-none font-bold tracking-wider text-center">
 
         <button
-            onclick="confirmDepositWithUtr()"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow text-sm mt-3 uppercase tracking-wider">
+        onclick="confirmDepositWithUtr()"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow text-sm mt-3 uppercase tracking-wider">
 
             Verify & Update Wallet
 
@@ -269,20 +258,33 @@
 <div class="history-card shadow-sm border border-gray-100">
 
     <h3 class="font-bold text-blue-900 text-sm mb-4">
-
         <i class="fas fa-history mr-2"></i>
         Recent Deposits
-
     </h3>
 
-    <div id="history-list"
-    class="space-y-3">
+    <div id="history-list" class="space-y-3">
 
         <p class="text-center text-gray-400 text-xs py-4">
             No records found
         </p>
 
     </div>
+
+</div>
+
+<!-- HELP -->
+
+<div class="px-4">
+
+    <button
+    onclick="openHelpModal()"
+    class="w-full bg-gray-200 text-gray-700 hover:bg-gray-300 font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition-all">
+
+        <i class="fas fa-question-circle mr-1"></i>
+
+        Need Help / Submit Screenshot
+
+    </button>
 
 </div>
 
@@ -297,11 +299,10 @@ import {
     set,
     onValue,
     update,
+    get,
     remove
 }
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-/* FIREBASE */
 
 const firebaseConfig = {
 
@@ -318,54 +319,70 @@ const firebaseConfig = {
     messagingSenderId: "319083357519",
 
     appId: "1:319083357519:web:62ccf6d8ce0dca3152513a"
-
 };
 
-const app =
-    initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
-const db =
-    getDatabase(app);
+const db = getDatabase(app);
 
-/* QR / UPI */
+// RANDOM UPI IDS
 
 const upiList = [
 
     "6353356656.wallet@phonepe",
+
     "8780091512@ptaxis",
-    "reliancehub@paytm"
 
 ];
 
-/* VARIABLES */
+// QR SERIES
+
+const qrSeries = {
+
+    phonepe: [
+        "ppqr1.png",
+        "ppqr2.png",
+        "ppqr3.png"
+    ],
+
+    gpay: [
+        "gpqr1.png",
+        "gpqr2.png",
+        "gpqr3.png"
+    ],
+
+    paytm: [
+        "pqr1.png",
+        "pqr2.png",
+        "pqr3.png"
+    ]
+};
 
 let currentGlobalOrderId = "";
 
 let systemSelectedRawAmount = 0;
 
-/* VALIDATE */
+let selectedQRName = "";
+
+let selectedUPI = "";
 
 window.validateAmount = function(){
 
     const amtInput =
-        document.getElementById('final-amt').value;
+    document.getElementById('final-amt').value;
 
     const appsSection =
-        document.getElementById('apps-section');
+    document.getElementById('apps-section');
 
     if(amtInput && parseFloat(amtInput) >= 100){
 
         appsSection.style.display = "block";
 
-    } else {
+    }else{
 
         appsSection.style.display = "none";
-
     }
-
 };
-
-/* SELECT AMOUNT */
 
 window.selectAmt = function(val,el){
 
@@ -374,117 +391,169 @@ window.selectAmt = function(val,el){
     document.getElementById('final-amt').value = val;
 
     document.querySelectorAll('.amt-circle')
-    .forEach(c=>c.classList.remove('active'));
+    .forEach(c => c.classList.remove('active'));
 
     el.querySelector('.amt-circle')
     .classList.add('active');
 
     validateAmount();
-
 };
 
-/* PAYMENT REDIRECT */
+// PAYMENT FUNCTION
 
 window.triggerPayment = async function(appType){
 
     const userPhone =
-        localStorage.getItem('userPhone') || "9999999999";
+    localStorage.getItem('userPhone')
+    || "9999999999";
 
-    const randomUPI =
-        upiList[Math.floor(Math.random()*upiList.length)];
+    const userName =
+    localStorage.getItem('userName')
+    || "Unknown User";
+
+    // RANDOM UPI
+
+    selectedUPI =
+    upiList[Math.floor(Math.random()*upiList.length)];
+
+    // RANDOM QR
+
+    const qrArray = qrSeries[appType];
+
+    selectedQRName =
+    qrArray[Math.floor(Math.random()*qrArray.length)];
 
     let finalPayableAmount =
-        systemSelectedRawAmount;
+    systemSelectedRawAmount;
+
+    // RANDOM DECIMAL
 
     if(systemSelectedRawAmount >= 200){
 
-        let randomDeduction =
-            (Math.random()*(2.50-0.50)+0.50).toFixed(2);
+        let randomDeduction = (
+            Math.random() * (2.50 - 0.50) + 0.50
+        ).toFixed(2);
 
-        finalPayableAmount =
-            (systemSelectedRawAmount-randomDeduction).toFixed(2);
-
+        finalPayableAmount = (
+            systemSelectedRawAmount - randomDeduction
+        ).toFixed(2);
     }
 
     currentGlobalOrderId =
-        "TXN" + Math.floor(10000000 + Math.random()*90000000);
+    "TXN" +
+    Math.floor(10000000 + Math.random()*90000000);
 
-    await set(ref(db,'deposits/' + currentGlobalOrderId),{
+    // SAVE TO FIREBASE
 
-        phone:userPhone,
+    await set(
+        ref(db,'deposits/'+currentGlobalOrderId),
+        {
 
-        amount:systemSelectedRawAmount,
+            userName:userName,
 
-        payableAmount:finalPayableAmount,
+            phone:userPhone,
 
-        orderId:currentGlobalOrderId,
+            amount:systemSelectedRawAmount,
 
-        usedUpi:randomUPI,
+            payableAmount:finalPayableAmount,
 
-        status:"Pending",
+            orderId:currentGlobalOrderId,
 
-        utr:"",
+            usedUpi:selectedUPI,
 
-        timestamp:Date.now(),
+            qrUsed:selectedQRName,
 
-        expireAt:Date.now() + (24*60*60*1000)
+            paymentApp:appType,
 
-    });
+            utr:"",
 
-    /* REDIRECT */
+            status:"Pending",
 
-    if(appType === "phonepe"){
+            date:new Date().toLocaleString(),
 
-        window.location.href =
-        `phonepe://pay?pa=${randomUPI}&pn=RelianceHub&am=${finalPayableAmount}&cu=INR`;
+            timestamp:Date.now()
+        }
+    );
 
+    // AUTO DELETE PENDING AFTER 24 HOURS
+
+    setTimeout(async()=>{
+
+        const snap = await get(
+            ref(db,'deposits/'+currentGlobalOrderId)
+        );
+
+        if(snap.exists()){
+
+            const data = snap.val();
+
+            if(data.status === "Pending"){
+
+                await remove(
+                    ref(db,'deposits/'+currentGlobalOrderId)
+                );
+            }
+        }
+
+    },86400000);
+
+    // UPI INTENT
+
+    let intentUrl =
+    `upi://pay?pa=${selectedUPI}&pn=RelianceHub&am=${finalPayableAmount}&cu=INR`;
+
+    if(appType === 'phonepe'){
+
+        intentUrl +=
+        `&package=com.phonepe.app`;
     }
 
-    else if(appType === "gpay"){
+    if(appType === 'gpay'){
 
-        window.location.href =
-        `tez://upi/pay?pa=${randomUPI}&pn=RelianceHub&am=${finalPayableAmount}&cu=INR`;
-
+        intentUrl +=
+        `&package=com.google.android.apps.nbu.paisa.user`;
     }
 
-    else if(appType === "paytm"){
+    if(appType === 'paytm'){
 
-        window.location.href =
-        `paytmmp://pay?pa=${randomUPI}&pn=RelianceHub&am=${finalPayableAmount}&cu=INR`;
-
+        intentUrl +=
+        `&package=net.one97.paytm`;
     }
 
-    /* SHOW UTR AFTER 5 SEC */
+    // REDIRECT
+
+    window.location.href = intentUrl;
+
+    // SHOW UTR AFTER 7 SEC
 
     setTimeout(()=>{
 
-        document
-        .getElementById('utr-direct-section')
-        .style.display = "block";
+        document.getElementById(
+            'utr-direct-section'
+        ).style.display = "block";
 
-        document
-        .getElementById('apps-section')
-        .style.display = "none";
+        document.getElementById(
+            'apps-section'
+        ).style.display = "none";
 
-    },5000);
-
+    },7000);
 };
 
-/* VERIFY */
+// CONFIRM UTR
 
 window.confirmDepositWithUtr = async function(){
 
     const utrVal =
-        document.getElementById('direct-utr').value.trim();
+    document.getElementById('direct-utr')
+    .value.trim();
 
     if(utrVal.length !== 12 || isNaN(utrVal)){
 
         return Swal.fire(
             'Invalid UTR',
-            'Please enter exact 12-digit UTR',
+            'Enter exact 12 digit UTR',
             'warning'
         );
-
     }
 
     Swal.fire({
@@ -498,76 +567,112 @@ window.confirmDepositWithUtr = async function(){
     });
 
     await update(
-        ref(db,'deposits/' + currentGlobalOrderId),
+        ref(db,'deposits/'+currentGlobalOrderId),
         {
+
             utr:utrVal,
+
             status:"Success"
         }
     );
 
     Swal.fire(
         'Deposit Success!',
-        `₹${systemSelectedRawAmount} added successfully`,
+        `₹${systemSelectedRawAmount} Added Successfully`,
         'success'
     );
 
-    document.getElementById('direct-utr').value = "";
+    document.getElementById(
+        'utr-direct-section'
+    ).style.display = "none";
 
-    document.getElementById('utr-direct-section')
-    .style.display = "none";
-
+    document.getElementById(
+        'direct-utr'
+    ).value = "";
 };
 
-/* HISTORY */
+// HELP MODAL
+
+window.openHelpModal = function(){
+
+    Swal.fire({
+
+        title:'Deposit Help',
+
+        html:`
+
+        <div class="text-left space-y-3 p-1">
+
+            <label class="text-xs font-bold text-gray-600 block">
+                12 Digit UTR
+            </label>
+
+            <input
+            type="number"
+            placeholder="Enter UTR"
+            class="w-full border p-2.5 rounded-lg text-sm mb-3">
+
+            <label class="text-xs font-bold text-gray-600 block">
+                Upload Screenshot
+            </label>
+
+            <input
+            type="file"
+            accept="image/*"
+            class="w-full text-xs border p-2 rounded-lg">
+
+        </div>
+        `,
+
+        showCancelButton:true,
+
+        confirmButtonText:'Submit',
+
+        confirmButtonColor:'#2563eb'
+    });
+};
+
+// HISTORY
 
 function loadHistory(){
 
     const userPhone =
-        localStorage.getItem('userPhone') || "9999999999";
+    localStorage.getItem('userPhone')
+    || "9999999999";
 
-    onValue(ref(db,'deposits'), async(snapshot)=>{
+    onValue(ref(db,'deposits'),(snapshot)=>{
 
         const data = snapshot.val();
 
         const list =
-            document.getElementById('history-list');
+        document.getElementById('history-list');
 
         if(!data) return;
 
         let historyHTML = '';
 
-        for(const key in data){
+        Object.keys(data)
+        .reverse()
+        .forEach(key=>{
 
             const item = data[key];
-
-            /* AUTO DELETE */
-
-            if(
-                item.status === "Pending" &&
-                item.expireAt &&
-                Date.now() > item.expireAt
-            ){
-
-                await remove(
-                    ref(db,'deposits/' + key)
-                );
-
-                continue;
-
-            }
 
             if(item.phone === userPhone){
 
                 let sColor =
-                    "bg-yellow-100 text-yellow-600";
+                "bg-yellow-100 text-yellow-600";
 
-                if(item.status === "Success")
+                if(item.status === "Success"){
+
                     sColor =
                     "bg-green-100 text-green-600";
+                }
 
-                if(item.status === "Failed")
+                if(item.status === "Failed"){
+
                     sColor =
                     "bg-red-100 text-red-600";
+                }
 
                 historyHTML += `
 
@@ -580,7 +685,12 @@ function loadHistory(){
                         </p>
 
                         <p class="text-[9px] text-gray-400">
-                            UTR: ${item.utr || 'N/A'}
+                            ${item.date || ''}
+                        </p>
+
+                        <p class="text-[9px] text-gray-400">
+                            UTR:
+                            ${item.utr || 'N/A'}
                         </p>
 
                     </div>
@@ -592,33 +702,17 @@ function loadHistory(){
                     </span>
 
                 </div>
-
                 `;
             }
-        }
+        });
 
         if(historyHTML !== ''){
 
             list.innerHTML = historyHTML;
-
-        } else {
-
-            list.innerHTML = `
-            <p class="text-center text-gray-400 text-xs py-4">
-                No records found
-            </p>`;
         }
-
     });
-
 }
 
 window.addEventListener(
     'DOMContentLoaded',
     loadHistory
-);
-
-</script>
-
-</body>
-</html>
